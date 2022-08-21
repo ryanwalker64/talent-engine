@@ -1,6 +1,14 @@
 
 let companies = []
 let retrievedCompany = {}
+   
+  
+
+const form = document.querySelector('[data-form="create-profile"]') 
+
+console.log(form)
+
+
 
 // Onload, fetch user airtable ID from memberstack
     // fetch names of companies and record ids from companies table in airtable

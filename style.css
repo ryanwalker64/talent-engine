@@ -1,0 +1,158 @@
+.candidate-profile {
+    -webkit-text-size-adjust: 100%;
+font-family: 'Space Grotesk', sans-serif;
+font-size: 16px;
+line-height: 1.75em;
+color: #33334e;
+box-sizing: border-box;
+display: flex;
+padding: 20px 30px;
+border-bottom: 1px solid #e4e4ed;
+background-color: #fff;
+}
+
+img {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    line-height: 1.75em;
+    color: #33334e;
+    box-sizing: border-box;
+    border: 0;
+    vertical-align: middle;
+    display: inline-block;
+    max-width: 100%;
+    width: 60px;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.candidate-info {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    line-height: 1.75em;
+    color: #33334e;
+    box-sizing: border-box;
+    display: flex;
+    margin-left: 20px;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: start;
+    align-items: flex-start;
+}
+
+.candidate-name {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    line-height: 1.75em;
+    color: #33334e;
+    -webkit-box-direction: normal;
+    box-sizing: border-box;
+    margin-bottom: 2px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.candidate-details-container {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    line-height: 1.75em;
+    color: #33334e;
+    -webkit-box-direction: normal;
+    box-sizing: border-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.candidate-short-details {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    -webkit-box-direction: normal;
+    box-sizing: border-box;
+    margin-right: 10px;
+    color: #686781;
+    font-size: 14px;
+    line-height: 1.5em;
+}
+
+.candidate-status.actively-looking {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    -webkit-box-direction: normal;
+    box-sizing: border-box;
+    padding: 2px 10px;
+    border-radius: 15px;
+    background-color: #ddecea;
+    color: #008764;
+    font-size: 12px;
+    line-height: 1.5em;
+}
+
+.candidate-buttons-container {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    line-height: 1.75em;
+    color: #33334e;
+    box-sizing: border-box;
+    display: flex;
+    margin-left: auto;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-flex: 0;
+    flex: 0 auto;
+}
+
+.candidate-button-v2.more-button.w-button {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 9px 15px;
+    border: 0;
+    line-height: inherit;
+    text-decoration: none;
+    margin-left: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e4e4ed;
+    border-radius: 10px;
+    background-color: transparent;
+    transition: all 200ms ease, color 300ms ease;
+    color: #8c8c9e;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.candidate-button-v2.contact-btn.w-button {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'Space Grotesk', sans-serif;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 9px 15px;
+    border: 0;
+    line-height: inherit;
+    text-decoration: none;
+    margin-left: 5px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+    transition: all 200ms ease, color 300ms ease;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    border-color: #008764;
+    background-color: #008764;
+    color: #fff;
+}

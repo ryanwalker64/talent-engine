@@ -10,3 +10,6 @@ let companyProfile = {}
 // add event listener to form submit
     // update record in airtable
     // show save complete state when completed
+
+
+// display open jobs with delete buttons

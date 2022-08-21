@@ -6,3 +6,5 @@ let companyProfile = {}
     // store company information in companyProfile
     // display company information in DOM
     // Loading state
+
+// display open jobs

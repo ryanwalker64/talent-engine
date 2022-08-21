@@ -1,10 +1,10 @@
+const body = document.querySelector('body')
 
-
-let URL = "https://v1.nocodeapi.com/startmate/airtable/JLlxFSLmwpWVXCXR?tableName=Members&perPage=20"
+let URL = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users&perPage=20"
 let userbase = []
 let offset
 let filter
-
+//&cacheTime=5
 
 var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
@@ -17,16 +17,55 @@ var requestOptions = {
 
 fetch(URL, requestOptions)
     .then(response => response.json())
-    .then(result => console.log(result))
+    .then(result => {
+        userbase = result.records
+        console.log(userbase)
+        displayProfiles(userbase)
+    })
     .catch(error => console.log('error', error));
+
+
+const displayProfiles = (profiles) => {
+    const profilesHTML = profiles.map(profile => {
+        return `
+        <div class="candidate-profile">
+            <img src=${profile.fields["Profile Picture URL"]} sizes="60px" alt="" class="img" />
+            <div class="candidate-info">
+                <div class="candidate-name">${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Name (from Employer)"][0]}</div>
+                <div class="candidate-details-container">
+                    <div class="candidate-short-details">
+                    ${profile.fields["Years of Work Experience"] === "Junior 1-2 years"
+                        ? 'Junior'
+                        : profile.fields["Years of Work Experience"] === "Mid-level 3-4 years"
+                            ? 'Mid-level'
+                            : profile.fields["Years of Work Experience"] === "Senior 5-7 years"
+                                ? 'Senior'
+                                : 'Expert'} • Lawyer • ${profile.fields["Location"]}</div>
+                    ${profile.fields["Stage of Job Hunt"] === "Actively Looking"
+                        ? `<div class="candidate-status actively-looking">Actively Looking</div>`
+                        : `<div></div>`}
+                </div>
+            </div>
+            <div class="candidate-buttons-container">
+                <a href="#" class="candidate-button-v2 more-button w-button">See more</a>
+                <a href="#" class="candidate-button-v2 contact-btn w-button">Contact</a>
+            </div>
+        </div> 
+        `
+    }).join('')
+
+    body.insertAdjacentHTML('afterbegin', profilesHTML)
+}
+
+
 
 
 // On load grab 20 candidates
     // no employers
     // profiles that are visible
-    // Store the profiles in userbase 
+    // Store the profiles in userbase ✅
     // Store the offset
-    // Append the 20 profiles to the DOM
+    // Append the 20 profiles to the DOM ✅
     // Add a loading state whilst retrieving the profiles
     // grab total number of records and update the counts for displaying and total candidates
 
