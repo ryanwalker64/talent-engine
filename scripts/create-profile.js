@@ -6,7 +6,7 @@ let retrievedCompany = {}
 
 const form = document.querySelector('[data-form="create-profile"]') 
 
-console.log(form)
+console.log('it works')
 
 
 
