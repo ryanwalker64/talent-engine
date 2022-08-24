@@ -10,3 +10,8 @@ let userProfile = {}
 // add event listener to form submit
     // update record in airtable
     // show save complete state when completed
+
+
+function getProfileForm() {
+    
+}
