@@ -1,5 +1,9 @@
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
-const roles = requre
+
+
+const fetchRoles = () => fetch('https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/rolesArray.json')
+  .then((response) => response.json())
+  .then((data) => console.log(data));
 
 let companies = []
 let retrievedCompany = {}
@@ -136,39 +140,39 @@ const locations = [
 //     "Account Executive",
 // ]
 
-const industries = [,
-    "Adtech",
-    "Aerospace",
-    "Agriculture",
-    "AI",
-    "Analytics",
-    "Augmented Reality / Virtual Reality",
-    "Biotech",
-    "Blockchain",
-    "Carbon reduction technology",
-    "Community",
-    "Construction",
-    "Consumer products",
-    "Dev tools",
-    "E-commerce",
-    "Education",
-    "Energy",
-    "Enterprise Software",
-    "Entertainment",
-    "Environment/Sustainability",
-    "Fintech",
-    "Fitness/Wellness/Mental Health",
-    "Food",
-    "Freight/Logistics",
-    "Gaming",
-    "Hardware",
-    "Investment",
-    "Media",
-    "Medtech",
-    "Mental Health",
-    "Mobility",
-    "Robotics",
-]
+// const industries = [,
+//     "Adtech",
+//     "Aerospace",
+//     "Agriculture",
+//     "AI",
+//     "Analytics",
+//     "Augmented Reality / Virtual Reality",
+//     "Biotech",
+//     "Blockchain",
+//     "Carbon reduction technology",
+//     "Community",
+//     "Construction",
+//     "Consumer products",
+//     "Dev tools",
+//     "E-commerce",
+//     "Education",
+//     "Energy",
+//     "Enterprise Software",
+//     "Entertainment",
+//     "Environment/Sustainability",
+//     "Fintech",
+//     "Fitness/Wellness/Mental Health",
+//     "Food",
+//     "Freight/Logistics",
+//     "Gaming",
+//     "Hardware",
+//     "Investment",
+//     "Media",
+//     "Medtech",
+//     "Mental Health",
+//     "Mobility",
+//     "Robotics",
+// ]
 
 const form = document.querySelector('[data-form="create-profile"]') 
 const locatedInput = document.querySelector('[data-input="located"]')

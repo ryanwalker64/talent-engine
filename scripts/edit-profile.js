@@ -12,6 +12,17 @@ let userProfile = {}
     // show save complete state when completed
 
 
-function getProfileForm() {
-    
-}
+async function fetchSelection(selection) {
+     fetch(`https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/${selection}.json`)
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data)
+        return data
+    });
+ }
+
+
+const roles = await fetchSelection(rolesArray)
+const industries = await fetchSelection(industriesArray)
+const locations = await fetchSelection(locationsArray)
+
