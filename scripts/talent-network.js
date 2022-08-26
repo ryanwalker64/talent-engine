@@ -1,35 +1,61 @@
-const body = document.querySelector('body')
+const directoryContainer = document.querySelector('.directory-container-v2')
+const form = document.querySelector('[data-filter="form"]')
+const formInputs = document.querySelectorAll('[data-filter="input"]')
 
-let URL = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users&perPage=20"
+
+let API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users"
 let userbase = []
 let offset
 let filter
 //&cacheTime=5
 
-var myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
-var requestOptions = {
-    method: "get",
-    headers: myHeaders,
-    redirect: "follow",
-    
-};
+formInputs.forEach(filter => {
+    filter.addEventListener('click', (e) => {
+        // console.log()
+        getExperienceValues()
+        fetchProfiles("IF(%7Bexperience-stage%7D+%3D+%22Expert%22%2C+%22true%22)")
 
-fetch(URL, requestOptions)
-    .then(response => response.json())
-    .then(result => {
-        userbase = result.records
-        console.log(userbase)
-        displayProfiles(userbase)
     })
-    .catch(error => console.log('error', error));
+})
+
+function getExperienceValues() {
+    const experienceInputs = [...document.querySelectorAll('[data-experience]')]
+    const checked = experienceInputs.filter(checkbox => {
+        if (checkbox.checked) return checkbox.value }); 
+        console.log(checked)
+        
+}
 
 
-const displayProfiles = (profiles) => {
+
+function fetchProfiles(filter = '') {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+        
+    };
+
+    const APIURL = API + filter + "&perPage=20"
+
+    fetch(APIURL, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            userbase = result.records
+            console.log(userbase)
+            displayProfiles(userbase)
+        })
+        .catch(error => console.log('error', error));
+}
+fetchProfiles()
+
+function displayProfiles(profiles){
     const profilesHTML = profiles.map(profile => {
         return `
         <div class="candidate-profile">
-            <img src=${profile.fields["Profile Picture URL"]} sizes="60px" alt="" class="img" />
+            <img src=${profile.fields["Profile Picture"]} sizes="60px" alt="" class="img" />
             <div class="candidate-info">
                 <div class="candidate-name">${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Name (from Employer)"][0]}</div>
                 <div class="candidate-details-container">
@@ -47,16 +73,16 @@ const displayProfiles = (profiles) => {
                 </div>
             </div>
             <div class="candidate-buttons-container">
-                <a href="#" class="candidate-button-v2 more-button w-button">See more</a>
+                <a href="/profile?user=${profile.id}" class="candidate-button-v2 more-button w-button">See more</a>
                 <a href="#" class="candidate-button-v2 contact-btn w-button">Contact</a>
             </div>
         </div> 
         `
     }).join('')
 
-    body.insertAdjacentHTML('afterbegin', profilesHTML)
+    directoryContainer.innerHTML = profilesHTML
+    
 }
-
 
 
 
