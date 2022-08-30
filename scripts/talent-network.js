@@ -1,101 +1,267 @@
 const directoryContainer = document.querySelector('.directory-container-v2')
 const form = document.querySelector('[data-filter="form"]')
-const formInputs = document.querySelectorAll('[data-filter="input"]')
+const formInputs = document.querySelectorAll('[data-filter="input"]') 
+const locationsInput = document.querySelector('[data-input="location"]')
+const remoteInput = document.querySelector('[data-input="remote"]')
+const rolesInput = document.querySelector('[data-input="roles"]')
+const industriesInput = document.querySelector('[data-input="industries"]')
+const generalSelectorSettings = {
+	plugins: ['remove_button'],
+    sortField: {field: "text", direction: "asc"}
+};
 
+const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users"
+const FIELDS = "?fields%5B%5D=Job+Pref%3A+Working+Locations&fields%5B%5D=Job+Pref%3A+Open+to+remote+work&fields%5B%5D=experience-stage&fields%5B%5D=Job+Pref%3A+Relevant+roles&fields%5B%5D=Job+Pref%3A+Type+of+role&fields%5B%5D=Job+Pref%3A+Industries&fields%5B%5D=Startmate+Program"
+const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
-let API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users"
+// let offset
 let userbase = []
-let offset
-let filter
+let filterObj = {
+    'workType': [],
+    'experience': [],
+    'roles': [],
+    'location': [],
+    'remote': [],
+    'industry': [],
+    'SMProgram': [],
+}
+let locationSelector
+let remoteSelector = new TomSelect(remoteInput, {...generalSelectorSettings});
+let roleSelector
+let industriesSelector
 //&cacheTime=5
 
-formInputs.forEach(filter => {
-    filter.addEventListener('click', (e) => {
-        // console.log()
-        getExperienceValues()
-        fetchProfiles("IF(%7Bexperience-stage%7D+%3D+%22Expert%22%2C+%22true%22)")
+function handleFilterSelection() {
+    let filter = []
+    if (getExperienceValues()) filter.push(getExperienceValues())
+    if (getWorkTypeValues()) filter.push(getWorkTypeValues())
+    if (getSMProgramValues()) filter.push(getSMProgramValues())
+    if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
+    if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
+    const filteredOptions = `IF(OR(${filter.join(',')}),"true")`
+    const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)        
+    console.log(filteredOptions, filterEncode, filter)
+    fetchFilteredProfiles(filterEncode)
+}
 
-    })
+formInputs.forEach(filter => {
+    filter.addEventListener('click', handleFilterSelection)
 })
 
 function getExperienceValues() {
-    const experienceInputs = [...document.querySelectorAll('[data-experience]')]
-    const checked = experienceInputs.filter(checkbox => {
-        if (checkbox.checked) return checkbox.value }); 
-        console.log(checked)
-        
+    filterObj.experience = []
+    const inputs = [...document.querySelectorAll('[data-experience]')]
+    const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox });
+    if (checked.length === 0) return 
+    filterObj.experience = checked.map(checkbox => {return checkbox.dataset.experience})
+    const values = checked.map(checkbox => {return `{experience-stage}="${checkbox.dataset.experience}"`}).join(',')
+    return values
 }
 
+function getWorkTypeValues() {
+    filterObj.workType = []
+    const inputs = [...document.querySelectorAll('[data-worktype]')]
+    const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox }); 
+    if (checked.length === 0) return
+    filterObj.workType = checked.map(checkbox => {return checkbox.dataset.worktype})
+    const values = checked.map(checkbox => {return `{Job Pref: Type of role}="${checkbox.dataset.worktype}"`}).join(',')
+    return values
+}
 
+function getLocationValues() {
+    filterObj.location = []
+    if (locationSelector.getValue().length === 0) return
+    const selected = locationSelector.getValue()
+    filterObj.location = locationSelector.getValue()
+    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Working Locations})`}).join(',')
+    return values
+}
 
-function fetchProfiles(filter = '') {
+function getIndustryValues() {
+    filterObj.industry = []
+    if (industriesSelector.getValue().length === 0) return
+    const selected = industriesSelector.getValue()
+    filterObj.industry = industriesSelector.getValue()
+    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Industries})`}).join(',')
+    return values
+}
+
+function getSMProgramValues() {
+    filterObj.SMProgram = []
+    const input = document.querySelector('[data-smprogram]')
+    if(!input.checked) return
+    filterObj.SMProgram = [true]
+    const value = `IF({Startmate Program}, TRUE())`
+    return value
+}
+
+function countProfiles(arr) {
+    const profileCount = document.querySelector('[data-count="viewing"]')
+    profileCount.textContent = arr.length
+}
+
+function scoreProfiles(filtersToCheck, fetchedUsers) {
+    const scoredProfiles = fetchedUsers.map(profile => {
+        let score = 0
+        if(filtersToCheck.workType.length > 0) {
+            filtersToCheck.workType.forEach(filter => {
+                if (profile.fields["Job Pref: Type of role"].includes(filter)) score += 1
+            })
+        }
+        if(filtersToCheck.experience.length > 0) {
+            filtersToCheck.experience.forEach(filter => {
+                if (profile.fields["experience-stage"].includes(filter)) score += 1
+            })
+        }
+        if(filtersToCheck.SMProgram.length > 0) {
+                if (profile.fields["Startmate Program"]) score += 1
+        }
+        if(filtersToCheck.location.length > 0) {
+            filtersToCheck.location.forEach(filter => {
+                if (profile.fields["Job Pref: Working Locations"].includes(filter)) score += 1
+            })
+        }
+        profile.score = score
+        return profile
+    })
+    return scoredProfiles
+}
+
+function countFilters() {
+    let totalScore = 0;
+    Object.keys(filterObj).forEach(key => { totalScore += filterObj[key].length})
+    return totalScore
+}
+
+function fetchProfiles() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
         method: "get",
         headers: myHeaders,
         redirect: "follow",
-        
     };
 
-    const APIURL = API + filter + "&perPage=20"
-
-    fetch(APIURL, requestOptions)
+    fetch(API + "&perPage=30", requestOptions)
         .then(response => response.json())
         .then(result => {
             userbase = result.records
-            console.log(userbase)
             displayProfiles(userbase)
+            countProfiles(userbase)
+            console.log(userbase)
         })
         .catch(error => console.log('error', error));
 }
-fetchProfiles()
+
+function fetchFilteredProfiles(filter) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    };
+
+    const APIURL = API + filter
+    fetch(APIURL, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
+            displayProfiles(TempUserbase)
+            countProfiles(TempUserbase)
+            console.log(TempUserbase)
+        })
+        .catch(error => console.log('error', error));
+}
 
 function displayProfiles(profiles){
     const profilesHTML = profiles.map(profile => {
         return `
         <div class="candidate-profile">
-            <img src=${profile.fields["Profile Picture"]} sizes="60px" alt="" class="img" />
+            <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
             <div class="candidate-info">
                 <div class="candidate-name">${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Name (from Employer)"][0]}</div>
                 <div class="candidate-details-container">
                     <div class="candidate-short-details">
-                    ${profile.fields["Years of Work Experience"] === "Junior 1-2 years"
-                        ? 'Junior'
-                        : profile.fields["Years of Work Experience"] === "Mid-level 3-4 years"
-                            ? 'Mid-level'
-                            : profile.fields["Years of Work Experience"] === "Senior 5-7 years"
-                                ? 'Senior'
-                                : 'Expert'} • Lawyer • ${profile.fields["Location"]}</div>
+                    ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>
                     ${profile.fields["Stage of Job Hunt"] === "Actively Looking"
                         ? `<div class="candidate-status actively-looking">Actively Looking</div>`
                         : `<div></div>`}
                 </div>
             </div>
             <div class="candidate-buttons-container">
+                ${!profile.score
+                    ? `<div></div>`
+                    : profile.score === 0 
+                        ? `<div class="filter-match" data-filter="matches">No filters matched</div>`
+                        : profile.score > 1 && profile.score !== countFilters()
+                            ? `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`
+                            : profile.score === countFilters()
+                                ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
+                                : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
                 <a href="/profile?user=${profile.id}" class="candidate-button-v2 more-button w-button">See more</a>
                 <a href="#" class="candidate-button-v2 contact-btn w-button">Contact</a>
             </div>
         </div> 
         `
     }).join('')
-
     directoryContainer.innerHTML = profilesHTML
-    
 }
 
 
+async function fetchFilterData() {
+    const [rolesResponse, locationsResponse, industriesResponse] = await Promise.all([
+        fetch(JSDELIVR + 'rolesArray.json'),
+        fetch(JSDELIVR + 'locationsArray.json'),
+        fetch(JSDELIVR + 'industriesArray.json')])
+        
+    const roles = await rolesResponse.json()
+    const locations = await locationsResponse.json()
+    const industries = await industriesResponse.json()
+    // console.log(roles, locations, industries)
+    return [roles, locations, industries]
+}
 
-// On load grab 20 candidates
-    // no employers
-    // profiles that are visible
-    // Store the profiles in userbase ✅
-    // Store the offset
-    // Append the 20 profiles to the DOM ✅
-    // Add a loading state whilst retrieving the profiles
+fetchFilterData().then(([roles, locations, industries]) => {
+    const rolesObj = roles.map(role => {return {'value': role, 'text': role}})
+    const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
+
+    locationSelector = new TomSelect(locationsInput, {
+        plugins: ['remove_button'],
+        optgroups: [
+            {value: 'AUS', label: 'Australia'},
+            {value: 'NZ', label: 'New Zealand'},
+            {value: 'OTHER', label: 'Other'}
+        ],
+        optgroupField: 'country',
+        labelField: 'value',
+        searchField: ['value'],
+        maxItems: 5,
+        options: locations});
+    roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: 5});
+    industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
+
+    locationSelector.on('change', (e) => {handleFilterSelection()})
+})
+
+fetchProfiles()
+fetchFilterData()
+
+    // Setup Tom Select for industires, roles, locaiton, remote
+    // Make sure they all work to filter
+    // store filters in URL
+    // if filters in URL fetch those profiles
+    // if more than 20 profiles, store the offset
+    // if less than 20 get 20 more profiles, remove any who's id's match the existing number, then push them to USERBASE till it hits 20
+// show what filters a user is matching
+    // clear button or no filters restores 20
+
+    // On load grab 20 candidates, no employers, only profiles that are visible
+    // Store the offset 
+    // Add a loading state whilst retrieving the profiles 
     // grab total number of records and update the counts for displaying and total candidates
 
-// At bottom of list add button to show 20 more candidates
+    // At bottom of list add button to show 20 more candidates
     // Add a loading state whilst retrieving the profiles
     // fetch 20 more candidates with the URL + offset ( + filter if set)
     // append the 20 new candidates to the userbase
@@ -103,26 +269,5 @@ function displayProfiles(profiles){
     // Append the 20 profiles to the DOM
     // update the counts for displaying and total candidates
 
-// add an event listener to the sidebar form for changes in the inputs
-    // make sure it picks up for each input
-    // store filter
-    // retrieve the value and fetch the filtered list from the API
-    // replace and store the fetched profiles in userbase
-    // store offset
-        // if less than 20 records, get the remaining to equal 20 from all records (filter by the opposite of the current filters) and append to the end of the array
-    // Append the 20 profiles to the DOM
+    // if user hidden companies field matches a company name of the user viewing, hide from DOM?
 
-// if there is more than one filter
-    // retrieve the filter values
-    // store the combined filter
-        // make sure to combine by OR || so it grabs all records that match at least one of the filters
-    // replace and store the fetched profiles in userbase
-    // Map over each record give it a point for each filter it matches in a score variable in the object
-    // Sort the records by highest score first
-    // store the offset
-        // if less than 20 records, get the remaining to equal 20 from all records (filter by the opposite of the current filters) and append to the end of the array
-    // Append the records to the DOM
-
-
-
-// if user hidden companies field matches a company name of the user viewing, hide from DOM?
