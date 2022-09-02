@@ -5,6 +5,7 @@ const locationsInput = document.querySelector('[data-input="location"]')
 const remoteInput = document.querySelector('[data-input="remote"]')
 const rolesInput = document.querySelector('[data-input="roles"]')
 const industriesInput = document.querySelector('[data-input="industries"]')
+const clearBtn = document.querySelector('[data-filter="clear"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
     sortField: {field: "text", direction: "asc"}
@@ -13,6 +14,7 @@ const generalSelectorSettings = {
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users"
 const FIELDS = "?fields%5B%5D=Job+Pref%3A+Working+Locations&fields%5B%5D=Job+Pref%3A+Open+to+remote+work&fields%5B%5D=experience-stage&fields%5B%5D=Job+Pref%3A+Relevant+roles&fields%5B%5D=Job+Pref%3A+Type+of+role&fields%5B%5D=Job+Pref%3A+Industries&fields%5B%5D=Startmate+Program"
 const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
+
 
 // let offset
 let userbase = []
@@ -38,8 +40,16 @@ function handleFilterSelection() {
     if (getSMProgramValues()) filter.push(getSMProgramValues())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
-    const filteredOptions = `IF(OR(${filter.join(',')}),"true")`
-    const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)        
+    if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
+    console.log("current filters:", filterObj)
+
+    const filteredOptions = 
+        remoteSelector.getValue() === "Based on location"
+            ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+            : `IF(OR(${filter.join(',')}),"true")`
+
+    const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+    console.log(remoteSelector.getValue())      
     console.log(filteredOptions, filterEncode, filter)
     fetchFilteredProfiles(filterEncode)
 }
@@ -47,6 +57,18 @@ function handleFilterSelection() {
 formInputs.forEach(filter => {
     filter.addEventListener('click', handleFilterSelection)
 })
+
+clearBtn.addEventListener('click', clearFilters)
+
+function getRemoteValue() {
+    filterObj.remote = []
+    if (remoteSelector.getValue().length === 0) return
+    const selected = remoteSelector.getValue()
+    filterObj.remote = [selected]
+    const value = `{Job Pref: Open to remote work}`
+    return value
+
+}
 
 function getExperienceValues() {
     filterObj.experience = []
@@ -121,6 +143,11 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
                 if (profile.fields["Job Pref: Working Locations"].includes(filter)) score += 1
             })
         }
+        if(filtersToCheck.industry.length > 0) {
+            filtersToCheck.industry.forEach(filter => {
+                if (profile.fields["Job Pref: Industries"].includes(filter)) score += 1
+            })
+        }
         profile.score = score
         return profile
     })
@@ -132,6 +159,32 @@ function countFilters() {
     Object.keys(filterObj).forEach(key => { totalScore += filterObj[key].length})
     return totalScore
 }
+
+function clearCheckboxes() {
+    formInputs.forEach(checkbox => {
+        checkbox.checked = false
+        const selectedCheckboxes = document.querySelectorAll('.w--redirected-checked')
+        selectedCheckboxes.forEach(checkbox => {checkbox.classList.remove('w--redirected-checked')})
+    })
+}
+
+function clearFilters() {
+    filterObj = {
+        'workType': [],
+        'experience': [],
+        'roles': [],
+        'location': [],
+        'remote': [],
+        'industry': [],
+        'SMProgram': [],
+    }
+    clearCheckboxes()
+    industriesSelector.setValue('', 'silent')
+    locationSelector.setValue('', 'silent')
+    remoteSelector.setValue('', 'silent')
+    roleSelector.setValue('', 'silent')
+}
+
 
 function fetchProfiles() {
     var myHeaders = new Headers();
@@ -242,7 +295,10 @@ fetchFilterData().then(([roles, locations, industries]) => {
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
 
     locationSelector.on('change', (e) => {handleFilterSelection()})
+    industriesSelector.on('change', (e) => {handleFilterSelection()})
+    remoteSelector.on('change', (e) => {handleFilterSelection()})
 })
+
 
 fetchProfiles()
 fetchFilterData()
