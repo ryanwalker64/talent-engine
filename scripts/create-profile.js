@@ -74,7 +74,8 @@ fetchData().then(([roles, locations, industries, companies]) => {
     MemberStack.onReady.then(function(member) {
         if (member.loggedIn) {
             console.log('User is editing their own profile')
-            getUserData('recLKqQ95j0IsSiw0')
+            const userEmail = member["email"]
+            // getUserData()
             
         } else {
         }
