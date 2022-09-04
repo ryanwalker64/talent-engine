@@ -44,16 +44,19 @@ function handleFilterSelection() {
     if (remoteSelection === "All locations") filter.push(getRemoteValue())
     // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
     console.log("current filters:", filterObj)
+    if (checkForEmptyFilters()) {
+        clearFilters()
+    } else {
+        const filteredOptions = 
+            remoteSelection === "Based on location"
+                ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+                : `IF(OR(${filter.join(',')}),"true")`
 
-    const filteredOptions = 
-        remoteSelection === "Based on location"
-            ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-            : `IF(OR(${filter.join(',')}),"true")`
-
-    const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-    console.log(remoteSelector.getValue())      
-    console.log(filteredOptions, filterEncode, filter)
-    fetchFilteredProfiles(filterEncode)
+        const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+        console.log(remoteSelector.getValue())      
+        console.log(filteredOptions, filterEncode, filter)
+        fetchFilteredProfiles(filterEncode)
+    }
 }
 
 formInputs.forEach(filter => {
@@ -162,6 +165,16 @@ function countFilters() {
     return totalScore
 }
 
+function checkForEmptyFilters() {
+    if (filterObj.workType.length === 0 
+        && filterObj.experience.length === 0
+        && filterObj.roles.length === 0
+        && filterObj.location.length === 0
+        && filterObj.remote.length === 0
+        && filterObj.industry.length === 0
+        && filterObj.SMProgram.length === 0) return true
+}
+
 function clearCheckboxes() {
     formInputs.forEach(checkbox => {
         checkbox.checked = false
@@ -185,6 +198,7 @@ function clearFilters() {
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
+    fetchProfiles()
 }
 
 
