@@ -40,11 +40,13 @@ function handleFilterSelection() {
     if (getSMProgramValues()) filter.push(getSMProgramValues())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
-    if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
+    const remoteSelection = remoteSelector.getValue()
+    if (remoteSelection.getValue() === "All locations") filter.push(getRemoteValue())
+    // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
     console.log("current filters:", filterObj)
 
     const filteredOptions = 
-        remoteSelector.getValue() === "Based on location"
+        remoteSelection === "Based on location"
             ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
             : `IF(OR(${filter.join(',')}),"true")`
 
@@ -259,6 +261,11 @@ function displayProfiles(profiles){
         `
     }).join('')
     directoryContainer.innerHTML = profilesHTML
+}
+
+function saveFilterToURL(filters){
+    let url = new URL(window.location.href);
+    url.searchParams.set('filters', filters)
 }
 
 
