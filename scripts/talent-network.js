@@ -41,7 +41,7 @@ function handleFilterSelection() {
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
     const remoteSelection = remoteSelector.getValue()
-    if (remoteSelection.getValue() === "All locations") filter.push(getRemoteValue())
+    if (remoteSelection === "All locations") filter.push(getRemoteValue())
     // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
     console.log("current filters:", filterObj)
 
