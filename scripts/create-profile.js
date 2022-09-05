@@ -193,6 +193,41 @@ form.addEventListener('submit', (e) => {
     postUserInfo(userData, userAirtableId)
 })
 
+function submitProfile() {
+    const formData = new FormData(e.target);
+    const formProps = Object.fromEntries(formData);
+    const userAirtableId = formProps['airtable-id']
+    const userData = {
+        "First Name": formProps['first-name'],
+        "Last Name": formProps['last-name'],
+        "Bio": formProps['bio'],
+        "Stage of Job Hunt": formProps['job-hunt'],
+        "Linkedin": formProps['linkedin'],
+        "Location": [locatedSelector.getValue()],
+        "Job Pref: Working Locations": workingLocationSelector.getValue(),
+        "Job Pref: Open to remote work": formProps['remote-work'],
+        "Next Role": formProps['next-role'],
+        "What do you do?": [roleSelector.getValue()],
+        "Work Experience": formProps['work-experience'],
+        "First Job?": formProps['first-job'],
+        "Job Title": formProps['job-title'],
+        "Employer": [employerSelector.getValue()],
+        "Employment Start Date": formProps['start-date'],
+        "Employment End Date": formProps['end-date'],
+        "Currently work at employer?": formProps['currently-work-here'],
+        "Job Pref: Relevant roles": interestedRolesSelector.getValue(),
+        "Job Pref: Industries": industriesSelector.getValue(),
+        "Job Pref: Type of role": typeOfJobSelector.getValue(),
+        "Job Pref: Company size": companySizeSelector.getValue(),
+        "Profile Picture": formProps['profile-pic'],
+        "Profile Visibility": formProps['visbility'],
+        "Profile hidden from:": formProps['hidden-from'],
+    }
+    console.log(formProps)
+    console.log(userData)
+    postUserInfo(userData, userAirtableId)
+}
+
 function postUserInfo(userData, userAirtableId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -205,7 +240,10 @@ function postUserInfo(userData, userAirtableId) {
 
     fetch(API + "Users", requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            console.log(result)
+            location.replace('test.com')
+        })
         .catch(error => console.log('error', error));
 
 }
@@ -298,7 +336,8 @@ function nextPrev(n) {
   // if you have reached the end of the form...
   if (currentTab >= x.length) {
     // ... the form gets submitted:
-    // document.getElementById("regForm").submit();
+    submitProfile()
+    form.submit();
     return false;
   }
   // Otherwise, display the correct tab:
