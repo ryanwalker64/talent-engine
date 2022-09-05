@@ -336,8 +336,7 @@ function nextPrev(n) {
   // if you have reached the end of the form...
   if (currentTab >= x.length) {
     // ... the form gets submitted:
-    submitProfile()
-    form.submit();
+    submitProfile();
     return false;
   }
   // Otherwise, display the correct tab:
