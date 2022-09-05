@@ -194,7 +194,7 @@ form.addEventListener('submit', (e) => {
 })
 
 function submitProfile() {
-    const formData = new FormData(e.target);
+    const formData = new FormData(form);
     const formProps = Object.fromEntries(formData);
     const userAirtableId = formProps['airtable-id']
     const userData = {
