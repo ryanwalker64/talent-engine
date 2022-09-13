@@ -345,7 +345,7 @@ function nextPrev(n) {
         tab.style.display = 'none'
     })
     const loader = document.querySelector(".loader")
-    const btns = document.querySelector(".profileBtns")
+    const btns = document.querySelector(".flex-middle")
     btns.style.display = 'none'
     loader.style.display = 'flex'
     submitProfile();
