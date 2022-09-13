@@ -241,7 +241,12 @@ function postUserInfo(userData, userAirtableId) {
         .then(response => response.text())
         .then(result => {
             console.log(result)
-            // location.replace('talent-directory')
+            MemberStack.onReady.then(function(member) {  
+                member.updateProfile({
+                    "profile-photo": userData["Profile Picture"]
+                }, false)
+            })
+            location.replace('talent-directory')
         })
         .catch(error => console.log('error', error));
 
