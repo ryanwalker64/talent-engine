@@ -243,7 +243,10 @@ function postUserInfo(userData, userAirtableId) {
             console.log(result)
             MemberStack.onReady.then(function(member) {  
                 member.updateProfile({
-                    "profile-photo": userData["Profile Picture"]
+                    "profile-photo": userData["Profile Picture"],
+                    "first-name": formProps['first-name'],
+                    "last-name": formProps['last-name'],
+                    "account-status": 'COMPLETE',
                 }, false)
             })
             location.replace('talent-directory')
@@ -318,7 +321,7 @@ function showTab(n) {
     document.getElementById("formBackBtn").style.display = "inline";
   }
   if (n == (x.length - 1)) {
-    document.getElementById("formNxtBtn").innerHTML = "Submit";
+    document.getElementById("formNxtBtn").innerHTML = "Save and continue";
   } else {
     document.getElementById("formNxtBtn").innerHTML = "Continue";
   }
@@ -338,6 +341,13 @@ function nextPrev(n) {
   // if you have reached the end of the form...
   if (currentTab >= x.length) {
     // ... the form gets submitted:
+    x.forEach(tab => {
+        tab.style.display = 'none'
+    })
+    const loader = document.getElementsByClassName("loader")
+    const btns = document.getElementsByClassName("profileBtns")
+    btns.style.display = 'none'
+    loader.style.display = 'flex'
     submitProfile();
     return false;
   }
