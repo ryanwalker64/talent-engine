@@ -244,8 +244,8 @@ function postUserInfo(userData, userAirtableId) {
             MemberStack.onReady.then(function(member) {  
                 member.updateProfile({
                     "profile-photo": userData["Profile Picture"],
-                    "first-name": formProps['first-name'],
-                    "last-name": formProps['last-name'],
+                    "first-name": userData["First Name"],
+                    "last-name": userData["Last Name"],
                     "account-status": 'COMPLETE',
                 }, false)
             })
@@ -283,18 +283,13 @@ function setProfileInfo(userData) {
     industriesSelector.setValue(userData.fields["Job Pref: Industries"])
 }
 
-
-
 function getUserData(userId) {
-    // userId = getUserId()
-
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
         method: "get",
         headers: myHeaders,
         redirect: "follow",
-    
     };
 
     fetch(API + "Users&id=" + userId, requestOptions)
