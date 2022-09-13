@@ -1,8 +1,6 @@
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
 const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
-// let companies = []
-// let retrievedCompany = {}
 let userProfile = {}
 let userId
 let userIsLoggedIn
@@ -46,22 +44,21 @@ async function fetchData() {
 }
 
 fetchData().then(([roles, locations, industries, companies]) => {
-    // console.log(roles, locations, industries, companies.records);
     const rolesObj = roles.map(role => {return {'value': role, 'text': role}})
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
-    const companiesHTML = companies.records.map(company => {
-        return `<option value="${company.id}" data-src="${company.fields.Logo}">${company.fields.Name}</option>`
-    }).join('')
+    // const companiesHTML = companies.records.map(company => {
+    //     return `<option value="${company.id}" data-src="${company.fields.Logo}">${company.fields.Name}</option>`
+    // }).join('')
 
-    employerInput.insertAdjacentHTML('beforeend', companiesHTML)
+    // employerInput.insertAdjacentHTML('beforeend', companiesHTML)
 
-    employerSelector = new TomSelect(employerInput, {
-        ...generalSelectorSettings,
-         render: {
-            option: function (data, escape) {return `<div><img class="me-2" src="${data.src}">${data.text}</div>`;},
-            item: function (item, escape) {return `<div><img class="me-2" src="${item.src}">${item.text}</div>`;}
-            }
-        });
+    // employerSelector = new TomSelect(employerInput, {
+    //     ...generalSelectorSettings,
+    //      render: {
+    //         option: function (data, escape) {return `<div><img class="me-2" src="${data.src}">${data.text}</div>`;},
+    //         item: function (item, escape) {return `<div><img class="me-2" src="${item.src}">${item.text}</div>`;}
+    //         }
+    //     });
 
     locatedSelector = new TomSelect(locatedInput, {...locationSelectorSettings, options: locations});
     workingLocationSelector = new TomSelect(workingLocationsInput, {...locationSelectorSettings, options: locations, maxItems: 3});
@@ -110,7 +107,7 @@ let workingLocationSelector
 let roleSelector
 let interestedRolesSelector
 let industriesSelector
-let employerSelector
+// let employerSelector
 let typeOfJobSelector = new TomSelect(typeOfJobInput, {...generalSelectorSettings, maxItems: null});
 let companySizeSelector = new TomSelect(companySizeInput, {...generalSelectorSettings, maxItems: null, sortField: {}});
 let startDateMonthSelector = new TomSelect(startDateMonthInput, {...generalSelectorSettings,  sortField: {}});
@@ -130,7 +127,7 @@ endDateYearSelector.on('change', () => grabMonthYearInputs(endDateMonthInput, en
 firstJobInput.addEventListener('change', () => {
     if (firstJobInput.checked) {
         jobTitleInput.disabled = firstJobInput.checked
-        employerSelector.disable()
+        // employerSelector.disable()
         startDateMonthSelector.disable()
         startDateYearSelector.disable()
         endDateMonthSelector.disable()
@@ -138,7 +135,7 @@ firstJobInput.addEventListener('change', () => {
         currentlyWorkInput.disabled = firstJobInput.checked
     } else {
         jobTitleInput.disabled = firstJobInput.checked
-        employerSelector.enable()
+        // employerSelector.enable()
         startDateMonthSelector.enable()
         startDateYearSelector.enable()
         endDateMonthSelector.enable()
@@ -176,7 +173,8 @@ form.addEventListener('submit', (e) => {
         "Work Experience": formProps['work-experience'],
         "First Job?": formProps['first-job'],
         "Job Title": formProps['job-title'],
-        "Employer": [employerSelector.getValue()],
+        // "Employer": [employerSelector.getValue()],
+        "Candidate Employer": formProps['company'], 
         "Employment Start Date": formProps['start-date'],
         "Employment End Date": formProps['end-date'],
         "Currently work at employer?": formProps['currently-work-here'],
@@ -211,7 +209,8 @@ function submitProfile() {
         "Work Experience": formProps['work-experience'],
         "First Job?": formProps['first-job'],
         "Job Title": formProps['job-title'],
-        "Employer": [employerSelector.getValue()],
+        // "Employer": [employerSelector.getValue()], // fixx
+        "Candidate Employer": formProps['company'], 
         "Employment Start Date": formProps['start-date'],
         "Employment End Date": formProps['end-date'],
         "Currently work at employer?": formProps['currently-work-here'],
@@ -242,7 +241,7 @@ function postUserInfo(userData, userAirtableId) {
         .then(response => response.text())
         .then(result => {
             console.log(result)
-            location.replace('test.com')
+            location.replace('talent-directory')
         })
         .catch(error => console.log('error', error));
 
@@ -259,7 +258,7 @@ function setProfileInfo(userData) {
     document.querySelector('[data-name="work-experience"]').value = userData.fields["Work Experience"]
     firstJobInput.value = userData.fields["first-job"]
     document.querySelector('[data-name="job-title"]').value = userData.fields["Job Title"]
-    employerSelector.setValue(userData.fields["Employer Airtable Record ID"])
+    // employerSelector.setValue(userData.fields["Employer Airtable Record ID"]) 
     currentlyWorkInput.value = userData.fields["Currently work at employer?"]
     document.querySelector('[data-name="profile-pic"]').value = userData.fields["Profile Picture"]
     profileVisibility = document.querySelector('[data-name="visibility"]').value = userData.fields["Profile Visibility"]
@@ -300,8 +299,6 @@ function getUserData(userId) {
 }
 
 // MULTI-STEP FORM AND VALIDATION
-
-
 let currentTab = 0; // Current tab is set to be the first tab (0)
 showTab(currentTab); // Display the current tab
 
@@ -376,23 +373,3 @@ function fixStepIndicator(n) {
 }
 
 
-
-// Onload, fetch user airtable ID from memberstack ✅
-    // fetch names of companies and record ids from companies table in airtable ✅
-    // store companies list in companies  ✅
-    // append list of companies to select field ✅
-    // if company airtable id exists 
-        // fetch company information and store in retrievedCompany
-        // prefill company in experience field
-    // on continue, if candidate update airtable user with company record id 
-
-// if company doesn't exist
-    // display create company form (minified) 
-    // on form submission, create company in airtable companies table (as shallow company)
-    // attach user's airtable id to it
-    // show saved state
-
-// on continue load job preferences ✅
-// on continue load profile visibility ✅
-
-// save info to airtable ✅

@@ -59,15 +59,15 @@ function displayProfile() {
                         <div class="label-v2">Experience</div>
                         <div class="short-company">
                             <img src="${userProfile.fields["Logo (from Employer)"]}" loading="lazy" alt="" class="logo">
-                            <div class="company-desc-profile">
-                                <div class="short-company-name">${userProfile.fields["Name (from Employer)"]}</div>
-                                <div class="short-company-role">${userProfile.fields["Job Title"]}</div>
-                                <div class="short-company-date">
-                                ${userProfile.fields["Employment Start Date"]} - 
-                                ${userProfile.fields['Currently work at employer?'] !== "on" 
-                                    ? userProfile.fields["Employment End Date"]
-                                    : "Present"}
+                            <div class="company-desc-profile new">
+                                <div class="short-company-name newtext
+                                ">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Candidate Employer"]}</div>
                                 </div>
+                            <div class="short-company-date">
+                            ${userProfile.fields["Employment Start Date"]} - 
+                            ${userProfile.fields['Currently work at employer?'] !== "on" 
+                                ? userProfile.fields["Employment End Date"]
+                                : "Present"}
                             </div>
                         </div>
                     </div>

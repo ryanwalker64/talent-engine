@@ -249,7 +249,7 @@ function displayProfiles(profiles){
         <div class="candidate-profile">
             <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
             <div class="candidate-info">
-                <div class="candidate-name">${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Name (from Employer)"][0]}</div>
+                <div class="candidate-name">${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}</div>
                 <div class="candidate-details-container">
                     <div class="candidate-short-details">
                     ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>
