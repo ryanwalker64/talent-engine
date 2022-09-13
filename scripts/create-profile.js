@@ -344,8 +344,8 @@ function nextPrev(n) {
     x.forEach(tab => {
         tab.style.display = 'none'
     })
-    const loader = document.getElementsByClassName("loader")
-    const btns = document.getElementsByClassName("profileBtns")
+    const loader = document.querySelector(".loader")
+    const btns = document.querySelector("profileBtns")
     btns.style.display = 'none'
     loader.style.display = 'flex'
     submitProfile();
