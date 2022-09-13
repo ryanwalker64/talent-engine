@@ -183,7 +183,7 @@ form.addEventListener('submit', (e) => {
         "Job Pref: Type of role": typeOfJobSelector.getValue(),
         "Job Pref: Company size": companySizeSelector.getValue(),
         "Profile Picture": formProps['profile-pic'],
-        "Profile Visibility": formProps['visbility'],
+        "Profile Visibility": formProps['visibility'],
         "Profile hidden from:": formProps['hidden-from'],
     }
     console.log(formProps)
@@ -219,7 +219,7 @@ function submitProfile() {
         "Job Pref: Type of role": typeOfJobSelector.getValue(),
         "Job Pref: Company size": companySizeSelector.getValue(),
         "Profile Picture": formProps['profile-pic'],
-        "Profile Visibility": formProps['visbility'],
+        "Profile Visibility": formProps['visibility'],
         "Profile hidden from:": formProps['hidden-from'],
     }
     console.log(formProps)
