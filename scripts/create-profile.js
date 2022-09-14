@@ -361,13 +361,15 @@ function validateForm() {
   let x, y, i, valid = true;
   x = document.getElementsByClassName("tab");
   y = [
-    x[currentTab].getElementsByTagName("input"),
-    x[currentTab].getElementsByTagName("select"),
-    x[currentTab].getElementsByTagName("textarea")];
+    ...x[currentTab].getElementsByTagName("input"),
+    ...x[currentTab].getElementsByTagName("select"),
+    ...x[currentTab].getElementsByTagName("textarea")];
   // A loop that checks every input field in the current tab:
 
   y.forEach(input => {
-    if (typeof input.tomselect === 'object' && input.tomselect.getValue() === '') {
+    if (input.tagName === 'SELECT' 
+        && typeof input.tomselect === 'object' 
+        && input.tomselect.getValue() === '') {
         valid = false; 
 
     } else if (!input.checkValidity()) { 
