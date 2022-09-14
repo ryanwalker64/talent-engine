@@ -327,9 +327,9 @@ function showTab(n) {
 function nextPrev(n) {
   // This function will figure out which tab to display
   let x = document.getElementsByClassName("tab");
+  const err = document.querySelector('.errormsg')
   // Exit the function if any field in the current tab is invalid:
   if (n == 1 && !validateForm()) {
-        const err = document.querySelector('.errormsg')
         err.style.display = 'block'
         return false
     } else {
