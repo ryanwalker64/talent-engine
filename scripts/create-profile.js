@@ -370,9 +370,11 @@ function validateForm() {
     if (input.tagName === 'SELECT' 
         && typeof input.tomselect === 'object' 
         && input.tomselect.getValue() === '') {
+        console.log('tomselector false')
         valid = false; 
 
-    } else if (!input.checkValidity()) { 
+    }  else if (input.tagName !== 'SELECT' && !input.checkValidity()) { 
+        console.log(input.tagName + ' false')
         valid = false;
     } 
   })
