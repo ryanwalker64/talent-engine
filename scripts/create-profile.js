@@ -360,7 +360,10 @@ function validateForm() {
   // This function deals with validation of the form fields
   let x, y, i, valid = true;
   x = document.getElementsByClassName("tab");
-  y = x[currentTab].getElementsByTagName("input");
+  y = [
+    x[currentTab].getElementsByTagName("input"),
+    x[currentTab].getElementsByTagName("select"),
+    x[currentTab].getElementsByTagName("textarea")];
   // A loop that checks every input field in the current tab:
 
   y.forEach(input => {
