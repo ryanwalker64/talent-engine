@@ -69,11 +69,11 @@ const generalSelectorSettings = {
 };
 
 selectedCompanyBtn.addEventListener('click', () => {
-    postUserInfo([employerSelector.getValue()], userAirtableId.value)
+    createCompany([employerSelector.getValue()], userAirtableId.value)
 })
 
 
-function postUserInfo(companyAirtableID, userAirtableId) {
+function createCompany(companyAirtableID, userAirtableId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
