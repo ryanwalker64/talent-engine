@@ -68,15 +68,15 @@ fetchData().then(([roles, locations, industries, companies]) => {
     
     locatedSelector.on('change', (e) => { workingLocationSelector.setValue(locatedSelector.getValue())})
 
-    MemberStack.onReady.then(function(member) {
-        if (member.loggedIn) {
-            console.log('User is editing their own profile')
-            const userEmail = member["email"]
-            // getUserData()
+    // MemberStack.onReady.then(function(member) {
+    //     if (member.loggedIn) {
+    //         console.log('User is editing their own profile')
+    //         const userEmail = member["email"]
+    //         // getUserData()
             
-        } else {
-        }
-    })
+    //     } else {
+    //     }
+    // })
 })
 
 const locationSelectorSettings = {
@@ -221,6 +221,7 @@ function submitProfile() {
         "Profile Picture": formProps['profile-pic'],
         "Profile Visibility": formProps['visibility'],
         "Profile hidden from:": formProps['hidden-from'],
+        "Account Status": 'COMPLETE',
     }
     console.log(formProps)
     console.log(userData)
@@ -249,7 +250,7 @@ function postUserInfo(userData, userAirtableId) {
                     "account-status": 'COMPLETE',
                 }, false)
             })
-            location.replace('talent-directory')
+            location.replace('dashboard')
         })
         .catch(error => console.log('error', error));
 
@@ -320,8 +321,6 @@ function showTab(n) {
   } else {
     document.getElementById("formNxtBtn").innerHTML = "Continue";
   }
-  //... and run a function that will display the correct step indicator:
-//   fixStepIndicator(n)
 }
 
 function nextPrev(n) {
@@ -364,8 +363,8 @@ function validateForm() {
     ...x[currentTab].getElementsByTagName("input"),
     ...x[currentTab].getElementsByTagName("select"),
     ...x[currentTab].getElementsByTagName("textarea")];
-  // A loop that checks every input field in the current tab:
 
+  // A loop that checks every input field in the current tab:
   y.forEach(input => {
     if (input.tagName === 'SELECT' 
         && typeof input.tomselect === 'object' 
@@ -378,32 +377,9 @@ function validateForm() {
         valid = false;
     } 
   })
-//   for (i = 0; i < y.length; i++) {
-//     // If a field is empty...
-//     if (y[i].value == "") {
-//       // add an "invalid" class to the field:
-//       y[i].className += " invalid";
-//       // and set the current valid status to false
-//       valid = false;
-//     }
-//   }
-  // If the valid status is true, mark the step as finished and valid:
-//   if (valid) {
-//     document.getElementsByClassName("step")[currentTab].className += " finish";
-//   }
   return valid; // return the valid status
 }
 
 
-
-function fixStepIndicator(n) {
-  // This function removes the "active" class of all steps...
-  var i, x = document.getElementsByClassName("step");
-  for (i = 0; i < x.length; i++) {
-    x[i].className = x[i].className.replace(" active", "");
-  }
-  //... and adds the "active" class on the current step:
-  x[n].className += " active";
-}
 
 
