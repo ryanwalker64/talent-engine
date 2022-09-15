@@ -124,7 +124,7 @@ function createCompany(companyData) {
             //         "account-status": 'COMPLETE',
             //     }, false)
             // })
-            // location.replace('dashboard')
+            // window.location.href = "/setup/create-employer-profile"
         })
         .catch(error => console.log('error', error));
 }

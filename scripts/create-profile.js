@@ -250,7 +250,7 @@ function createCompany(userData, userAirtableId) {
                     "account-status": 'COMPLETE',
                 }, false)
             })
-            location.replace('app/dashboard')
+            window.location.href = "/app/dashboard";
         })
         .catch(error => console.log('error', error));
 

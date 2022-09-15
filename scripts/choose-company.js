@@ -98,7 +98,7 @@ function createCompany(companyAirtableID, userAirtableId) {
                     "company-airtable-id": companyAirtableID,
                 }, false)
             })
-            // location.replace('dashboard') SET TO EMPLOYER PROFILE MAKER
+            window.location.href = "/setup/create-employer-profile"
         })
         .catch(error => console.log('error', error));
 }
