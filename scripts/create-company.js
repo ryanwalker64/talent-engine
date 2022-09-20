@@ -94,8 +94,8 @@ function submitProfile() {
         "Remote Friendly": formProps['remote-friendly'],
         "Location": [...locatedSelector.getValue()],
         "Industry": [...industriesSelector.getValue()],
-        "Company Size": [companySizeSelector.getValue()],
-        "Employees": formProps['airtable-id'],
+        "Company Size": companySizeSelector.getValue(),
+        "Employees": [formProps['airtable-id']],
     }
     console.log(formProps)
     console.log(companyData)
