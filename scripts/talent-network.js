@@ -268,7 +268,7 @@ function displayProfiles(profiles){
                             : profile.score === countFilters()
                                 ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
                                 : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
-                <a href="/profile?user=${profile.id}" class="candidate-button-v2 more-button w-button">See more</a>
+                <a href="/app/profile?user=${profile.id}" class="candidate-button-v2 more-button w-button">See more</a>
                 <a href="#" class="candidate-button-v2 contact-btn w-button">Contact</a>
             </div>
         </div> 

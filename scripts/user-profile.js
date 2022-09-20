@@ -49,7 +49,7 @@ function displayProfile() {
                             ? `<a href="#" class="candidate-button-v2 more-button w-button">Edit Profile</a>`
                             : ''
                         }
-                        <a href="#" class="candidate-button-v2 contact-btn w-button">Contact</a>
+                        <a href="https://talent.startmate.com/message/send?user=${userProfile.id}" class="candidate-button-v2 contact-btn w-button">Contact</a>
                     </div>
                 </div>
                 <div class="user-information">
