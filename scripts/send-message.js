@@ -132,7 +132,7 @@ function previewMsg(msg) {
                     Hi ${recieverUserProfile.fields['Full Name']},
                     <br>‍
                     <br>
-                    <a href="#">${senderUserProfile.fields['Full Name']}</a> would like to connect with you.
+                    ${senderUserProfile.fields['Full Name']} would like to connect with you.
                     <br>
                     <br>
                     <strong>Their message:</strong>

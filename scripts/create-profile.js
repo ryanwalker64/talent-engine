@@ -250,7 +250,7 @@ function createCompany(userData, userAirtableId) {
                     "account-status": 'COMPLETE',
                 }, false)
             })
-            window.location.href = "/app/dashboard";
+            window.location.href = "https://talent.startmate.com/app/dashboard";
         })
         .catch(error => console.log('error', error));
 
