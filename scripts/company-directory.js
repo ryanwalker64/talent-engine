@@ -1,24 +1,341 @@
-
-
-let URL = ""
-let companies = []
-let offset
-let filter
-
-
-var myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
-var requestOptions = {
-    method: "get",
-    headers: myHeaders,
-    redirect: "follow",
-    
+const directoryContainer = document.querySelector('.directory-container-v2')
+const form = document.querySelector('[data-filter="form"]')
+const formInputs = document.querySelectorAll('[data-filter="input"]') 
+const locationsInput = document.querySelector('[data-input="location"]')
+const industriesInput = document.querySelector('[data-input="industries"]')
+const clearBtn = document.querySelector('[data-filter="clear"]')
+const generalSelectorSettings = {
+	plugins: ['remove_button'],
+    sortField: {field: "text", direction: "asc"}
 };
 
-fetch(URL, requestOptions)
-    .then(response => response.json())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
+const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Companies"
+// const FIELDS = "?fields%5B%5D=Job+Pref%3A+Working+Locations&fields%5B%5D=Job+Pref%3A+Open+to+remote+work&fields%5B%5D=experience-stage&fields%5B%5D=Job+Pref%3A+Relevant+roles&fields%5B%5D=Job+Pref%3A+Type+of+role&fields%5B%5D=Job+Pref%3A+Industries&fields%5B%5D=Startmate+Program"
+const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
+
+
+// let offset
+let companiesUserbase = []
+// let filterObj = {
+//     'workType': [],
+//     'experience': [],
+//     'roles': [],
+//     'location': [],
+//     'remote': [],
+//     'industry': [],
+//     'SMProgram': [],
+// }
+let locationSelector
+let industriesSelector
+//&cacheTime=5 REMOVE
+
+// function handleFilterSelection() {
+//     let filter = []
+//     if (getExperienceValues()) filter.push(getExperienceValues())
+//     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
+//     if (getSMProgramValues()) filter.push(getSMProgramValues())
+//     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
+//     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
+//     const remoteSelection = remoteSelector.getValue()
+//     if (remoteSelection === "All locations") filter.push(getRemoteValue())
+//     // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
+//     console.log("current filters:", filterObj)
+//     if (checkForEmptyFilters()) {
+//         clearFilters()
+//     } else {
+//         const filteredOptions = 
+//             remoteSelection === "Based on location"
+//                 ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+//                 : `IF(OR(${filter.join(',')}),"true")`
+
+//         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+//         console.log(remoteSelector.getValue())      
+//         console.log(filteredOptions, filterEncode, filter)
+//         fetchFilteredProfiles(filterEncode)
+//     }
+// }
+
+// formInputs.forEach(filter => {
+//     filter.addEventListener('click', handleFilterSelection)
+// })
+
+// clearBtn.addEventListener('click', clearFilters)
+
+// function getRemoteValue() {
+//     filterObj.remote = []
+//     if (remoteSelector.getValue().length === 0) return
+//     const selected = remoteSelector.getValue()
+//     filterObj.remote = [selected]
+//     const value = `{Job Pref: Open to remote work}`
+//     return value
+
+// }
+
+// function getExperienceValues() {
+//     filterObj.experience = []
+//     const inputs = [...document.querySelectorAll('[data-experience]')]
+//     const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox });
+//     if (checked.length === 0) return 
+//     filterObj.experience = checked.map(checkbox => {return checkbox.dataset.experience})
+//     const values = checked.map(checkbox => {return `{experience-stage}="${checkbox.dataset.experience}"`}).join(',')
+//     return values
+// }
+
+
+function getLocationValues() {
+    filterObj.location = []
+    if (locationSelector.getValue().length === 0) return
+    const selected = locationSelector.getValue()
+    filterObj.location = locationSelector.getValue()
+    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Working Locations})`}).join(',')
+    return values
+}
+
+function getIndustryValues() {
+    filterObj.industry = []
+    if (industriesSelector.getValue().length === 0) return
+    const selected = industriesSelector.getValue()
+    filterObj.industry = industriesSelector.getValue()
+    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Industries})`}).join(',')
+    return values
+}
+
+// function getSMProgramValues() {
+//     filterObj.SMProgram = []
+//     const input = document.querySelector('[data-smprogram]')
+//     if(!input.checked) return
+//     filterObj.SMProgram = [true]
+//     const value = `IF({Startmate Program}, TRUE())`
+//     return value
+// }
+
+function countProfiles(arr) {
+    const profileCount = document.querySelector('[data-count="viewing"]')
+    profileCount.textContent = arr.length
+}
+
+// function scoreProfiles(filtersToCheck, fetchedUsers) {
+//     const scoredProfiles = fetchedUsers.map(profile => {
+//         let score = 0
+//         if(filtersToCheck.workType.length > 0) {
+//             filtersToCheck.workType.forEach(filter => {
+//                 if (profile.fields["Job Pref: Type of role"].includes(filter)) score += 1
+//             })
+//         }
+//         if(filtersToCheck.experience.length > 0) {
+//             filtersToCheck.experience.forEach(filter => {
+//                 if (profile.fields["experience-stage"].includes(filter)) score += 1
+//             })
+//         }
+//         if(filtersToCheck.SMProgram.length > 0) {
+//                 if (profile.fields["Startmate Program"]) score += 1
+//         }
+//         if(filtersToCheck.location.length > 0) {
+//             filtersToCheck.location.forEach(filter => {
+//                 if (profile.fields["Job Pref: Working Locations"].includes(filter)) score += 1
+//             })
+//         }
+//         if(filtersToCheck.industry.length > 0) {
+//             filtersToCheck.industry.forEach(filter => {
+//                 if (profile.fields["Job Pref: Industries"].includes(filter)) score += 1
+//             })
+//         }
+//         profile.score = score
+//         return profile
+//     })
+//     return scoredProfiles
+// }
+
+// function countFilters() {
+//     let totalScore = 0;
+//     Object.keys(filterObj).forEach(key => { totalScore += filterObj[key].length})
+//     return totalScore
+// }
+
+// function checkForEmptyFilters() {
+//     if (filterObj.workType.length === 0 
+//         && filterObj.experience.length === 0
+//         && filterObj.roles.length === 0
+//         && filterObj.location.length === 0
+//         && filterObj.remote.length === 0
+//         && filterObj.industry.length === 0
+//         && filterObj.SMProgram.length === 0) return true
+// }
+
+function clearCheckboxes() {
+    formInputs.forEach(checkbox => {
+        checkbox.checked = false
+        const selectedCheckboxes = document.querySelectorAll('.w--redirected-checked')
+        selectedCheckboxes.forEach(checkbox => {checkbox.classList.remove('w--redirected-checked')})
+    })
+}
+
+// function clearFilters() {
+//     filterObj = {
+//         'workType': [],
+//         'experience': [],
+//         'roles': [],
+//         'location': [],
+//         'remote': [],
+//         'industry': [],
+//         'SMProgram': [],
+//     }
+//     clearCheckboxes()
+//     industriesSelector.setValue('', 'silent')
+//     locationSelector.setValue('', 'silent')
+//     remoteSelector.setValue('', 'silent')
+//     roleSelector.setValue('', 'silent')
+//     fetchProfiles()
+// }
+
+
+function fetchCompanies() {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    };
+
+    fetch(API + "&perPage=30", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            companiesUserbase = result.records
+            displayCompanies(companiesUserbase)
+            countProfiles(companiesUserbase)
+            console.log(companiesUserbase)
+        })
+        .catch(error => console.log('error', error));
+}
+
+// function fetchFilteredProfiles(filter) {
+//     var myHeaders = new Headers();
+//     myHeaders.append("Content-Type", "application/json");
+//     var requestOptions = {
+//         method: "get",
+//         headers: myHeaders,
+//         redirect: "follow",
+//     };
+
+//     const APIURL = API + filter
+//     fetch(APIURL, requestOptions)
+//         .then(response => response.json())
+//         .then(result => {
+//             const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
+//             displayCompanies(TempUserbase)
+//             countProfiles(TempUserbase)
+//             console.log(TempUserbase)
+//         })
+//         .catch(error => console.log('error', error));
+// }
+
+function createCategories(arr) {
+    if (arr) {
+        return arr.map(category => {
+            return `<div class="profile-catg">${category}</div>`
+            }).join('')
+        } else return ''
+    } 
+
+function displayCompanies(companies){
+    const companiesHTML = companies.map(company => {
+        return ` 
+        <div class="company-profile">
+            <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
+            <div class="candidate-info">
+                <div class="company-name">${company.fields['Name']}</div>
+                <div class="company-slogan">${company.fields['Slogan']}</div>
+                <div class="company-categories">
+                    ${createCategories(company.fields['Industry'])}
+                    <div class="company-category">Finance</div>
+                    ${company.fields['Startmate Company?']
+                        ? '<div class="company-category orange-catg">Startmate Company</div>'
+                        : ''}
+                </div>
+            </div>
+            <div class="div-block-75">
+                <div class="heart-container">
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button">❤</a>
+                    <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">Like this company?</a>
+                </div>
+                <a href="/app/company?id=${company.id}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
+            </div>
+        </div>`
+    }).join('')
+    directoryContainer.innerHTML = companiesHTML
+}
+
+function hoverHeart(e) {
+    e.target.textContent = "Like this company?"
+}
+
+// function saveFilterToURL(filters){
+//     let url = new URL(window.location.href);
+//     url.searchParams.set('filters', filters)
+// }
+
+
+async function fetchFilterData() {
+    const [locationsResponse, industriesResponse] = await Promise.all([
+        fetch(JSDELIVR + 'locationsArray.json'),
+        fetch(JSDELIVR + 'industriesArray.json')])
+        
+    const locations = await locationsResponse.json()
+    const industries = await industriesResponse.json()
+    // console.log(roles, locations, industries)
+    return [locations, industries]
+}
+
+fetchFilterData().then(([locations, industries]) => {
+    const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
+
+    locationSelector = new TomSelect(locationsInput, {
+        plugins: ['remove_button'],
+        optgroups: [
+            {value: 'AUS', label: 'Australia'},
+            {value: 'NZ', label: 'New Zealand'},
+            {value: 'OTHER', label: 'Other'}
+        ],
+        optgroupField: 'country',
+        labelField: 'value',
+        searchField: ['value'],
+        maxItems: 5,
+        options: locations});
+    industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
+    // locationSelector.on('change', (e) => {handleFilterSelection()})
+    // industriesSelector.on('change', (e) => {handleFilterSelection()})
+})
+
+
+fetchCompanies()
+fetchFilterData()
+
+    // Setup Tom Select for industires, roles, locaiton, remote
+    // Make sure they all work to filter
+    // store filters in URL
+    // if filters in URL fetch those profiles
+    // if more than 20 profiles, store the offset
+    // if less than 20 get 20 more profiles, remove any who's id's match the existing number, then push them to USERBASE till it hits 20
+// show what filters a user is matching
+    // clear button or no filters restores 20
+
+    // On load grab 20 candidates, no employers, only profiles that are visible
+    // Store the offset 
+    // Add a loading state whilst retrieving the profiles 
+    // grab total number of records and update the counts for displaying and total candidates
+
+    // At bottom of list add button to show 20 more candidates
+    // Add a loading state whilst retrieving the profiles
+    // fetch 20 more candidates with the URL + offset ( + filter if set)
+    // append the 20 new candidates to the userbase
+    // update offset
+    // Append the 20 profiles to the DOM
+    // update the counts for displaying and total candidates
+
+    // if user hidden companies field matches a company name of the user viewing, hide from DOM?
+
+
 
 
 // On load grab 20 companies

@@ -73,7 +73,10 @@ function displayProfile(companyProfile) {
                     ${userMatchesCompany === true
                         ? '<a href="#" class="candidate-button-v2 more-button w-button">Edit Company</a>'
                         : ''}
-                    <a href="#" class="candidate-button-v2 like-company-btn w-button">Like this company?</a>
+                    <div class="heart-container">
+                        <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button">❤</a>
+                        <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">Like this company?</a>
+                    </div>
                     ${companyProfile.fields['Open to conversations']
                         ? '<a href="#" class="candidate-button-v2 contact-btn w-button">Open to conversations</a>'
                         : ''}
