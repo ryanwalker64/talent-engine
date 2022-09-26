@@ -16,44 +16,43 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 // let offset
 let companiesUserbase = []
-// let filterObj = {
-//     'workType': [],
-//     'experience': [],
-//     'roles': [],
-//     'location': [],
-//     'remote': [],
-//     'industry': [],
-//     'SMProgram': [],
-// }
+let filterObj = {
+    'location': [],
+    // 'remote': [],
+    // 'industry': [],
+    // 'SMProgram': [],
+}
 let locationSelector
 let industriesSelector
 //&cacheTime=5 REMOVE
 
-// function handleFilterSelection() {
-//     let filter = []
-//     if (getExperienceValues()) filter.push(getExperienceValues())
-//     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
-//     if (getSMProgramValues()) filter.push(getSMProgramValues())
-//     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
-//     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
-//     const remoteSelection = remoteSelector.getValue()
-//     if (remoteSelection === "All locations") filter.push(getRemoteValue())
-//     // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
-//     console.log("current filters:", filterObj)
-//     if (checkForEmptyFilters()) {
-//         clearFilters()
-//     } else {
-//         const filteredOptions = 
-//             remoteSelection === "Based on location"
-//                 ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-//                 : `IF(OR(${filter.join(',')}),"true")`
+function handleFilterSelection() {
+    let filter = []
+    // if (getExperienceValues()) filter.push(getExperienceValues())
+    // if (getWorkTypeValues()) filter.push(getWorkTypeValues())
+    // if (getSMProgramValues()) filter.push(getSMProgramValues())
+    // if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
+    if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
+    // const remoteSelection = remoteSelector.getValue()
+    // if (remoteSelection === "All locations") filter.push(getRemoteValue())
+    // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
+    console.log("current filters:", filterObj)
+    // if (checkForEmptyFilters()) {
+    //     clearFilters()
+    // } else {
+        // const filteredOptions = 
+        //     remoteSelection === "Based on location"
+        //         ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+        //         : `IF(OR(${filter.join(',')}),"true")`
 
-//         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-//         console.log(remoteSelector.getValue())      
-//         console.log(filteredOptions, filterEncode, filter)
-//         fetchFilteredProfiles(filterEncode)
-//     }
-// }
+        // const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)   
+        const filterEncode = "&filterByFormula=" + encodeURI(`IF(OR(${filter.join(',')}),"true")`)  
+        // console.log(remoteSelector.getValue())      
+        // console.log(filteredOptions, filterEncode, filter)
+        console.log(filterEncode, filter)
+        fetchFilteredProfiles(filterEncode)
+    // }
+}
 
 // formInputs.forEach(filter => {
 //     filter.addEventListener('click', handleFilterSelection)
@@ -87,7 +86,7 @@ function getLocationValues() {
     if (locationSelector.getValue().length === 0) return
     const selected = locationSelector.getValue()
     filterObj.location = locationSelector.getValue()
-    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Working Locations})`}).join(',')
+    const values = selected.map(value => {return `FIND("${value}",{Location})`}).join(',')
     return values
 }
 
@@ -209,26 +208,27 @@ function fetchCompanies() {
         .catch(error => console.log('error', error));
 }
 
-// function fetchFilteredProfiles(filter) {
-//     var myHeaders = new Headers();
-//     myHeaders.append("Content-Type", "application/json");
-//     var requestOptions = {
-//         method: "get",
-//         headers: myHeaders,
-//         redirect: "follow",
-//     };
+function fetchFilteredProfiles(filter) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    };
 
-//     const APIURL = API + filter
-//     fetch(APIURL, requestOptions)
-//         .then(response => response.json())
-//         .then(result => {
-//             const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
-//             displayCompanies(TempUserbase)
-//             countProfiles(TempUserbase)
-//             console.log(TempUserbase)
-//         })
-//         .catch(error => console.log('error', error));
-// }
+    const APIURL = API + filter
+    fetch(APIURL, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            // const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
+            const TempUserbase = result.records
+            displayCompanies(TempUserbase)
+            countProfiles(TempUserbase)
+            console.log(TempUserbase)
+        })
+        .catch(error => console.log('error', error));
+}
 
 function createCategories(arr) {
     if (arr) {
@@ -266,10 +266,6 @@ function displayCompanies(companies){
     directoryContainer.innerHTML = companiesHTML
 }
 
-function hoverHeart(e) {
-    e.target.textContent = "Like this company?"
-}
-
 // function saveFilterToURL(filters){
 //     let url = new URL(window.location.href);
 //     url.searchParams.set('filters', filters)
@@ -303,7 +299,7 @@ fetchFilterData().then(([locations, industries]) => {
         maxItems: 5,
         options: locations});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
-    // locationSelector.on('change', (e) => {handleFilterSelection()})
+    locationSelector.on('change', (e) => {handleFilterSelection()})
     // industriesSelector.on('change', (e) => {handleFilterSelection()})
 })
 
