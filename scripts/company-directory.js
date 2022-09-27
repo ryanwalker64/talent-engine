@@ -18,9 +18,10 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 let companiesUserbase = []
 let filterObj = {
     'location': [],
-    // 'remote': [],
-    // 'industry': [],
-    // 'SMProgram': [],
+    'employee': [],
+    'remote': [],
+    'industry': [],
+    'SMCompany': [],
 }
 let locationSelector
 let industriesSelector
@@ -28,57 +29,39 @@ let industriesSelector
 
 function handleFilterSelection() {
     let filter = []
-    // if (getExperienceValues()) filter.push(getExperienceValues())
-    // if (getWorkTypeValues()) filter.push(getWorkTypeValues())
-    // if (getSMProgramValues()) filter.push(getSMProgramValues())
-    // if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
+    if (getEmployeeValues()) filter.push(getEmployeeValues())
+    if (getSMCompanyValues()) filter.push(getSMCompanyValues())
+    if (getRemoteValues()) filter.push(getRemoteValues())
+    if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
-    // const remoteSelection = remoteSelector.getValue()
-    // if (remoteSelection === "All locations") filter.push(getRemoteValue())
-    // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
     console.log("current filters:", filterObj)
-    // if (checkForEmptyFilters()) {
-    //     clearFilters()
-    // } else {
-        // const filteredOptions = 
-        //     remoteSelection === "Based on location"
-        //         ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-        //         : `IF(OR(${filter.join(',')}),"true")`
-
-        // const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)   
+    if (checkForEmptyFilters()) {
+        clearFilters()
+    } else { 
         const filterEncode = "&filterByFormula=" + encodeURI(`IF(OR(${filter.join(',')}),"true")`)  
-        // console.log(remoteSelector.getValue())      
         // console.log(filteredOptions, filterEncode, filter)
         console.log(filterEncode, filter)
         fetchFilteredProfiles(filterEncode)
-    // }
+    }
 }
 
-// formInputs.forEach(filter => {
-//     filter.addEventListener('click', handleFilterSelection)
-// })
+formInputs.forEach(filter => {
+    filter.addEventListener('click', handleFilterSelection)
+})
 
-// clearBtn.addEventListener('click', clearFilters)
+clearBtn.addEventListener('click', clearFilters)
 
-// function getRemoteValue() {
-//     filterObj.remote = []
-//     if (remoteSelector.getValue().length === 0) return
-//     const selected = remoteSelector.getValue()
-//     filterObj.remote = [selected]
-//     const value = `{Job Pref: Open to remote work}`
-//     return value
 
-// }
 
-// function getExperienceValues() {
-//     filterObj.experience = []
-//     const inputs = [...document.querySelectorAll('[data-experience]')]
-//     const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox });
-//     if (checked.length === 0) return 
-//     filterObj.experience = checked.map(checkbox => {return checkbox.dataset.experience})
-//     const values = checked.map(checkbox => {return `{experience-stage}="${checkbox.dataset.experience}"`}).join(',')
-//     return values
-// }
+function getEmployeeValues() {
+    filterObj.employee = []
+    const inputs = [...document.querySelectorAll('[data-employees]')]
+    const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox });
+    if (checked.length === 0) return 
+    filterObj.employee = checked.map(checkbox => {return checkbox.dataset.employees})
+    const values = checked.map(checkbox => {return `{Company Size}="${checkbox.dataset.employees}"`}).join(',')
+    return values
+}
 
 
 function getLocationValues() {
@@ -95,71 +78,76 @@ function getIndustryValues() {
     if (industriesSelector.getValue().length === 0) return
     const selected = industriesSelector.getValue()
     filterObj.industry = industriesSelector.getValue()
-    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Industries})`}).join(',')
+    const values = selected.map(value => {return `FIND("${value}",{Industry})`}).join(',')
     return values
 }
 
-// function getSMProgramValues() {
-//     filterObj.SMProgram = []
-//     const input = document.querySelector('[data-smprogram]')
-//     if(!input.checked) return
-//     filterObj.SMProgram = [true]
-//     const value = `IF({Startmate Program}, TRUE())`
-//     return value
-// }
+function getSMCompanyValues() {
+    filterObj.SMCompany = []
+    const input = document.querySelector('[data-SMCompany]')
+    if(!input.checked) return
+    filterObj.SMCompany = [true]
+    const value = `IF({Startmate Company?}, TRUE())`
+    return value
+}
+
+function getRemoteValues() {
+    filterObj.remote = []
+    const input = document.querySelector('[data-remote]')
+    if(!input.checked) return
+    filterObj.remote = [true]
+    const value = `IF({Remote Friendly}, TRUE())`
+    return value
+}
 
 function countProfiles(arr) {
     const profileCount = document.querySelector('[data-count="viewing"]')
     profileCount.textContent = arr.length
 }
 
-// function scoreProfiles(filtersToCheck, fetchedUsers) {
-//     const scoredProfiles = fetchedUsers.map(profile => {
-//         let score = 0
-//         if(filtersToCheck.workType.length > 0) {
-//             filtersToCheck.workType.forEach(filter => {
-//                 if (profile.fields["Job Pref: Type of role"].includes(filter)) score += 1
-//             })
-//         }
-//         if(filtersToCheck.experience.length > 0) {
-//             filtersToCheck.experience.forEach(filter => {
-//                 if (profile.fields["experience-stage"].includes(filter)) score += 1
-//             })
-//         }
-//         if(filtersToCheck.SMProgram.length > 0) {
-//                 if (profile.fields["Startmate Program"]) score += 1
-//         }
-//         if(filtersToCheck.location.length > 0) {
-//             filtersToCheck.location.forEach(filter => {
-//                 if (profile.fields["Job Pref: Working Locations"].includes(filter)) score += 1
-//             })
-//         }
-//         if(filtersToCheck.industry.length > 0) {
-//             filtersToCheck.industry.forEach(filter => {
-//                 if (profile.fields["Job Pref: Industries"].includes(filter)) score += 1
-//             })
-//         }
-//         profile.score = score
-//         return profile
-//     })
-//     return scoredProfiles
-// }
+function scoreProfiles(filtersToCheck, fetchedUsers) {
+    const scoredProfiles = fetchedUsers.map(profile => {
+        let score = 0
+        if(filtersToCheck.employee.length > 0) {
+            filtersToCheck.employee.forEach(filter => {
+                if (profile.fields["Company Size"].includes(filter)) score += 1
+            })
+        }
+        if(filtersToCheck.location.length > 0) {
+            filtersToCheck.location.forEach(filter => {
+                if (profile.fields["Location"].includes(filter)) score += 1
+            })
+        }
+        if(filtersToCheck.industry.length > 0) {
+            filtersToCheck.industry.forEach(filter => {
+                if (profile.fields["Industry"].includes(filter)) score += 1
+            })
+        }
+        if(filtersToCheck.SMCompany.length > 0) {
+            if (profile.fields["Startmate Company?"]) score += 1
+        }
+        if(filtersToCheck.remote.length > 0) {
+            if (profile.fields["Remote Friendly"]) score += 1
+        }
+        profile.score = score
+        return profile
+    })
+    return scoredProfiles
+}
 
-// function countFilters() {
-//     let totalScore = 0;
-//     Object.keys(filterObj).forEach(key => { totalScore += filterObj[key].length})
-//     return totalScore
-// }
+function countFilters() {
+    let totalScore = 0;
+    Object.keys(filterObj).forEach(key => { totalScore += filterObj[key].length})
+    return totalScore
+}
 
-// function checkForEmptyFilters() {
-//     if (filterObj.workType.length === 0 
-//         && filterObj.experience.length === 0
-//         && filterObj.roles.length === 0
-//         && filterObj.location.length === 0
-//         && filterObj.remote.length === 0
-//         && filterObj.industry.length === 0
-//         && filterObj.SMProgram.length === 0) return true
-// }
+function checkForEmptyFilters() {
+    if (filterObj.employee.length === 0
+        && filterObj.location.length === 0
+        && filterObj.remote.length === 0
+        && filterObj.industry.length === 0
+        && filterObj.SMCompany.length === 0) return true
+}
 
 function clearCheckboxes() {
     formInputs.forEach(checkbox => {
@@ -169,23 +157,19 @@ function clearCheckboxes() {
     })
 }
 
-// function clearFilters() {
-//     filterObj = {
-//         'workType': [],
-//         'experience': [],
-//         'roles': [],
-//         'location': [],
-//         'remote': [],
-//         'industry': [],
-//         'SMProgram': [],
-//     }
-//     clearCheckboxes()
-//     industriesSelector.setValue('', 'silent')
-//     locationSelector.setValue('', 'silent')
-//     remoteSelector.setValue('', 'silent')
-//     roleSelector.setValue('', 'silent')
-//     fetchProfiles()
-// }
+function clearFilters() {
+    filterObj = {
+        'location': [],
+        'employee': [],
+        'remote': [],
+        'industry': [],
+        'SMCompany': [],
+    }
+    clearCheckboxes()
+    industriesSelector.setValue('', 'silent')
+    locationSelector.setValue('', 'silent')
+    fetchProfiles()
+}
 
 
 function fetchCompanies() {
@@ -221,8 +205,7 @@ function fetchFilteredProfiles(filter) {
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
-            // const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
-            const TempUserbase = result.records
+            const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
             displayCompanies(TempUserbase)
             countProfiles(TempUserbase)
             console.log(TempUserbase)
@@ -240,6 +223,17 @@ function createCategories(arr) {
 
 function displayCompanies(companies){
     const companiesHTML = companies.map(company => {
+        const score = !company.score
+        ? `<div></div>`
+        : company.score === 0 
+            ? `<div class="filter-match" data-filter="matches">No filters matched</div>`
+            : company.score > 1 && company.score !== countFilters()
+                ? `<div class="filter-match some-matches" data-filter="matches">Matches ${company.score} filters</div>`
+                : company.score === countFilters()
+                    ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
+                    : `<div class="filter-match some-matches" data-filter="matches">Matches ${company.score} filters</div>`
+
+
         return ` 
         <div class="company-profile">
             <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
@@ -247,14 +241,13 @@ function displayCompanies(companies){
                 <div class="company-name">${company.fields['Name']}</div>
                 <div class="company-slogan">${company.fields['Slogan']}</div>
                 <div class="company-categories">
-                    ${createCategories(company.fields['Industry'])}
-                    <div class="company-category">Finance</div>
                     ${company.fields['Startmate Company?']
                         ? '<div class="company-category orange-catg">Startmate Company</div>'
                         : ''}
                 </div>
             </div>
             <div class="div-block-75">
+                ${score}
                 <div class="heart-container">
                     <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button">❤</a>
                     <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">Like this company?</a>
@@ -266,10 +259,10 @@ function displayCompanies(companies){
     directoryContainer.innerHTML = companiesHTML
 }
 
-// function saveFilterToURL(filters){
-//     let url = new URL(window.location.href);
-//     url.searchParams.set('filters', filters)
-// }
+function saveFilterToURL(filters){
+    let url = new URL(window.location.href);
+    url.searchParams.set('filters', filters)
+}
 
 
 async function fetchFilterData() {
@@ -279,7 +272,7 @@ async function fetchFilterData() {
         
     const locations = await locationsResponse.json()
     const industries = await industriesResponse.json()
-    // console.log(roles, locations, industries)
+    // console.log(locations, industries)
     return [locations, industries]
 }
 
@@ -300,7 +293,7 @@ fetchFilterData().then(([locations, industries]) => {
         options: locations});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
     locationSelector.on('change', (e) => {handleFilterSelection()})
-    // industriesSelector.on('change', (e) => {handleFilterSelection()})
+    industriesSelector.on('change', (e) => {handleFilterSelection()})
 })
 
 
@@ -330,9 +323,6 @@ fetchFilterData()
     // update the counts for displaying and total candidates
 
     // if user hidden companies field matches a company name of the user viewing, hide from DOM?
-
-
-
 
 // On load grab 20 companies
     // no expired companies (past 30 days)
