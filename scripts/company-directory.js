@@ -168,7 +168,7 @@ function clearFilters() {
     clearCheckboxes()
     industriesSelector.setValue('', 'silent')
     locationSelector.setValue('', 'silent')
-    fetchProfiles()
+    fetchCompanies()
 }
 
 

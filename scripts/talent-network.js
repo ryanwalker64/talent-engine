@@ -317,6 +317,7 @@ fetchFilterData().then(([roles, locations, industries]) => {
 
     locationSelector.on('change', (e) => {handleFilterSelection()})
     industriesSelector.on('change', (e) => {handleFilterSelection()})
+    roleSelector.on('change', (e) => {handleFilterSelection()})
     remoteSelector.on('change', (e) => {handleFilterSelection()})
 })
 

@@ -149,33 +149,6 @@ MemberStack.onReady.then(function(member) {
     getUserData(userId)
 })
 
-function setEditProfileForm(userData) {
-    document.querySelector('[data-name="first-name"]').value = userData.fields["First Name"]
-    document.querySelector('[data-name="last-name"]').value = userData.fields["Last Name"]
-    document.querySelector('[data-name="bio"]').value = userData.fields["Bio"]
-    document.querySelector('[data-name="job-hunt"]').value = userData.fields["Stage of Job Hunt"]
-    document.querySelector('[data-name="linkedin"]').value = userData.fields["Linkedin"]
-    document.querySelector('[data-name="remote-work"]').value = userData.fields["Job Pref: Open to remote work"]
-    document.querySelector('[data-name="next-role"]').value = userData.fields["Next Role"]
-    document.querySelector('[data-name="work-experience"]').value = userData.fields["Work Experience"]
-    firstJobInput.value = userData.fields["first-job"]
-    document.querySelector('[data-name="job-title"]').value = userData.fields["Job Title"]
-    employerSelector.setValue(userData.fields["Employer Airtable Record ID"])
-    currentlyWorkInput.value = userData.fields["Currently work at employer?"]
-    document.querySelector('[data-name="profile-pic"]').value = userData.fields["Profile Picture"]
-    profileVisibility = document.querySelector('[data-name="visibility"]').value = userData.fields["Profile Visibility"]
-    locatedSelector.setValue(userData.fields["Location"])
-    workingLocationSelector.setValue(userData.fields["Job Pref: Working Locations"])
-    roleSelector.setValue(userData.fields["What do you do?"])
-    interestedRolesSelector.setValue(userData.fields["Job Pref: Relevant roles"])
-    typeOfJobSelector.setValue(userData.fields["Job Pref: Type of role"])
-    companySizeSelector.setValue(userData.fields["Job Pref: Company size"])
-    startDateMonthSelector.setValue(userData.fields["Employment Start Date"].split(' ')[0])
-    startDateYearSelector.setValue(userData.fields["Employment Start Date"].split(' ')[1])
-    endDateMonthSelector.setValue(userData.fields["Employment End Date"].split(' ')[0])
-    endDateYearSelector.setValue(userData.fields["Employment End Date"].split(' ')[1])
-    industriesSelector.setValue(userData.fields["Job Pref: Industries"])
-}
 
 
 
