@@ -149,12 +149,16 @@ firstJobInput.addEventListener('change', () => {
 })
 
 currentlyWorkInput.addEventListener('change', () => {
+    const endDateContainer = document.querySelector('[data-end="container"]')
     if (currentlyWorkInput.checked) {
         endDateMonthSelector.disable()
         endDateYearSelector.disable()
+        endDateContainer.style.display = 'none'
+        
     } else {
         endDateMonthSelector.enable()
         endDateYearSelector.enable()
+        endDateContainer.style.display = 'block'
     }
 })
 
