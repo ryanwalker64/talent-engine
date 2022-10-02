@@ -36,6 +36,7 @@ let industriesSelector
 function handleFilterSelection() {
     let filter = []
     if (getExperienceValues()) filter.push(getExperienceValues())
+    if (getRoleValues()) filter.push(getRoleValues())
     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
     if (getSMProgramValues()) filter.push(getSMProgramValues())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
@@ -101,6 +102,15 @@ function getLocationValues() {
     const selected = locationSelector.getValue()
     filterObj.location = locationSelector.getValue()
     const values = selected.map(value => {return `FIND("${value}",{Job Pref: Working Locations})`}).join(',')
+    return values
+}
+
+function getRoleValues() {
+    filterObj.roles = []
+    if (roleSelector.getValue().length === 0) return
+    const selected = roleSelector.getValue()
+    filterObj.roles = roleSelector.getValue()
+    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Relevant roles})`}).join(',')
     return values
 }
 
