@@ -116,15 +116,12 @@ function createCompany(companyData) {
         .then(response => response.text())
         .then(result => {
             console.log(result)
-            // MemberStack.onReady.then(function(member) {  
-            //     member.updateProfile({
-            //         "profile-photo": userData["Profile Picture"],
-            //         "first-name": userData["First Name"],
-            //         "last-name": userData["Last Name"],
-            //         "account-status": 'COMPLETE',
-            //     }, false)
-            // })
-            // window.location.href = "/setup/create-employer-profile"
+            MemberStack.onReady.then(function(member) {  
+                member.updateProfile({
+                    "company-airtable-id": companyAirtableID,
+                }, false)
+            })
+            window.location.href = "/setup/create-employer-profile"
         })
         .catch(error => console.log('error', error));
 }

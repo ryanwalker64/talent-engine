@@ -30,20 +30,20 @@ async function fetchData() {
         fetch(JSDELIVR + 'rolesArray.json'),
         fetch(JSDELIVR + 'locationsArray.json'),
         fetch(JSDELIVR + 'industriesArray.json'),
-        fetch(API + "Companies&fields=Name,Logo&perPage=all", {
-            method: "get",
-            headers: new Headers().append("Content-Type", "application/json"),
-            redirect: "follow" })
+        // fetch(API + "Companies&fields=Name,Logo&perPage=all", {
+        //     method: "get",
+        //     headers: new Headers().append("Content-Type", "application/json"),
+        //     redirect: "follow" })
         ])
 
     const roles = await rolesResponse.json()
     const locations = await locationsResponse.json()
     const industries = await industriesResponse.json()
-    const companies = await companiesResponse.json()
-    return [roles, locations, industries, companies]
+    // const companies = await companiesResponse.json()
+    return [roles, locations, industries]
 }
 
-fetchData().then(([roles, locations, industries, companies]) => {
+fetchData().then(([roles, locations, industries]) => {
     const rolesObj = roles.map(role => {return {'value': role, 'text': role}})
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
     // const companiesHTML = companies.records.map(company => {

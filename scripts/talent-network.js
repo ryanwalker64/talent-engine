@@ -11,7 +11,7 @@ const generalSelectorSettings = {
     sortField: {field: "text", direction: "asc"}
 };
 
-const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users"
+const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users&view=VisibleProfiles"
 const FIELDS = "?fields%5B%5D=Job+Pref%3A+Working+Locations&fields%5B%5D=Job+Pref%3A+Open+to+remote+work&fields%5B%5D=experience-stage&fields%5B%5D=Job+Pref%3A+Relevant+roles&fields%5B%5D=Job+Pref%3A+Type+of+role&fields%5B%5D=Job+Pref%3A+Industries&fields%5B%5D=Startmate+Program"
 const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
@@ -245,11 +245,16 @@ function fetchFilteredProfiles(filter) {
 
 function displayProfiles(profiles){
     const profilesHTML = profiles.map(profile => {
+        const profileHeadline = profile.fields["Candidate Employer"]
+        ? `${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}`
+        : `${profile.fields["Full Name"]}`
+        
+        
         return `
         <div class="candidate-profile">
             <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
             <div class="candidate-info">
-                <div class="candidate-name">${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}</div>
+                <div class="candidate-name">${profileHeadline}</div>
                 <div class="candidate-details-container">
                     <div class="candidate-short-details">
                     ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>
