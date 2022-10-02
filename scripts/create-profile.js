@@ -125,6 +125,7 @@ endDateMonthSelector.on('change', () => grabMonthYearInputs(endDateMonthInput, e
 endDateYearSelector.on('change', () => grabMonthYearInputs(endDateMonthInput, endDateYearInput, endDateInput))
 
 firstJobInput.addEventListener('change', () => {
+    const currentWorkContainer = document.querySelector('[data-current-work="container"]')
     if (firstJobInput.checked) {
         jobTitleInput.disabled = firstJobInput.checked
         // employerSelector.disable()
@@ -133,6 +134,8 @@ firstJobInput.addEventListener('change', () => {
         endDateMonthSelector.disable()
         endDateYearSelector.disable()
         currentlyWorkInput.disabled = firstJobInput.checked
+        currentWorkContainer.style.display = 'none'
+
     } else {
         jobTitleInput.disabled = firstJobInput.checked
         // employerSelector.enable()
@@ -141,6 +144,7 @@ firstJobInput.addEventListener('change', () => {
         endDateMonthSelector.enable()
         endDateYearSelector.enable()
         currentlyWorkInput.disabled = firstJobInput.checked
+        currentWorkContainer.style.display = 'grid'
     }
 })
 
