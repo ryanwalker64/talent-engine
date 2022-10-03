@@ -276,7 +276,7 @@ function displayProfiles(profiles){
         <div class="candidate-profile">
             <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
             <div class="candidate-info">
-                <div class="candidate-name">${displayUserHeadline()}</div>
+                <div class="candidate-name">${displayUserHeadline(profile)}</div>
                 <div class="candidate-details-container">
                     <div class="candidate-short-details">
                     ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>
