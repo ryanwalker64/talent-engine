@@ -150,6 +150,7 @@ function getCompanyData() {
             console.log(result)
             companyProfile = result
             displayProfile(companyProfile)
+            document.title = companyProfile.fields["Name"]
             
         })
         .then(() => {

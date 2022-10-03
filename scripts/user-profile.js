@@ -32,6 +32,18 @@ function getExperienceLevel(level) {
 
 function displayProfile() {
 
+    const employerLogo = userProfile.fields['User Type'] === 'CANDIDATE' ? '' : `<img src="${userProfile.fields["Logo (from Employer)"]}" loading="lazy" alt="" class="logo">`
+    const handleFirstJob = userProfile.fields['First Job?'] 
+                            ? `<div class="short-company-name newtext">Looking for first job</div>`
+                            : `<div class="short-company-name newtext">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Candidate Employer"]}</div>
+                                </div>
+                                <div class="short-company-date">
+                                    ${userProfile.fields["Employment Start Date"]} - 
+                                    ${userProfile.fields['Currently work at employer?'] !== "on" 
+                                    ? userProfile.fields["Employment End Date"]
+                                    : "Present"}`
+                            
+
     const profileHTML = `
         <div class="directory-container-v2" data-id="${userProfile.id}">
             <div class="userprofile-container">
@@ -58,16 +70,9 @@ function displayProfile() {
                     <div id="w-node-d1b484be-b039-f163-f2bd-141e8ff68677-89aee008" class="user-experience">
                         <div class="label-v2">Experience</div>
                         <div class="short-company">
-                            <img src="${userProfile.fields["Logo (from Employer)"]}" loading="lazy" alt="" class="logo">
+                            ${employerLogo}
                             <div class="company-desc-profile new">
-                                <div class="short-company-name newtext
-                                ">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Candidate Employer"]}</div>
-                                </div>
-                            <div class="short-company-date">
-                            ${userProfile.fields["Employment Start Date"]} - 
-                            ${userProfile.fields['Currently work at employer?'] !== "on" 
-                                ? userProfile.fields["Employment End Date"]
-                                : "Present"}
+                                ${handleFirstJob}
                             </div>
                         </div>
                     </div>
@@ -129,6 +134,7 @@ function getUserData(userId) {
             console.log(result)
             userProfile = result
             displayProfile()
+            document.title = userProfile.fields["Full Name"]
         })
         .catch(error => console.log('error', error));
 }
@@ -149,12 +155,3 @@ MemberStack.onReady.then(function(member) {
     getUserData(userId)
 })
 
-
-
-
-// On load, get record id from URL param
-    // fetch profile information 
-    // store profile information in userProfile
-    // display profile information in DOM
-    // Loading state
-    // recLKqQ95j0IsSiw0

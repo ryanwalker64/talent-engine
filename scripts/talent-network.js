@@ -17,7 +17,7 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 
 // let offset
-let loggedInUser
+let paidMember
 let userbase = []
 let filterObj = {
     'workType': [],
@@ -254,20 +254,29 @@ function fetchFilteredProfiles(filter) {
         .catch(error => console.log('error', error));
 }
 
+function displayUserHeadline(profile) {
+    let headline
+    if (paidMember) {
+        headline = profile.fields["First Job?"]
+                    ? `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
+                    : profile.fields["Candidate Employer"] 
+                        ? `${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}`
+                        : `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
+    } else {
+        headline = `${profile.fields["What do you do?"]}`
+    }
+
+    return headline
+}
+
 function displayProfiles(profiles){
     const profilesHTML = profiles.map(profile => {
-        const profileHeadline = profile.fields["First Job?"]
-        ? `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
-        : profile.fields["Candidate Employer"] 
-            ? `${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}`
-            : `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
-        
         
         return `
         <div class="candidate-profile">
             <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
             <div class="candidate-info">
-                <div class="candidate-name">${profileHeadline}</div>
+                <div class="candidate-name">${displayUserHeadline()}</div>
                 <div class="candidate-details-container">
                     <div class="candidate-short-details">
                     ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>
@@ -342,8 +351,8 @@ fetchFilterData().then(([roles, locations, industries]) => {
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         console.log('User is logged in')
-        loggedInUser = member['paying-user']
-        console.log(loggedInUser)
+        paidMember = member['paying-user']
+        console.log(paidMember)
         fetchProfiles()
         fetchFilterData()
     }
