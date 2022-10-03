@@ -158,7 +158,7 @@ currentlyWorkInput.addEventListener('change', () => {
     } else {
         endDateMonthSelector.enable()
         endDateYearSelector.enable()
-        endDateContainer.style.display = 'block'
+        endDateContainer.style.display = 'flex'
     }
 })
 
@@ -377,8 +377,12 @@ function validateForm() {
     if (input.tagName === 'SELECT' 
         && typeof input.tomselect === 'object' 
         && input.tomselect.getValue() === '') {
-        console.log('tomselector false')
-        valid = false; 
+            if (!currentlyWorkInput.checked
+                || input.tomselect.inputId !== 'end-month' 
+                && input.tomselect.inputId !== 'end-year' ) {
+                    console.log(input.tomselect.inputId);
+                    valid = false; 
+                }
 
     }  else if (input.tagName !== 'SELECT' && !input.checkValidity()) { 
         console.log(input.tagName + ' false')

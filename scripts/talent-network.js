@@ -17,6 +17,7 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 
 // let offset
+let loggedInUser
 let userbase = []
 let filterObj = {
     'workType': [],
@@ -255,9 +256,11 @@ function fetchFilteredProfiles(filter) {
 
 function displayProfiles(profiles){
     const profilesHTML = profiles.map(profile => {
-        const profileHeadline = profile.fields["Candidate Employer"]
-        ? `${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}`
-        : `${profile.fields["Full Name"]}`
+        const profileHeadline = profile.fields["First Job?"]
+        ? `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
+        : profile.fields["Candidate Employer"] 
+            ? `${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}`
+            : `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
         
         
         return `
@@ -336,9 +339,16 @@ fetchFilterData().then(([roles, locations, industries]) => {
     remoteSelector.on('change', (e) => {handleFilterSelection()})
 })
 
+MemberStack.onReady.then(function(member) {
+    if (member.loggedIn) {
+        console.log('User is logged in')
+        loggedInUser = member['paying-user']
+        console.log(loggedInUser)
+        fetchProfiles()
+        fetchFilterData()
+    }
+})
 
-fetchProfiles()
-fetchFilterData()
 
     // Setup Tom Select for industires, roles, locaiton, remote
     // Make sure they all work to filter
