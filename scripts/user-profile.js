@@ -4,6 +4,7 @@ const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableN
 let userProfile = {}
 let userId
 let userIsLoggedIn
+let loggedInUserId
 
 const profileContainer = document.querySelector('[data-profile="container"]')
 
@@ -78,7 +79,7 @@ function displayProfile() {
                     </div>
                     <div id="w-node-b33f916e-25ad-a1b2-2a99-d341be5d4074-89aee008" class="user-sm-programs">
                         <div class="label-v2">Startmate Programs</div>
-                            ${createCategories()}
+                            ${createCategories(userProfile.fields["Startmate Program"])}
                     </div>
                 </div>
                 <div class="label-v2">Looking for in next role</div>
@@ -149,9 +150,11 @@ MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         console.log('User is viewing their own profile')
         userIsLoggedIn = true
+        loggedInUserId = member['airtable-id-two']
+        console.log(loggedInUserId)
+        getUserData(userId)
     } else {
         userIsLoggedIn = false
     }
-    getUserData(userId)
 })
 

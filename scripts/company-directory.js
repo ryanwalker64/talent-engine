@@ -248,7 +248,7 @@ function displayCompanies(companies){
             </div>
             <div class="div-block-75">
                 ${score}
-                <div class="heart-container">
+                <div class="heart-container" data-likebtn="${company.id}">
                     <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button">❤</a>
                     <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">Like this company?</a>
                 </div>
@@ -296,6 +296,12 @@ fetchFilterData().then(([locations, industries]) => {
     industriesSelector.on('change', (e) => {handleFilterSelection()})
 })
 
+function applyEventListeners() {
+    const likeCompanyBtns = document.querySelectorAll('[data-like-btn]')
+    likeCompanyBtns.addEventListener('click', (e) => {
+        console.log(e.target.dataset.likebtn)
+    })
+}
 
 fetchCompanies()
 fetchFilterData()
