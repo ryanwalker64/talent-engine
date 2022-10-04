@@ -305,6 +305,7 @@ function applyEventListeners() {
             const btn = e.currentTarget
             const heartBtn = btn.querySelector('[data-heart="small"]')
             heartBtn.classList.toggle('liked')
+            handleLikedCompanies(userObj, btn.dataset.likebtn)
 
             // push to airtable
             // change hover text to unlike company
@@ -326,11 +327,32 @@ function getUserData(userId) {
     fetch(API + "Users&id=" + userId, requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log(result)
+            // console.log(result)
             loggedInUserObj = result
             console.log(loggedInUserObj)
         })
         .catch(error => console.log('error', error));
+}
+
+function handleLikedCompanies(userObj, companyid) {
+    let likedCompanies
+    //if the liked list exists
+    if (userObj.fields['Companies interested in']) {
+        likedCompanies = userObj.fields['Companies interested in']
+        console.log('liked companies list found')
+        console.log(likedCompanies)
+        //if the company is already liked, remove it
+        if(likedCompanies.findIndex(id => id === companyid) !== -1) {
+            likedCompanies.splice(likedCompanies.findIndex(id => id === companyid), 1)
+            console.log('company has been already liked now removed')
+            console.log(likedCompanies)
+            return likedCompanies
+        } 
+    }
+    likedCompanies.push(companyid)
+    console.log('company has been liked')
+    console.log(likedCompanies)
+    return likedCompanies
 }
 
 MemberStack.onReady.then(function(member) {
