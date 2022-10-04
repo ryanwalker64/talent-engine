@@ -9,11 +9,12 @@ const generalSelectorSettings = {
     sortField: {field: "text", direction: "asc"}
 };
 
-const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Companies"
+const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
 // const FIELDS = "?fields%5B%5D=Job+Pref%3A+Working+Locations&fields%5B%5D=Job+Pref%3A+Open+to+remote+work&fields%5B%5D=experience-stage&fields%5B%5D=Job+Pref%3A+Relevant+roles&fields%5B%5D=Job+Pref%3A+Type+of+role&fields%5B%5D=Job+Pref%3A+Industries&fields%5B%5D=Startmate+Program"
 const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
-
+let userIsLoggedIn 
+let loggedInUserObj
 // let offset
 let companiesUserbase = []
 let filterObj = {
@@ -181,7 +182,7 @@ function fetchCompanies() {
         redirect: "follow",
     };
 
-    fetch(API + "&perPage=30", requestOptions)
+    fetch(API + Companies + "&perPage=30", requestOptions)
         .then(response => response.json())
         .then(result => {
             companiesUserbase = result.records
@@ -201,7 +202,7 @@ function fetchFilteredProfiles(filter) {
         redirect: "follow",
     };
 
-    const APIURL = API + filter
+    const APIURL = API + + Companies + filter
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
@@ -257,6 +258,7 @@ function displayCompanies(companies){
         </div>`
     }).join('')
     directoryContainer.innerHTML = companiesHTML
+    applyEventListeners()
 }
 
 function saveFilterToURL(filters){
@@ -297,13 +299,53 @@ fetchFilterData().then(([locations, industries]) => {
 })
 
 function applyEventListeners() {
-    const likeCompanyBtns = document.querySelectorAll('[data-like-btn]')
-    likeCompanyBtns.addEventListener('click', (e) => {
-        console.log(e.target.dataset.likebtn)
-    })
+    const likeCompanyBtns = document.querySelectorAll('[data-likebtn]')
+    likeCompanyBtns.forEach(btn => 
+        btn.addEventListener('click', (e) => {
+            const btn = e.currentTarget
+            const heartBtn = btn.querySelector('[data-heart="small"]')
+            heartBtn.classList.toggle('liked')
+
+            // push to airtable
+            // change hover text to unlike company
+        })
+    )
 }
 
-fetchCompanies()
+function getUserData(userId) {
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    
+    };
+
+    fetch(API + "Users&id=" + userId, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            loggedInUserObj = result
+            console.log(loggedInUserObj)
+        })
+        .catch(error => console.log('error', error));
+}
+
+MemberStack.onReady.then(function(member) {
+    if (member.loggedIn) {
+        console.log('User is viewing their own profile')
+        userIsLoggedIn = true
+        const loggedInUser = member['airtable-id-two']
+        
+        getUserData(loggedInUser)
+        fetchCompanies()
+    } else {
+        userIsLoggedIn = false
+    }
+})
+
 fetchFilterData()
 
     // Setup Tom Select for industires, roles, locaiton, remote
