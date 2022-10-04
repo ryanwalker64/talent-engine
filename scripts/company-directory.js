@@ -250,8 +250,8 @@ function displayCompanies(companies){
             <div class="div-block-75">
                 ${score}
                 <div class="heart-container" data-likebtn="${company.id}">
-                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button">❤</a>
-                    <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">Like this company?</a>
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${loggedInUserObj.fields['Companies interested in'].findIndex(id => id === company.id) !== -1 ? 'liked' : ''}">❤</a>
+                    <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">${loggedInUserObj.fields['Companies interested in'].findIndex(id => id === company.id) !== -1 ? 'Unlike this company?' : 'Like this company?'}</a>
                 </div>
                 <a href="/app/company?id=${company.id}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
             </div>
@@ -304,13 +304,36 @@ function applyEventListeners() {
         btn.addEventListener('click', (e) => {
             const btn = e.currentTarget
             const heartBtn = btn.querySelector('[data-heart="small"]')
+            const heartBtnText = btn.querySelector('[data-heart="large"]')
             heartBtn.classList.toggle('liked')
-            handleLikedCompanies(userObj, btn.dataset.likebtn)
-
-            // push to airtable
+            if (heartBtn.classList.contains('liked')) {
+                heartBtnText.textContent = 'Unlike this company?'
+                // heartBtnText.style.background = "black"
+            } else {
+                heartBtnText.textContent = 'Like this company?'
+                // heartBtnText.style.background = "red"
+                
+            }
+            updateLikedCompanies(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
             // change hover text to unlike company
         })
     )
+}
+
+function updateLikedCompanies(companiesList, userId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "put",
+        headers: myHeaders,
+        redirect: "follow",
+        body: JSON.stringify([{"id": userId,"fields":{"Companies interested in": companiesList}}])
+    };
+
+    fetch(API + "Users", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
 }
 
 function getUserData(userId) {
@@ -321,7 +344,6 @@ function getUserData(userId) {
         method: "get",
         headers: myHeaders,
         redirect: "follow",
-    
     };
 
     fetch(API + "Users&id=" + userId, requestOptions)

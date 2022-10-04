@@ -41,17 +41,11 @@ fetchData().then(([locations, industries]) => {
 
     locatedSelector = new TomSelect(locatedInput, {...locationSelectorSettings, options: locations, maxItems: 5});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
-
-    
-    // MemberStack.onReady.then(function(member) {
-    //     if (member.loggedIn) {
-    //         console.log('User is editing their own profile')
-    //         const userEmail = member["email"]
-    //         // getUserData()
-            
-    //     } else {
-    //     }
-    // })
+}).then(() => {
+    const loadingContainer = document.querySelector('[data-loader]')
+    const container = document.querySelector('[data-company-create]')
+    loadingContainer.style.display = 'none'
+    container.style.display = 'block'
 })
 
 const locationSelectorSettings = {

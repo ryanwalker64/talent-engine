@@ -5,6 +5,7 @@ let userProfile = {}
 let userId
 let userIsLoggedIn
 let loggedInUserId
+let userType
 
 const profileContainer = document.querySelector('[data-profile="container"]')
 
@@ -34,7 +35,7 @@ function getExperienceLevel(level) {
 function displayProfile() {
 
     const employerLogo = userProfile.fields['User Type'] === 'CANDIDATE' ? '' : `<img src="${userProfile.fields["Logo (from Employer)"]}" loading="lazy" alt="" class="logo">`
-    const handleFirstJob = userProfile.fields['First Job?'] 
+    const handleExperienceContainer = userProfile.fields['First Job?'] 
                             ? `<div class="short-company-name newtext">Looking for first job</div>`
                             : `<div class="short-company-name newtext">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Candidate Employer"]}</div>
                                 </div>
@@ -43,6 +44,21 @@ function displayProfile() {
                                     ${userProfile.fields['Currently work at employer?'] !== "on" 
                                     ? userProfile.fields["Employment End Date"]
                                     : "Present"}`
+
+    const handleHeadline = userProfile.fields['First Job?'] 
+                            ? `<div class="short-company-name newtext">Looking for first job</div>`
+                            : userProfile.fields["User Type"] === 'EMPLOYER'
+                               ? `<div class="candidate-short-details">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Name (from Employer)"]}</div>`
+                               : userProfile.fields["Candidate Employer"]
+                                    ? `<div class="candidate-short-details">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Candidate Employer"]}</div>`
+                                    : `<div class="candidate-short-details">${userProfile.fields["Job Title"]}</div>`
+
+
+    const stageOfJobHunt = userProfile.fields["Stage of Job Hunt"] === 'Actively Looking'
+                                ? `<div class="candidate-status actively-looking">Actively Looking</div>`
+                                : userProfile.fields["Stage of Job Hunt"] === 'Open to Offers'
+                                    ? `<div class="candidate-status actively-looking open-to-offers">Open to Offers</div>`
+                                    : ''
                             
 
     const profileHTML = `
@@ -53,8 +69,8 @@ function displayProfile() {
                     <div class="candidate-info">
                         <div class="candidate-name">${userProfile.fields["Full Name"]}</div>
                         <div class="candidate-details-container">
-                            <div class="candidate-short-details">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Name (from Employer)"]}</div>
-                            <div class="candidate-status actively-looking">${userProfile.fields["Stage of Job Hunt"]}</div>
+                            ${handleHeadline}
+                            ${stageOfJobHunt}
                         </div>
                     </div>
                     <div class="candidate-buttons-container">
@@ -73,7 +89,7 @@ function displayProfile() {
                         <div class="short-company">
                             ${employerLogo}
                             <div class="company-desc-profile new">
-                                ${handleFirstJob}
+                                ${handleExperienceContainer}
                             </div>
                         </div>
                     </div>
@@ -148,8 +164,9 @@ function getUserId()  {
 
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
-        console.log('User is viewing their own profile')
         userIsLoggedIn = true
+        userType = member['user-type']
+        console.log(userType)
         loggedInUserId = member['airtable-id-two']
         console.log(loggedInUserId)
         getUserData(userId)
