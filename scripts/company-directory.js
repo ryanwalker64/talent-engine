@@ -182,7 +182,7 @@ function fetchCompanies() {
         redirect: "follow",
     };
 
-    fetch(API + Companies + "&perPage=30", requestOptions)
+    fetch(API + 'Companies' + "&perPage=30", requestOptions)
         .then(response => response.json())
         .then(result => {
             companiesUserbase = result.records
@@ -202,7 +202,7 @@ function fetchFilteredProfiles(filter) {
         redirect: "follow",
     };
 
-    const APIURL = API + + Companies + filter
+    const APIURL = API + 'Companies' + filter
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
