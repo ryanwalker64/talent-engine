@@ -55,11 +55,14 @@ const generalSelectorSettings = {
 	}
 };
 
+let userData
+
 let locatedSelector
 let workingLocationSelector
 let roleSelector
 let interestedRolesSelector
 let industriesSelector
+let programsSelector
 let typeOfJobSelector = new TomSelect(prefTypeOfWorkInput, {...generalSelectorSettings, maxItems: null});
 let companySizeSelector = new TomSelect(prefCompanySize, {...generalSelectorSettings, maxItems: null, sortField: {}});
 let startDateMonthSelector = new TomSelect(currentEmploymentStartMonthInput, {...generalSelectorSettings,  sortField: {}});
@@ -69,41 +72,62 @@ let endDateYearSelector = new TomSelect(currentEmploymentEndYearInput, {...gener
 
 
 async function fetchData() {
-    const [rolesResponse, locationsResponse, industriesResponse] = await Promise.all([
+    const [rolesResponse, locationsResponse, industriesResponse, programsResponse] = await Promise.all([
         fetch(JSDELIVR + 'rolesArray.json'),
         fetch(JSDELIVR + 'locationsArray.json'),
-        fetch(JSDELIVR + 'industriesArray.json') ])
+        fetch(JSDELIVR + 'industriesArray.json'),
+        fetch(JSDELIVR + 'programsArray.json') ])
 
     const roles = await rolesResponse.json()
     const locations = await locationsResponse.json()
     const industries = await industriesResponse.json()
-    return [roles, locations, industries]
+    const programs = await programsResponse.json()
+    return [roles, locations, industries, programs]
 }
 
-fetchData().then(([roles, locations, industries]) => {
+fetchData().then(([roles, locations, industries, programs]) => {
     const rolesObj = roles.map(role => {return {'value': role, 'text': role}})
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
+    const programsObj = programs.map(program => {return {'value': program, 'text': program}})
  
     locatedSelector = new TomSelect(locatedInput, {...locationSelectorSettings, options: locations});
     workingLocationSelector = new TomSelect(prefLocationsInput, {...locationSelectorSettings, options: locations, maxItems: 3});
     roleSelector = new TomSelect(currentRoleInput, {...generalSelectorSettings, options: rolesObj});
     interestedRolesSelector = new TomSelect(prefRolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: 3});
     industriesSelector = new TomSelect(prefIndustriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
-    
-    // locatedSelector.on('change', (e) => { workingLocationSelector.setValue(locatedSelector.getValue())})
+    programsSelector = new TomSelect(startmatePrograms, {...generalSelectorSettings,  options: programsObj, maxItems: 5});
 
+
+}).then(() => {
+    MemberStack.onReady.then( async function(member) {
+        if (member.loggedIn) {
+            const userID = member["airtable-id-two"]
+            console.log('fetching data')
+            fetchUserData(userID)
+        } 
+})
 })
 
-//input listneners
-const grabMonthYearInputs = (monthInput, yearInput, monthYearInput) => {
-    monthYearInput.value = `${monthInput.value} ${yearInput.value}`
-}
-startDateMonthSelector.on('change', () => grabMonthYearInputs(startDateMonthInput, startDateYearInput, startDateInput))
-startDateYearSelector.on('change', () => grabMonthYearInputs(startDateMonthInput, startDateYearInput, startDateInput))
-endDateMonthSelector.on('change', () => grabMonthYearInputs(endDateMonthInput, endDateYearInput, endDateInput))
-endDateYearSelector.on('change', () => grabMonthYearInputs(endDateMonthInput, endDateYearInput, endDateInput))
+function fetchUserData(id) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    };
 
-firstJobInput.addEventListener('change', () => {
+   return fetch(API + "Users&id=" + id, requestOptions)
+    .then(response => response.json())
+    .then(result => userData = result)
+    .then(() => {
+        fillFields(userData.fields)
+    })
+}
+
+
+function handleFirstJob() {
+    const currentWorkContainer = document.querySelector('[data-current-work="container"]')
     if (firstJobInput.checked) {
         jobTitleInput.disabled = firstJobInput.checked
         startDateMonthSelector.disable()
@@ -111,6 +135,7 @@ firstJobInput.addEventListener('change', () => {
         endDateMonthSelector.disable()
         endDateYearSelector.disable()
         currentlyWorkingAtEmployerInput.disabled = firstJobInput.checked
+        currentWorkContainer.style.display = 'none'
     } else {
         jobTitleInput.disabled = firstJobInput.checked
         startDateMonthSelector.enable()
@@ -118,15 +143,75 @@ firstJobInput.addEventListener('change', () => {
         endDateMonthSelector.enable()
         endDateYearSelector.enable()
         currentlyWorkingAtEmployerInput.disabled = firstJobInput.checked
+        currentWorkContainer.style.display = 'grid'
     }
-})
+}
 
-currentlyWorkingAtEmployerInput.addEventListener('change', () => {
+function handleCurrentlyWorking() {
+    const endDateContainer = document.querySelector('[data-end="container"]')
     if (currentlyWorkingAtEmployerInput.checked) {
         endDateMonthSelector.disable()
         endDateYearSelector.disable()
+        endDateContainer.style.display = 'none'
     } else {
         endDateMonthSelector.enable()
         endDateYearSelector.enable()
+        endDateContainer.style.display = 'flex'
     }
-})
+}
+
+firstJobInput.addEventListener('change', handleFirstJob)
+currentlyWorkingAtEmployerInput.addEventListener('change', handleCurrentlyWorking)
+
+
+function fillFields(data) {
+    fNameInput.value = data['First Name'] ? data['First Name'] : ''
+    lNameInput.value = data['Last Name'] ? data['Last Name'] : ''
+    emailInput.value = data['Email'] ? data['Email'] : ''
+    linkedinInput.value = data['Linkedin'] ? data['Linkedin'] : ''
+    profilePicInput.value = data['Profile Picture'] ? data['Profile Picture'] : ''
+    locatedSelector.setValue(data['Location'] ? data['Location'] : '')
+    bioInput.textContent = data['Bio'] ? data['Bio'] : ''
+    programsSelector.setValue(data['Startmate Program'] ? data['Startmate Program'] : '')
+
+    // Work Experience Fields
+    roleSelector.setValue(data['What do you do?'] ? data['What do you do?'] : '')
+    workExperienceInput.value = data['Work Experience'] ? data['Work Experience'] : ''
+    if(data['First Job?']) {
+        firstJobInput.checked = true
+        handleFirstJob()
+    } 
+    currentEmployerInput.value = data['Candidate Employer'] ? data['Candidate Employer'] : ''
+    jobTitleInput.value = data['Job Title'] ? data['Job Title'] : ''
+    startDateMonthSelector.setValue(data['Employment Start Date'] ? data['Employment Start Date'].split(' ')[0] : '')
+    startDateYearSelector.setValue(data['Employment Start Date'] ? data['Employment Start Date'].split(' ')[1] : '')
+    endDateMonthSelector.setValue(data['Employment End Date'] ? data['Employment End Date'].split(' ')[0] : '') 
+    endDateYearSelector.setValue(data['Employment End Date'] ? data['Employment End Date'].split(' ')[1] : '')
+    if(data['Currently work at employer?']) {
+        currentlyWorkingAtEmployerInput.checked = true
+        handleCurrentlyWorking()
+    } 
+
+    // Job Preferences Fields
+    if(data['Stage of Job Hunt']) {
+        const radiobtn = document.getElementById(data['Stage of Job Hunt']);
+        radiobtn.checked = true
+    } 
+    interestedRolesSelector.setValue(data['Job Pref: Relevant roles'] ? data['Job Pref: Relevant roles'] : '')
+    typeOfJobSelector.setValue(data['Job Pref: Type of role'] ? data['Job Pref: Type of role'] : '')
+    companySizeSelector.setValue(data['Job Pref: Company size'] ? data['Job Pref: Company size'] : '')
+    industriesSelector.setValue(data['Job Pref: Industries'] ? data['Job Pref: Industries'] : '')
+    workingLocationSelector.setValue(data['Job Pref: Working Locations'] ? data['Job Pref: Working Locations'] : '')
+    prefRemoteWorkInput.checked = data['Job Pref: Open to remote work'] ? true : false
+    prefRoleBioInput.textContent = data['Next Role'] ? data['Next Role'] : ''
+    if(data['Profile Visibility']) {
+        const radiobtn = document.getElementById(data['Profile Visibility']);
+        radiobtn.checked = true
+    } 
+
+}
+
+// hide loader and show edit form
+// Let user save changes
+// if empty on non-required field clear in airatble
+// current employer field if USERTYPE IS EMPLYOER

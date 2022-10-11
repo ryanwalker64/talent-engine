@@ -26,10 +26,11 @@ const companySizeInput = document.querySelector('[data-input="company-size"]')
 const industriesInput = document.querySelector('[data-input="industries"]')
 
 async function fetchData() {
-    const [rolesResponse, locationsResponse, industriesResponse, companiesResponse] = await Promise.all([
+    const [rolesResponse, locationsResponse, industriesResponse, programsResponse] = await Promise.all([
         fetch(JSDELIVR + 'rolesArray.json'),
         fetch(JSDELIVR + 'locationsArray.json'),
         fetch(JSDELIVR + 'industriesArray.json'),
+        fetch(JSDELIVR + 'programsArray.json')
         // fetch(API + "Companies&fields=Name,Logo&perPage=all", {
         //     method: "get",
         //     headers: new Headers().append("Content-Type", "application/json"),
@@ -39,11 +40,12 @@ async function fetchData() {
     const roles = await rolesResponse.json()
     const locations = await locationsResponse.json()
     const industries = await industriesResponse.json()
+    const programs = await programsResponse.json()
     // const companies = await companiesResponse.json()
     return [roles, locations, industries]
 }
 
-fetchData().then(([roles, locations, industries]) => {
+fetchData().then(([roles, locations, industries, programs]) => {
     const rolesObj = roles.map(role => {return {'value': role, 'text': role}})
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
     // const companiesHTML = companies.records.map(company => {
