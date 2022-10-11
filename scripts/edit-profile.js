@@ -122,6 +122,10 @@ function fetchUserData(id) {
     .then(result => userData = result)
     .then(() => {
         fillFields(userData.fields)
+        const loadingContainer = document.querySelector('[data-loader]')
+        const container = document.querySelector('[data-profile="container"]')
+        loadingContainer.style.display = 'none'
+        container.style.display = 'block'
     })
 }
 
@@ -215,3 +219,4 @@ function fillFields(data) {
 // Let user save changes
 // if empty on non-required field clear in airatble
 // current employer field if USERTYPE IS EMPLYOER
+// fix photo uploader
