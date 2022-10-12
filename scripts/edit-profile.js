@@ -226,12 +226,12 @@ function checkForUpdates(data) {
     emailInput.value !== data['Email'] ? profileUpdates["Email"] = emailInput.value : ''
     linkedinInput.value !== data['Linkedin'] ? profileUpdates["Linkedin"] = linkedinInput.value : ''
     profilePicInput.value !== data['Profile Picture'] ? profileUpdates["Profile Picture"] = profilePicInput.value : ''
-    locatedSelector.getValue() !== data['Location'] ? profileUpdates["Location"] = locatedSelector.getValue() : ''
+    locatedSelector.getValue() !== data['Location'] ? [profileUpdates["Location"]] = locatedSelector.getValue() : ''
     bio.textContent !== data['Bio'] ? profileUpdates["Bio"] = bio.textContent : ''
     programsSelector.getValue() !== data['Startmate Program'] ? profileUpdates["Startmate Program"] = programsSelector.getValue() : ''
 
 
-    roleSelector.getValue() !== data['What do you do?'] ? profileUpdates['What do you do?'] = roleSelector.getValue() : ''
+    roleSelector.getValue() !== data['What do you do?'] ? [profileUpdates['What do you do?']] = roleSelector.getValue() : ''
     workExperienceInput.value !== data['Work Experience'] ? profileUpdates["Work Experience"] = workExperienceInput.value : ''
     profileUpdates['First Job?'] = firstJobInput.checked ? firstJobInput.checked : ''
     currentEmployerInput.value !== data['Candidate Employer'] ? profileUpdates['Candidate Employer'] = currentEmployerInput.value : ''
