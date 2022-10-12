@@ -233,12 +233,12 @@ function checkForUpdates(data) {
 
     roleSelector.getValue() !== data['What do you do?'] ? profileUpdates['What do you do?'] = [roleSelector.getValue()] : ''
     workExperienceInput.value !== data['Work Experience'] ? profileUpdates["Work Experience"] = workExperienceInput.value : ''
-    profileUpdates['First Job?'] = firstJobInput.checked ? firstJobInput.checked : ''
+    profileUpdates['First Job?'] = firstJobInput.checked ? `${firstJobInput.checked}` : ''
     currentEmployerInput.value !== data['Candidate Employer'] ? profileUpdates['Candidate Employer'] = currentEmployerInput.value : ''
     jobTitleInput.value !== data['Job Title'] ? profileUpdates['Job Title'] = jobTitleInput.value : ''
     if (`${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}` !== data['Employment Start Date']) profileUpdates['Employment Start Date']
     if (`${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}` !== data['Employment End Date']) profileUpdates['Employment End Date']
-    profileUpdates['Currently work at employer?'] = currentlyWorkingAtEmployerInput.checked ? currentlyWorkingAtEmployerInput.checked : ''
+    profileUpdates['Currently work at employer?'] = currentlyWorkingAtEmployerInput.checked ? `${currentlyWorkingAtEmployerInput.checked}` : ''
 
 
     for (let i = 0; i < stageOfJobHuntInput.length; i++) {
@@ -251,7 +251,7 @@ function checkForUpdates(data) {
     companySizeSelector.getValue() !== data['Job Pref: Company size'] ? profileUpdates['Job Pref: Company size'] = companySizeSelector.getValue() : ''
     industriesSelector.getValue() !== data['Job Pref: Industries'] ? profileUpdates['Job Pref: Industries'] = industriesSelector.getValue() : ''
     workingLocationSelector.getValue() !== data['Job Pref: Working Locations'] ? profileUpdates['Job Pref: Working Locations'] = workingLocationSelector.getValue() : ''
-    profileUpdates['Job Pref: Open to remote work'] = prefRemoteWorkInput.checked ? prefRemoteWorkInput.checked : ''
+    profileUpdates['Job Pref: Open to remote work'] = prefRemoteWorkInput.checked ? `${prefRemoteWorkInput.checked}` : ''
     prefRoleBioInput.textContent !== data['Next Role'] ? profileUpdates['Next Role'] = prefRoleBioInput.textContent : ''
     for (let i = 0; i < profileVisibilityInput.length; i++) {
         if(profileVisibilityInput[i].checked === true) {
