@@ -1,6 +1,8 @@
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
 const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
+const saveBtns = document.querySelectorAll('[data-btn]')
+
 const fNameInput = document.querySelector('[data-name="first-name"]')
 const lNameInput = document.querySelector('[data-name="last-name"]')
 const emailInput = document.querySelector('[data-name="email"]')
@@ -23,7 +25,7 @@ const currentEmploymentEndYearInput = document.querySelector('[data-name="end-ye
 const currentlyWorkingAtEmployerInput = document.querySelector('[data-name="currently-work-here"]')
 
 // Job Preferences Fields
-const stageOfJobHuntInput = document.querySelector('[data-name="job-hunt"]')
+const stageOfJobHuntInput = document.querySelectorAll('[data-name="job-hunt"]')
 const prefRemoteWorkInput = document.querySelector('[data-name="remote-friendly"]')
 const prefLocationsInput = document.querySelector('[data-name="pref-locations"]')
 const prefRolesInput = document.querySelector('[data-name="pref-roles"]')
@@ -215,7 +217,77 @@ function fillFields(data) {
 
 }
 
-// hide loader and show edit form
+function checkForUpdates(data) {
+    
+    let profileUpdates = {}
+    
+    fNameInput.value !== data['First Name'] ? profileUpdates["First Name"] = fNameInput.value : ''
+    lNameInput.value !== data['Last Name'] ? profileUpdates["Last Name"] = lNameInput.value : ''
+    emailInput.value !== data['Email'] ? profileUpdates["Email"] = emailInput.value : ''
+    linkedinInput.value !== data['Linkedin'] ? profileUpdates["Linkedin"] = linkedinInput.value : ''
+    profilePicInput.value !== data['Profile Picture'] ? profileUpdates["Profile Picture"] = profilePicInput.value : ''
+    locatedSelector.getValue() !== data['Location'] ? profileUpdates["Location"] = locatedSelector.getValue() : ''
+    bio.textContent !== data['Bio'] ? profileUpdates["Bio"] = bio.textContent : ''
+    programsSelector.getValue() !== data['Startmate Program'] ? profileUpdates["Startmate Program"] = programsSelector.getValue() : ''
+
+
+    roleSelector.getValue() !== data['What do you do?'] ? profileUpdates['What do you do?'] = roleSelector.getValue() : ''
+    workExperienceInput.value !== data['Work Experience'] ? profileUpdates["Work Experience"] = workExperienceInput.value : ''
+    profileUpdates['First Job?'] = firstJobInput.checked ? firstJobInput.checked : ''
+    currentEmployerInput.value !== data['Candidate Employer'] ? profileUpdates['Candidate Employer'] = currentEmployerInput.value : ''
+    jobTitleInput.value !== data['Job Title'] ? profileUpdates['Job Title'] = jobTitleInput.value : ''
+    if (`${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}` !== data['Employment Start Date']) profileUpdates['Employment Start Date']
+    if (`${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}` !== data['Employment End Date']) profileUpdates['Employment End Date']
+    profileUpdates['Currently work at employer?'] = currentlyWorkingAtEmployerInput.checked ? currentlyWorkingAtEmployerInput.checked : ''
+
+
+    for (let i = 0; i < stageOfJobHuntInput.length; i++) {
+        if(stageOfJobHuntInput[i].checked === true) {
+            stageOfJobHuntInput[i].value !== data["Stage of Job Hunt"] ? profileUpdates["Stage of Job Hunt"] = stageOfJobHuntInput.value : ''
+        }
+    }
+    interestedRolesSelector.getValue() !== data['Job Pref: Relevant roles'] ? profileUpdates['Job Pref: Relevant roles'] = interestedRolesSelector.getValue() : ''
+    typeOfJobSelector.getValue() !== data['Job Pref: Type of role'] ? profileUpdates['Job Pref: Type of role'] = typeOfJobSelector.getValue() : ''
+    companySizeSelector.getValue() !== data['Job Pref: Company size'] ? profileUpdates['Job Pref: Company size'] = companySizeSelector.getValue() : ''
+    industriesSelector.getValue() !== data['Job Pref: Industries'] ? profileUpdates['Job Pref: Industries'] = industriesSelector.getValue() : ''
+    workingLocationSelector.getValue() !== data['Job Pref: Working Locations'] ? profileUpdates['Job Pref: Working Locations'] = workingLocationSelector.getValue() : ''
+    profileUpdates['Job Pref: Open to remote work'] = prefRemoteWorkInput.checked ? prefRemoteWorkInput.checked : ''
+    prefRoleBioInput.textContent !== data['Next Role'] ? profileUpdates['Next Role'] = prefRoleBioInput.textContent : ''
+    for (let i = 0; i < profileVisibilityInput.length; i++) {
+        if(profileVisibilityInput[i].checked === true) {
+            profileVisibilityInput[i].value !== data['Profile Visibility'] ? profileUpdates['Profile Visibility'] = profileVisibilityInput.value : ''
+        }
+    }
+
+    console.log(profileUpdates)
+    return profileUpdates
+}
+
+function updateProfile(data, userId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "put",
+        headers: myHeaders,
+        redirect: "follow",
+        body: JSON.stringify([{"id": userId,"fields":data}])
+    };
+
+    fetch(API + "Users", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
+
+
+saveBtns.forEach(btn => btn.addEventListener('click', () => {
+    const data = checkForUpdates(userData.fields) 
+    updateProfile(data, userData.id) 
+    })
+)
+
+
+
 // Let user save changes
 // if empty on non-required field clear in airatble
 // current employer field if USERTYPE IS EMPLYOER
