@@ -294,14 +294,15 @@ function updateProfile(data, userId) {
 
 
 saveBtns.forEach(btn => btn.addEventListener('click', () => {
-   if (!checkRequiredFields()) return false
+    window.clearTimeout(timeoutId)
+    if (!checkRequiredFields()) return false
     const data = checkForUpdates(userData.fields) 
     updateProfile(data, userData.id) 
     })
     )
     
 function checkRequiredFields() {
-   let valid
+   let valid = true
         
     if(!fNameInput.checkValidity()) {
         errorPopUp('Please enter your first name')
@@ -315,7 +316,6 @@ function checkRequiredFields() {
     
     
 function errorPopUp(message) {
-    window.clearTimeout(timeoutId)
     const errContainer = document.querySelector('[data-error="container"]')
     const errMsg = document.querySelector('[data-error="message"]')
     errMsg.textContent = message
