@@ -294,7 +294,7 @@ function updateProfile(data, userId) {
 
 
 saveBtns.forEach(btn => btn.addEventListener('click', () => {
-    window.clearTimeout(timeoutId)
+    closePopUp()
     if (!checkRequiredFields()) return false
     const data = checkForUpdates(userData.fields) 
     updateProfile(data, userData.id) 
@@ -316,11 +316,17 @@ function checkRequiredFields() {
     
     
 function errorPopUp(message) {
+    window.clearTimeout(timeoutId)
     const errContainer = document.querySelector('[data-error="container"]')
     const errMsg = document.querySelector('[data-error="message"]')
     errMsg.textContent = message
     errContainer.style.display = 'flex'
     timeoutId = setTimeout(() => errContainer.style.display = 'none', 15000);
+}
+
+function closePopUp() {
+    const errContainer = document.querySelector('[data-error="container"]')
+    errContainer.style.display = 'none'
 }
 
 
