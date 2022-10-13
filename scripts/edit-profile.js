@@ -8,6 +8,7 @@ const lNameInput = document.querySelector('[data-name="last-name"]')
 const emailInput = document.querySelector('[data-name="email"]')
 const linkedinInput = document.querySelector('[data-name="linkedin"]')
 const profilePicInput = document.querySelector('[data-name="profile-pic"]')
+    const profileImg = document.querySelector('[data-image-preview]')
 const locatedInput = document.querySelector('[data-name="located"]')
 const bioInput = document.querySelector('[data-name="bio"]')
 const startmatePrograms = document.querySelector('[data-name="startmate-programs"]')
@@ -33,7 +34,7 @@ const prefTypeOfWorkInput = document.querySelector('[data-name="pref-type-of-job
 const prefCompanySize = document.querySelector('[data-name="pref-company-size"]')
 const prefRoleBioInput = document.querySelector('[data-name="pref-next-role"]')
 const prefIndustriesInput = document.querySelector('[data-name="pref-industries"]')
-const profileVisibilityInput = document.querySelector('[data-name="visibility"]')
+const profileVisibilityInput = document.querySelectorAll('[data-name="visibility"]')
 
 const locationSelectorSettings = {
 	plugins: ['remove_button'],
@@ -176,6 +177,7 @@ function fillFields(data) {
     emailInput.value = data['Email'] ? data['Email'] : ''
     linkedinInput.value = data['Linkedin'] ? data['Linkedin'] : ''
     profilePicInput.value = data['Profile Picture'] ? data['Profile Picture'] : ''
+        profileImg.src = data['Profile Picture'] ? data['Profile Picture'] : ''
     locatedSelector.setValue(data['Location'] ? data['Location'] : '')
     bioInput.textContent = data['Bio'] ? data['Bio'] : ''
     programsSelector.setValue(data['Startmate Program'] ? data['Startmate Program'] : '')
@@ -236,8 +238,8 @@ function checkForUpdates(data) {
     profileUpdates['First Job?'] = firstJobInput.checked ? `${firstJobInput.checked}` : ''
     currentEmployerInput.value !== data['Candidate Employer'] ? profileUpdates['Candidate Employer'] = currentEmployerInput.value : ''
     jobTitleInput.value !== data['Job Title'] ? profileUpdates['Job Title'] = jobTitleInput.value : ''
-    if (`${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}` !== data['Employment Start Date']) profileUpdates['Employment Start Date']
-    if (`${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}` !== data['Employment End Date']) profileUpdates['Employment End Date']
+    if (`${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}` !== data['Employment Start Date']) profileUpdates['Employment Start Date'] = `${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}`
+    if (`${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}` !== data['Employment End Date']) profileUpdates['Employment End Date'] = `${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}`
     profileUpdates['Currently work at employer?'] = currentlyWorkingAtEmployerInput.checked ? `${currentlyWorkingAtEmployerInput.checked}` : ''
 
 
@@ -275,7 +277,17 @@ function updateProfile(data, userId) {
 
     fetch(API + "Users", requestOptions)
     .then(response => response.text())
-    .then(result => console.log(result))
+    .then(result => {
+        console.log(result)
+        MemberStack.onReady.then(function(member) {  
+            member.updateProfile({
+                "profile-photo": data["Profile Picture"],
+                "first-name": data["First Name"],
+                "last-name": data["Last Name"],
+                "email": data["Last Name"],
+            }, false)
+        })
+    })
     .catch(error => console.log('error', error));
 }
 
@@ -287,8 +299,6 @@ saveBtns.forEach(btn => btn.addEventListener('click', () => {
 )
 
 
-
-// Let user save changes
-// if empty on non-required field clear in airatble
+// check for blanks on must have fields
 // current employer field if USERTYPE IS EMPLYOER
 // fix photo uploader
