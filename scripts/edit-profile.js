@@ -3,6 +3,7 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 const saveBtns = document.querySelectorAll('[data-btn]')
 let timeoutId
+let userType
 
 const fNameInput = document.querySelector('[data-name="first-name"]')
 const lNameInput = document.querySelector('[data-name="last-name"]')
@@ -106,7 +107,7 @@ fetchData().then(([roles, locations, industries, programs]) => {
     MemberStack.onReady.then( async function(member) {
         if (member.loggedIn) {
             const userID = member["airtable-id-two"]
-            console.log('fetching data')
+            userType = member["user-type"]
             fetchUserData(userID)
         } 
 })
@@ -280,6 +281,7 @@ function updateProfile(data, userId) {
     .then(response => response.text())
     .then(result => {
         console.log(result)
+        savePopUp()
         MemberStack.onReady.then(function(member) {  
             member.updateProfile({
                 "profile-photo": data["Profile Picture"],
@@ -307,9 +309,13 @@ function checkRequiredFields() {
     if(!fNameInput.checkValidity()) {
         errorPopUp('Please enter your first name')
         valid = false }
-        // fNameInput.value ? '' : invalidFields.push(fNameInput)
-        // lNameInput.value ? '' : invalidFields.push(lNameInput)
-        // emailInput.value ? '' : invalidFields.push(emailInput)
+    if(!lNameInput.checkValidity()) {
+        errorPopUp('Please enter your last name')
+        valid = false }
+    if(!emailInput.checkValidity()) {
+        errorPopUp('Please enter your email address')
+        valid = false }
+     
         // locatedSelector.getValue() ? '' : invalidFields.push(locatedSelector)
     return valid
 }
@@ -320,14 +326,25 @@ function errorPopUp(message) {
     const errContainer = document.querySelector('[data-error="container"]')
     const errMsg = document.querySelector('[data-error="message"]')
     errMsg.textContent = message
+    errContainer.style.backgroundColor = '#ff6969'
     errContainer.style.display = 'flex'
     timeoutId = setTimeout(() => errContainer.style.display = 'none', 15000);
+}
+
+function savePopUp() {
+    window.clearTimeout(timeoutId)
+    const errContainer = document.querySelector('[data-error="container"]')
+    const errMsg = document.querySelector('[data-error="message"]')
+    errMsg.textContent = 'Changes Saved'
+    errContainer.style.backgroundColor = '#008764'
+    errContainer.style.display = 'flex'
+    timeoutId = setTimeout(() => errContainer.style.display = 'none', 5000);
 }
 
 function closePopUp() {
     const errContainer = document.querySelector('[data-error="container"]')
     errContainer.style.display = 'none'
 }
-
+//#
 
 // check for blanks on must have fields
