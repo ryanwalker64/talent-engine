@@ -2,6 +2,7 @@ const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableN
 const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 const saveBtns = document.querySelectorAll('[data-btn]')
+let timeoutId
 
 const fNameInput = document.querySelector('[data-name="first-name"]')
 const lNameInput = document.querySelector('[data-name="last-name"]')
@@ -293,12 +294,34 @@ function updateProfile(data, userId) {
 
 
 saveBtns.forEach(btn => btn.addEventListener('click', () => {
+   if (!checkRequiredFields()) return false
     const data = checkForUpdates(userData.fields) 
     updateProfile(data, userData.id) 
     })
-)
+    )
+    
+function checkRequiredFields() {
+   let valid
+        
+    if(!fNameInput.checkValidity()) {
+        errorPopUp('Please enter your first name')
+        valid = false }
+        // fNameInput.value ? '' : invalidFields.push(fNameInput)
+        // lNameInput.value ? '' : invalidFields.push(lNameInput)
+        // emailInput.value ? '' : invalidFields.push(emailInput)
+        // locatedSelector.getValue() ? '' : invalidFields.push(locatedSelector)
+    return valid
+}
+    
+    
+function errorPopUp(message) {
+    window.clearTimeout(timeoutId)
+    const errContainer = document.querySelector('[data-error="container"]')
+    const errMsg = document.querySelector('[data-error="message"]')
+    errMsg.textContent = message
+    errContainer.style.display = 'flex'
+    timeoutId = setTimeout(() => errContainer.style.display = 'none', 15000);
+}
 
 
 // check for blanks on must have fields
-// current employer field if USERTYPE IS EMPLYOER
-// fix photo uploader
