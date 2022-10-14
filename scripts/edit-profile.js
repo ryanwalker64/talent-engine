@@ -60,7 +60,7 @@ const generalSelectorSettings = {
 	}
 };
 
-let userData
+let companyData
 
 let locatedSelector
 let workingLocationSelector
@@ -124,9 +124,9 @@ function fetchUserData(id) {
 
    return fetch(API + "Users&id=" + id, requestOptions)
     .then(response => response.json())
-    .then(result => userData = result)
+    .then(result => companyData = result)
     .then(() => {
-        fillFields(userData.fields)
+        fillFields(companyData.fields)
         const loadingContainer = document.querySelector('[data-loader]')
         const container = document.querySelector('[data-profile="container"]')
         loadingContainer.style.display = 'none'
@@ -298,8 +298,8 @@ function updateProfile(data, userId) {
 saveBtns.forEach(btn => btn.addEventListener('click', () => {
     closePopUp()
     if (!checkRequiredFields()) return false
-    const data = checkForUpdates(userData.fields) 
-    updateProfile(data, userData.id) 
+    const data = checkForUpdates(companyData.fields) 
+    updateProfile(data, companyData.id) 
     })
     )
     
