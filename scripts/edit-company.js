@@ -41,7 +41,7 @@ const generalSelectorSettings = {
 let companyData
 let companyLocationSelector
 let companyIndustriesSelector
-let companySizeSelector = new TomSelect(companySizeInput, {...generalSelectorSettings, maxItems: null, sortField: {}});
+let companySizeSelector = new TomSelect(companySizeInput, {...generalSelectorSettings, maxItems: 1, sortField: {}});
 
 async function fetchData() {
     const [locationsResponse, industriesResponse] = await Promise.all([
@@ -56,7 +56,7 @@ async function fetchData() {
 fetchData().then(([locations, industries]) => {
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
     companyLocationSelector = new TomSelect(companyLocationInput, {...locationSelectorSettings, options: locations});
-    companyIndustriesSelector = new TomSelect(companyIndustriesSelector, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
+    companyIndustriesSelector = new TomSelect(companyindustriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 3});
 
 }).then(() => {
     MemberStack.onReady.then( async function(member) {
@@ -93,12 +93,13 @@ function fetchCompanyData(id) {
 function fillFields(data) {
     companyNameInput.value = data['Name'] ? data['Name'] : ''
     companyLogoInput.value = data['Logo'] ? data['Logo'] : ''
+        logoImg.src = data['Logo'] ? data['Logo'] : ''
     companySloganInput.value = data['Slogan'] ? data['Slogan'] : ''
     companyWebsiteInput.value = data['Website URL'] ? data['Website URL'] : ''
     companyLocationSelector.setValue(data['Location'] ? data['Location'] : '')
-    companySizeSelector.setValue(data['Company size'] ? data['Company size'] : '')
+    companySizeSelector.setValue(data['Company Size'] ? data['Company Size'] : '')
     companyIndustriesSelector.setValue(data['Industry'] ? data['Industry'] : '')
-    companyDescriptionInput.textContent = data['Company Description'] ? data['Company Description'] : ''
+    companyDescriptionInput.value = data['Company Description'] ? data['Company Description'] : ''
     companyRemoteFriendlyInput.checked = data['Remote Friendly'] ? true : false
 }
 
@@ -111,9 +112,9 @@ function checkForUpdates(data) {
     companySloganInput.value !== data['Slogan'] ? companyUpdates["Slogan"] = companySloganInput.value : ''
     companyWebsiteInput.value !== data['Website URL'] ? companyUpdates["Website URL"] = companyWebsiteInput.value : ''
     companyLocationSelector.getValue() !== data['Location'] ? companyUpdates["Location"] = [companyLocationSelector.getValue()] : ''
-    companySizeSelector.getValue() !== data['Company size'] ? companyUpdates['Company size'] = companySizeSelector.getValue() : ''
+    companySizeSelector.getValue() !== data['Company Size'] ? companyUpdates['Company Size'] = companySizeSelector.getValue() : ''
     companyIndustriesSelector.getValue() !== data['Industry'] ? companyUpdates['Industry'] = companyIndustriesSelector.getValue() : ''
-    companyDescriptionInput.textContent !== data['Company Description'] ? companyUpdates["Company Description"] = companyDescriptionInput.textContent : ''
+    companyDescriptionInput.value !== data['Company Description'] ? companyUpdates["Company Description"] = companyDescriptionInput.value : ''
     companyUpdates['Remote Friendly'] = companyRemoteFriendlyInput.checked ? `${companyRemoteFriendlyInput.checked}` : ''
 
     console.log(companyUpdates)
@@ -151,15 +152,18 @@ saveBtns.forEach(btn => btn.addEventListener('click', () => {
 function checkRequiredFields() {
    let valid = true
         
-    if(!fNameInput.checkValidity()) {
-        errorPopUp('Please enter your first name')
+    if(!companyNameInput.checkValidity()) {
+        errorPopUp('Please enter a company name')
         valid = false }
-    if(!lNameInput.checkValidity()) {
-        errorPopUp('Please enter your last name')
+    if(!companySloganInput.checkValidity()) {
+        errorPopUp('Please enter a company slogan')
         valid = false }
-    if(!emailInput.checkValidity()) {
-        errorPopUp('Please enter your email address')
+    if(!companyDescriptionInput.checkValidity()) {
+        errorPopUp('Please enter a company description')
         valid = false }
+    // if(!emailInput.checkValidity()) {
+    //     errorPopUp('Please enter your email address')
+    //     valid = false }
      
         // companyLocationSelector.getValue() ? '' : invalidFields.push(companyLocationSelector)
     return valid

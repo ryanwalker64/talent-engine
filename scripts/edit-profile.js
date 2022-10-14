@@ -181,7 +181,7 @@ function fillFields(data) {
     profilePicInput.value = data['Profile Picture'] ? data['Profile Picture'] : ''
         profileImg.src = data['Profile Picture'] ? data['Profile Picture'] : ''
     locatedSelector.setValue(data['Location'] ? data['Location'] : '')
-    bioInput.textContent = data['Bio'] ? data['Bio'] : ''
+    bioInput.value = data['Bio'] ? data['Bio'] : ''
     programsSelector.setValue(data['Startmate Program'] ? data['Startmate Program'] : '')
 
     // Work Experience Fields
@@ -213,7 +213,7 @@ function fillFields(data) {
     industriesSelector.setValue(data['Job Pref: Industries'] ? data['Job Pref: Industries'] : '')
     workingLocationSelector.setValue(data['Job Pref: Working Locations'] ? data['Job Pref: Working Locations'] : '')
     prefRemoteWorkInput.checked = data['Job Pref: Open to remote work'] ? true : false
-    prefRoleBioInput.textContent = data['Next Role'] ? data['Next Role'] : ''
+    prefRoleBioInput.value = data['Next Role'] ? data['Next Role'] : ''
     if(data['Profile Visibility']) {
         const radiobtn = document.getElementById(data['Profile Visibility']);
         radiobtn.checked = true
@@ -231,7 +231,7 @@ function checkForUpdates(data) {
     linkedinInput.value !== data['Linkedin'] ? profileUpdates["Linkedin"] = linkedinInput.value : ''
     profilePicInput.value !== data['Profile Picture'] ? profileUpdates["Profile Picture"] = profilePicInput.value : ''
     locatedSelector.getValue() !== data['Location'] ? profileUpdates["Location"] = [locatedSelector.getValue()] : ''
-    bio.textContent !== data['Bio'] ? profileUpdates["Bio"] = bio.textContent : ''
+    bio.value !== data['Bio'] ? profileUpdates["Bio"] = bio.value : ''
     programsSelector.getValue() !== data['Startmate Program'] ? profileUpdates["Startmate Program"] = programsSelector.getValue() : ''
 
 
@@ -256,7 +256,7 @@ function checkForUpdates(data) {
     industriesSelector.getValue() !== data['Job Pref: Industries'] ? profileUpdates['Job Pref: Industries'] = industriesSelector.getValue() : ''
     workingLocationSelector.getValue() !== data['Job Pref: Working Locations'] ? profileUpdates['Job Pref: Working Locations'] = workingLocationSelector.getValue() : ''
     profileUpdates['Job Pref: Open to remote work'] = prefRemoteWorkInput.checked ? `${prefRemoteWorkInput.checked}` : ''
-    prefRoleBioInput.textContent !== data['Next Role'] ? profileUpdates['Next Role'] = prefRoleBioInput.textContent : ''
+    prefRoleBioInput.value !== data['Next Role'] ? profileUpdates['Next Role'] = prefRoleBioInput.value : ''
     for (let i = 0; i < profileVisibilityInput.length; i++) {
         if(profileVisibilityInput[i].checked === true) {
             profileVisibilityInput[i].value !== data['Profile Visibility'] ? profileUpdates['Profile Visibility'] = profileVisibilityInput.value : ''
@@ -314,6 +314,9 @@ function checkRequiredFields() {
         valid = false }
     if(!emailInput.checkValidity()) {
         errorPopUp('Please enter your email address')
+        valid = false }
+    if(!bioInput.checkValidity()) {
+        errorPopUp('Please enter a bio')
         valid = false }
      
         // locatedSelector.getValue() ? '' : invalidFields.push(locatedSelector)
