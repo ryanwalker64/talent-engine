@@ -3,9 +3,9 @@ const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableN
 
 let userProfile = {}
 let userId
-let userIsLoggedIn
 let loggedInUserId
 let userType
+let loggedInUsersProfile
 
 const profileContainer = document.querySelector('[data-profile="container"]')
 
@@ -74,59 +74,63 @@ function displayProfile() {
                         </div>
                     </div>
                     <div class="candidate-buttons-container">
-                        ${userIsLoggedIn 
+                        ${loggedInUsersProfile 
                             ? `<a href="/app/edit-profile" class="candidate-button-v2 more-button w-button">Edit Profile</a>`
-                            : ''
-                        }
-                        <a href="https://talent.startmate.com/message/send?user=${userProfile.id}" class="candidate-button-v2 contact-btn w-button">Contact</a>
+                            : ''}
+                        ${!loggedInUsersProfile 
+                            ? `<a href="https://talent.startmate.com/message/send?user=${userProfile.id}" class="candidate-button-v2 contact-btn w-button">Contact</a>`
+                            : ''}
                     </div>
                 </div>
-                <div class="user-information">
-                <div class="user-bio">${userProfile.fields["Bio"]}</div>
-                <div class="user-experience-container">
-                    <div id="w-node-d1b484be-b039-f163-f2bd-141e8ff68677-89aee008" class="user-experience">
-                        <div class="label-v2">Experience</div>
-                        <div class="short-company">
-                            ${employerLogo}
-                            <div class="company-desc-profile new">
-                                ${handleExperienceContainer}
+                ${userType === "CANDIDATE" 
+                ? `<div class="user-information">
+                    <div class="user-bio">${userProfile.fields["Bio"]}</div>
+                    <div class="user-experience-container">
+                        <div id="w-node-d1b484be-b039-f163-f2bd-141e8ff68677-89aee008" class="user-experience">
+                            <div class="label-v2">Experience</div>
+                            <div class="short-company">
+                                ${employerLogo}
+                                <div class="company-desc-profile new">
+                                    ${handleExperienceContainer}
+                                </div>
                             </div>
                         </div>
+                        ${userProfile.fields["Startmate Program"] ?
+                        `<div id="w-node-b33f916e-25ad-a1b2-2a99-d341be5d4074-89aee008" class="user-sm-programs">
+                            <div class="label-v2">Startmate Programs</div>
+                                 ${createCategories(userProfile.fields["Startmate Program"])} 
+                        </div>`
+                        : ''}
                     </div>
-                    <div id="w-node-b33f916e-25ad-a1b2-2a99-d341be5d4074-89aee008" class="user-sm-programs">
-                        <div class="label-v2">Startmate Programs</div>
-                            ${createCategories(userProfile.fields["Startmate Program"])}
+                    <div class="label-v2">Looking for in next role</div>
+                    <div class="user-next-role">${userProfile.fields["Next Role"]}</div>
+                    <div class="job-prefs-container">
+                        <div id="w-node-a8b530b8-b509-4f4e-9e49-f72b76d74fcd-89aee008" class="job-pref-indiv">
+                            <div class="label-v2">Roles</div>
+                                ${createCategories(userProfile.fields["Job Pref: Relevant roles"])}
+                        </div>
+                        <div id="w-node-_9f50e0b2-ba60-88ce-2b64-f5921d73dfc1-89aee008" class="job-pref-indiv">
+                            <div class="label-v2">Locations willing to work</div>
+                                ${createCategories(userProfile.fields["Job Pref: Working Locations"])}
+                        </div>
+                        <div id="w-node-bcc88d47-3343-e695-3b39-811722584789-89aee008" class="job-pref-indiv">
+                            <div class="label-v2">Experience Level</div>
+                                ${getExperienceLevel(userProfile.fields["Work Experience"])}
+                        </div>
+                        <div id="w-node-_9dad6d86-99ab-a024-6f12-a81d2e150539-89aee008" class="job-pref-indiv">
+                            <div class="label-v2">Type of Job</div>
+                                ${createCategories(userProfile.fields["Job Pref: Type of role"])}
+                        </div>
+                        <div id="w-node-b867e61b-f8e7-1552-8487-2d485b3595db-89aee008" class="job-pref-indiv">
+                            <div class="label-v2">Industries</div>
+                                ${createCategories(userProfile.fields["Job Pref: Industries"])}
+                        </div>
+                        <div id="w-node-a39a8a14-8153-332f-ee8f-cc469567ca1d-89aee008" class="job-pref-indiv">
+                            <div class="label-v2">Company Size</div>
+                                ${createCategories(userProfile.fields["Job Pref: Company size"])}
+                        </div>
                     </div>
-                </div>
-                <div class="label-v2">Looking for in next role</div>
-                <div class="user-next-role">${userProfile.fields["Next Role"]}</div>
-                <div class="job-prefs-container">
-                    <div id="w-node-a8b530b8-b509-4f4e-9e49-f72b76d74fcd-89aee008" class="job-pref-indiv">
-                        <div class="label-v2">Roles</div>
-                            ${createCategories(userProfile.fields["Job Pref: Relevant roles"])}
-                    </div>
-                    <div id="w-node-_9f50e0b2-ba60-88ce-2b64-f5921d73dfc1-89aee008" class="job-pref-indiv">
-                        <div class="label-v2">Locations willing to work</div>
-                            ${createCategories(userProfile.fields["Job Pref: Working Locations"])}
-                    </div>
-                    <div id="w-node-bcc88d47-3343-e695-3b39-811722584789-89aee008" class="job-pref-indiv">
-                        <div class="label-v2">Experience Level</div>
-                            ${getExperienceLevel(userProfile.fields["Work Experience"])}
-                    </div>
-                    <div id="w-node-_9dad6d86-99ab-a024-6f12-a81d2e150539-89aee008" class="job-pref-indiv">
-                        <div class="label-v2">Type of Job</div>
-                            ${createCategories(userProfile.fields["Job Pref: Type of role"])}
-                    </div>
-                    <div id="w-node-b867e61b-f8e7-1552-8487-2d485b3595db-89aee008" class="job-pref-indiv">
-                        <div class="label-v2">Industries</div>
-                            ${createCategories(userProfile.fields["Job Pref: Industries"])}
-                    </div>
-                    <div id="w-node-a39a8a14-8153-332f-ee8f-cc469567ca1d-89aee008" class="job-pref-indiv">
-                        <div class="label-v2">Company Size</div>
-                            ${createCategories(userProfile.fields["Job Pref: Company size"])}
-                    </div>
-                </div>
-            </div>
+                </div>` : ''}
         </div>
         </div>
         `
@@ -150,6 +154,7 @@ function getUserData(userId) {
         .then(result => {
             console.log(result)
             userProfile = result
+            userType = userProfile.fields['User Type']
             displayProfile()
             document.title = userProfile.fields["Full Name"]
         })
@@ -164,14 +169,10 @@ function getUserId()  {
 
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
-        userIsLoggedIn = true
-        userType = member['user-type']
-        console.log(userType)
         loggedInUserId = member['airtable-id-two']
+        loggedInUsersProfile = getUserId() === loggedInUserId ? true : false
         console.log(loggedInUserId)
         getUserData(userId)
-    } else {
-        userIsLoggedIn = false
-    }
+    } 
 })
 

@@ -107,9 +107,10 @@ function createCompany(companyData) {
 };
 
     fetch(API + "Companies", requestOptions)
-        .then(response => response.text())
+        .then(response => response.json())
         .then(result => {
             console.log(result)
+            const companyAirtableID = result[0].id
             MemberStack.onReady.then(function(member) {  
                 member.updateProfile({
                     "company-airtable-id": companyAirtableID,

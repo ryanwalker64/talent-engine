@@ -6,6 +6,8 @@ const remoteInput = document.querySelector('[data-input="remote"]')
 const rolesInput = document.querySelector('[data-input="roles"]')
 const industriesInput = document.querySelector('[data-input="industries"]')
 const clearBtn = document.querySelector('[data-filter="clear"]')
+const modalContainer = document.querySelector('[data-upgrade="modalbackground"]')
+const modalCloseBtn = document.querySelector('[data-upgrade="closebtn"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
     sortField: {field: "text", direction: "asc"}
@@ -66,6 +68,10 @@ formInputs.forEach(filter => {
 })
 
 clearBtn.addEventListener('click', clearFilters)
+modalContainer.addEventListener('click', closeModal)
+modalCloseBtn.addEventListener('click', closeModal)
+
+
 
 function getRemoteValue() {
     filterObj.remote = []
@@ -268,6 +274,33 @@ function displayUserHeadline(profile) {
 
     return headline
 }
+
+function profileButtonsContainer(profile) {
+    let btns = `<a href="${paidMember ? `/app/profile?user=${profile.id}"` : '"onclick="upgradeModule()"'}" class="candidate-button-v2 more-button w-button" target="_blank">See more</a>
+                <a href="${paidMember ? `/message/send?user=${profile.id}"` : '"onclick="upgradeModule()"'}" class="candidate-button-v2 contact-btn w-button" target="_blank">Contact</a>`
+    
+}
+
+
+function upgradeModule() {
+    modalContainer.style.display = 'flex'
+}
+
+function closeModal(e) {
+    console.log(e.currentTarget)
+    if(e.currentTarget === modalContainer) {
+        modalContainer.style.display = 'none'
+    }
+}
+
+
+// if user isn't paid, show upgrade module on contact button
+// hide module if clicked on x or outside
+// get full access takes user to subscribe page
+
+//if user hovers over contact - pop up appears with "Send a message to PROFILE"
+// add a upgrade banner at top of talent network "Want to browse more, subscribe to get full access"
+//when user upgrades, send a slack message
 
 function displayProfiles(profiles){
     const profilesHTML = profiles.map(profile => {

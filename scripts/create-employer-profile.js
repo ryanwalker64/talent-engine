@@ -63,7 +63,6 @@ function submitProfile() {
     const userData = {
         "First Name": formProps['first-name'],
         "Last Name": formProps['last-name'],
-        "Bio": formProps['bio'],
         "Linkedin": formProps['linkedin'],
         "Location": [locatedSelector.getValue()],
         "Job Title": formProps['job-title'],
