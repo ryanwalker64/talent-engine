@@ -41,6 +41,7 @@ let industriesSelector
 
 function handleFilterSelection() {
     let filter = []
+    let interestedCandidates
     if (getExperienceValues()) filter.push(getExperienceValues())
     if (getRoleValues()) filter.push(getRoleValues())
     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
@@ -51,13 +52,21 @@ function handleFilterSelection() {
     if (remoteSelection === "All locations") filter.push(getRemoteValue())
     // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
     console.log("current filters:", filterObj)
+    if (companyData.fields["Interested Candidates"]) {
+        interestedCandidates = companyData.fields["Interested Candidates"].map(candidate => {
+            return `{Airtable Record ID}="${candidate}"`
+        }).join(',')
+        console.log(interestedCandidates)
+
+    }
+
     if (checkForEmptyFilters()) {
         clearFilters()
     } else {
         const filteredOptions = 
             remoteSelection === "Based on location"
-                ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-                : `IF(OR(${filter.join(',')}),"true")`
+                ? `IF(AND(OR(${interestedCandidates}),OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+                : `IF(AND(OR(${interestedCandidates}),OR(${filter.join(',')})),"true")`
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         console.log(remoteSelector.getValue())      
@@ -102,7 +111,7 @@ function getWorkTypeValues() {
     const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox }); 
     if (checked.length === 0) return
     filterObj.workType = checked.map(checkbox => {return checkbox.dataset.worktype})
-    const values = checked.map(checkbox => {return `{Job Pref: Type of role}="${checkbox.dataset.worktype}"`}).join(',')
+    const values = checked.map(checkbox => {return `FIND("${checkbox.dataset.worktype}",{Job Pref: Type of role})`}).join(',')
     return values
 }
 
@@ -222,7 +231,7 @@ function clearFilters() {
 }
 
 
-function fetchProfiles() {
+function fetchProfiles(filter) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -231,7 +240,8 @@ function fetchProfiles() {
         redirect: "follow",
     };
 
-    fetch(API + "&perPage=30", requestOptions)
+    const APIURL = filter ? API + filter : API
+    fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
             userbase = result.records
@@ -251,7 +261,7 @@ function fetchFilteredProfiles(filter) {
         redirect: "follow",
     };
 
-    const APIURL = API + filter
+    const APIURL = filter ? API + filter : API
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
@@ -391,11 +401,18 @@ function getCompanyData(companyId) {
         .then(result => {
             console.log(result)
             companyData = result
-            // fetchProfiles()
-            
         })
         .then(() => {
-            
+            if (companyData.fields["Interested Candidates"]) {
+                interestedCandidates = companyData.fields["Interested Candidates"].map(candidate => {
+                    return `{Airtable Record ID}="${candidate}"`
+                }).join(',')
+                console.log(interestedCandidates)
+            }
+                const filteredOptions = `IF(AND(OR(${interestedCandidates}),OR(${filter.join(',')})),"true")`
+        
+                const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+                fetchProfiles(filterEncode)
         })
         .catch(error => console.log('error', error));
 }

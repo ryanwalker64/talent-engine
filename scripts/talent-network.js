@@ -100,7 +100,7 @@ function getWorkTypeValues() {
     const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox }); 
     if (checked.length === 0) return
     filterObj.workType = checked.map(checkbox => {return checkbox.dataset.worktype})
-    const values = checked.map(checkbox => {return `{Job Pref: Type of role}="${checkbox.dataset.worktype}"`}).join(',')
+    const values = checked.map(checkbox => {return `FIND("${checkbox.dataset.worktype}",{Job Pref: Type of role})`}).join(',')
     return values
 }
 
