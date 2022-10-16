@@ -209,7 +209,7 @@ function fetchFilteredProfiles(filter) {
             const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
             displayCompanies(TempUserbase)
             countProfiles(TempUserbase)
-            console.log(TempUserbase)
+            // console.log(TempUserbase)
         })
         .catch(error => console.log('error', error));
 }

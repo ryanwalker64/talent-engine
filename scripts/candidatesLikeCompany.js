@@ -21,6 +21,8 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 // let offset
 let paidMember
+let userCompanyId
+let companyData
 let userbase = []
 let filterObj = {
     'workType': [],
@@ -373,39 +375,44 @@ fetchFilterData().then(([roles, locations, industries]) => {
     remoteSelector.on('change', (e) => {handleFilterSelection()})
 })
 
+
+function getCompanyData(companyId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    
+    };
+
+    fetch(API + "Companies&id=" + companyId, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            companyData = result
+            // fetchProfiles()
+            
+        })
+        .then(() => {
+            
+        })
+        .catch(error => console.log('error', error));
+}
+
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         console.log('User is logged in')
         paidMember = member['paying-user']
-        if (paidMember) banner.style.display = 'none'
-        console.log(paidMember)
-        fetchProfiles()
+        userCompanyId = member['company-airtable-id']
+        // if (paidMember) banner.style.display = 'none'
+        console.log(userCompanyId)
+        getCompanyData(userCompanyId)
         fetchFilterData()
     }
 })
 
 
-    // Setup Tom Select for industires, roles, locaiton, remote
-    // Make sure they all work to filter
-    // store filters in URL
-    // if filters in URL fetch those profiles
-    // if more than 20 profiles, store the offset
-    // if less than 20 get 20 more profiles, remove any who's id's match the existing number, then push them to USERBASE till it hits 20
-// show what filters a user is matching
-    // clear button or no filters restores 20
 
-    // On load grab 20 candidates, no employers, only profiles that are visible
-    // Store the offset 
-    // Add a loading state whilst retrieving the profiles 
-    // grab total number of records and update the counts for displaying and total candidates
-
-    // At bottom of list add button to show 20 more candidates
-    // Add a loading state whilst retrieving the profiles
-    // fetch 20 more candidates with the URL + offset ( + filter if set)
-    // append the 20 new candidates to the userbase
-    // update offset
-    // Append the 20 profiles to the DOM
-    // update the counts for displaying and total candidates
-
-    // if user hidden companies field matches a company name of the user viewing, hide from DOM?
-
+// grab the list of users (recIDs) that like the company
+// create filter by appending OR(REC id = "id")
