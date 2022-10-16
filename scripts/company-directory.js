@@ -222,6 +222,17 @@ function createCategories(arr) {
         } else return ''
     } 
 
+function heartStatus(loggedInUserData) {
+    let heartStatus 
+
+    if (loggedInUserData.fields['Companies interested in']) {
+        heartStatus = loggedInUserData.fields['Companies interested in'].findIndex(id => id === company.id) !== -1 ? 'liked' : ''
+    }
+    return heartStatus
+}
+
+// <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">${loggedInUserData.fields['Companies interested in'].findIndex(id => id === company.id) !== -1 ? 'Unfavourite company?' : 'Favourite company?'}</a>
+
 function displayCompanies(companies){
     const companiesHTML = companies.map(company => {
         const score = !company.score
@@ -250,8 +261,7 @@ function displayCompanies(companies){
             <div class="div-block-75">
                 ${score}
                 <div class="heart-container" data-likebtn="${company.id}">
-                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${loggedInUserObj.fields['Companies interested in'].findIndex(id => id === company.id) !== -1 ? 'liked' : ''}">❤</a>
-                    <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">${loggedInUserObj.fields['Companies interested in'].findIndex(id => id === company.id) !== -1 ? 'Unfavourite company?' : 'Favourite company?'}</a>
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj)}">❤</a>
                 </div>
                 <a href="/app/company?id=${company.id}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
             </div>
@@ -304,13 +314,12 @@ function applyEventListeners() {
         btn.addEventListener('click', (e) => {
             const btn = e.currentTarget
             const heartBtn = btn.querySelector('[data-heart="small"]')
-            const heartBtnText = btn.querySelector('[data-heart="large"]')
             heartBtn.classList.toggle('liked')
             if (heartBtn.classList.contains('liked')) {
-                heartBtnText.textContent = 'Unfavourite company?'
+                
                 // heartBtnText.style.background = "black"
             } else {
-                heartBtnText.textContent = 'Favourite company?'
+                
                 // heartBtnText.style.background = "red"
                 
             }
