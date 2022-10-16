@@ -227,7 +227,7 @@ function clearFilters() {
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
-    fetchProfiles()
+    fetchProfiles(companyId)
 }
 
 
@@ -409,7 +409,7 @@ function getCompanyData(companyId) {
                 }).join(',')
                 console.log(interestedCandidates)
             }
-                const filteredOptions = `IF(AND(OR(${interestedCandidates}),OR(${filter.join(',')})),"true")`
+                const filteredOptions = `IF(OR(${interestedCandidates}),"true")`
         
                 const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
                 fetchProfiles(filterEncode)
