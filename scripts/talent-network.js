@@ -8,6 +8,7 @@ const industriesInput = document.querySelector('[data-input="industries"]')
 const clearBtn = document.querySelector('[data-filter="clear"]')
 const modalContainer = document.querySelector('[data-upgrade="modalbackground"]')
 const modalCloseBtn = document.querySelector('[data-upgrade="closebtn"]')
+const banner = document.querySelector('[data-upgrade="banner"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
     sortField: {field: "text", direction: "asc"}
@@ -276,8 +277,8 @@ function displayUserHeadline(profile) {
 }
 
 function profileButtonsContainer(profile) {
-    let btns = `<a href="${paidMember ? `/app/profile?user=${profile.id}" target="_blank` : '"onclick="upgradeModule()"'}" class="candidate-button-v2 more-button w-button" >See more</a>
-                <a href="${paidMember ? `/message/send?user=${profile.id}" target="_blank` : '"onclick="upgradeModule()"'}" class="candidate-button-v2 contact-btn w-button" >Contact</a>`
+    let btns = `<a ${paidMember ? `href="/app/profile?user=${profile.id}" target="_blank` : '"onclick="upgradeModule()"'}" class="candidate-button-v2 more-button w-button" >See more</a>
+                <a ${paidMember ? `href="/message/send?user=${profile.id}" target="_blank` : '"onclick="upgradeModule()"'}" class="candidate-button-v2 contact-btn w-button" >Contact</a>`
     return btns
 }
 
@@ -292,11 +293,6 @@ function closeModal(e) {
         modalContainer.style.display = 'none'
     }
 }
-
-
-// if user isn't paid, show upgrade module on contact button
-// hide module if clicked on x or outside
-// get full access takes user to subscribe page
 
 //if user hovers over contact - pop up appears with "Send a message to PROFILE"
 // add a upgrade banner at top of talent network "Want to browse more, subscribe to get full access"
@@ -384,6 +380,7 @@ MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         console.log('User is logged in')
         paidMember = member['paying-user']
+        if (paidMember) banner.style.display = 'none'
         console.log(paidMember)
         fetchProfiles()
         fetchFilterData()
