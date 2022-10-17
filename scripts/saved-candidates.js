@@ -67,8 +67,8 @@ function handleFilterSelection() {
     } else {
         const filteredOptions = 
             remoteSelection === "Based on location"
-                ? `IF(AND(OR(${interestedCandidates}),OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-                : `IF(AND(OR(${interestedCandidates}),OR(${filter.join(',')})),"true")`
+                ? `IF(AND(OR(${candidatesInterestedIn}),OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+                : `IF(AND(OR(${candidatesInterestedIn}),OR(${filter.join(',')})),"true")`
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         console.log(remoteSelector.getValue())      
