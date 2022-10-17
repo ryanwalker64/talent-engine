@@ -140,6 +140,22 @@ function applyEventListeners() {
     )
 }
 
+function updateLikedCompanies(companiesList, userId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "put",
+        headers: myHeaders,
+        redirect: "follow",
+        body: JSON.stringify([{"id": userId,"fields":{"Companies interested in": companiesList}}])
+    };
+
+    fetch(API + "Users", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
+
 function handleLikedCompanies(userObj, companyid) {
     let likedCompanies = []
     //if the liked list exists
@@ -252,6 +268,7 @@ function getUserData(userId) {
             // console.log(result)
             loggedInUserObj = result
             console.log(loggedInUserObj)
+            getCompanyData()
         })
         .catch(error => console.log('error', error));
 }
@@ -266,7 +283,7 @@ MemberStack.onReady.then(function(member) {
         userType = member['user-type']
         userMatchesCompany = false
     
-    getCompanyData()
+    
 })
 
 
