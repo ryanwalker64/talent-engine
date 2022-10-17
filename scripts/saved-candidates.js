@@ -44,6 +44,7 @@ let industriesSelector
 
 function handleFilterSelection() {
     let filter = []
+    let interestedCandidates
     if (getExperienceValues()) filter.push(getExperienceValues())
     if (getRoleValues()) filter.push(getRoleValues())
     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
@@ -54,13 +55,21 @@ function handleFilterSelection() {
     if (remoteSelection === "All locations") filter.push(getRemoteValue())
     // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
     console.log("current filters:", filterObj)
+    if (companyData.fields["Interested Candidates"]) {
+        interestedCandidates = companyData.fields["Interested Candidates"].map(candidate => {
+            return `{Airtable Record ID}="${candidate}"`
+        }).join(',')
+        console.log(interestedCandidates)
+
+    }
+
     if (checkForEmptyFilters()) {
         clearFilters()
     } else {
         const filteredOptions = 
             remoteSelection === "Based on location"
-                ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-                : `IF(OR(${filter.join(',')}),"true")`
+                ? `IF(AND(OR(${interestedCandidates}),OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+                : `IF(AND(OR(${interestedCandidates}),OR(${filter.join(',')})),"true")`
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         console.log(remoteSelector.getValue())      
@@ -221,11 +230,11 @@ function clearFilters() {
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
-    fetchProfiles()
+    fetchFilterData(userCompanyId)
 }
 
 
-function fetchProfiles() {
+function fetchProfiles(filter) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -234,7 +243,8 @@ function fetchProfiles() {
         redirect: "follow",
     };
 
-    fetch(API + "&perPage=30", requestOptions)
+    const APIURL = filter ? API + filter : API
+    fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
             userbase = result.records
@@ -254,7 +264,7 @@ function fetchFilteredProfiles(filter) {
         redirect: "follow",
     };
 
-    const APIURL = API + filter
+    const APIURL = filter ? API + filter : API
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
@@ -328,7 +338,7 @@ function displayProfiles(profiles){
                                 : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
                 ${loggedInUserType === 'EMPLOYER'
                 ? `<div class="heart-container" data-likebtn="${profile.id}">
-                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, profile)} tooltip"><span class="tooltiptext">Save this candidate?</span>❤</a>
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, profile)} tooltip"><span class="tooltiptext">Remove this candidate?</span>❤</a>
                     </div>`
                 : ''
                 }
@@ -346,7 +356,7 @@ function applyEventListeners() {
     likeCompanyBtns.forEach(btn => 
         btn.addEventListener('click', (e) => {
             const btn = e.currentTarget
-            console.log(btn)
+            console.log(btn.closest('.candidate-profile'))
             const heartBtn = btn.querySelector('[data-heart="small"]')
             heartBtn.classList.toggle('liked')
             updateLikedCandidates(handleLikedCandidates(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
@@ -448,43 +458,6 @@ fetchFilterData().then(([roles, locations, industries]) => {
     remoteSelector.on('change', (e) => {handleFilterSelection()})
 })
 
-function getCompanyData(companyId) {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    var requestOptions = {
-        method: "get",
-        headers: myHeaders,
-        redirect: "follow",
-    
-    };
-
-    fetch(API + "Companies&fields=Interested%20Candidates,Name&id=" + companyId, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            console.log(result)
-            companyData = result
-        })
-        .then(() => {
-            const interestedCandidatesBanner = document.querySelector('[data-upgrade="interested-candidates"]')
-            const interestedCandidatesBannerText = document.querySelector('[data-upgrade="interested-candidates-text"]')
-            if (companyData 
-                && companyData.fields['Interested Candidates'] 
-                && companyData.fields['Interested Candidates'].length > 0
-                && paidMember) {
-                    interestedCandidatesBannerText.innerHTML = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
-                    interestedCandidatesBanner.style.display = "flex"
-                    interestedCandidatesBanner.insertAdjacentHTML('beforeend', `<a href="/app/candidates-interested-directory" class="button-6 bannerbtn redbutton w-button"><span class="text-span-16">🔥</span> Show me</a>`)
-            } else if(companyData 
-                && companyData.fields['Interested Candidates'] 
-                && companyData.fields['Interested Candidates'].length > 9) {
-                    interestedCandidatesBannerText.innerHTML = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
-                    interestedCandidatesBanner.style.display = "flex"
-                    interestedCandidatesBanner.insertAdjacentHTML('beforeend', `<a onclick="upgradeModule()" class="button-6 bannerbtn redbutton w-button"><span class="text-span-16">🔥</span> Show me</a>`)
-
-            }
-        })
-        .catch(error => console.log('error', error));
-}
 
 function getLoggedInUserData(userId) {
 
@@ -503,7 +476,20 @@ function getLoggedInUserData(userId) {
             loggedInUserObj = result
             console.log(loggedInUserObj)
             // get user's profile data
-            fetchProfiles()
+        })
+        .then(() => {
+            // const companyNameHeading = document.querySelector('[data-company="title"]')
+            // companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
+            if (loggedInUserObj.fields["Candidate interested in"]) {
+                const candidateInterestedIn = loggedInUserObj.fields["Candidate interested in"].map(candidate => {
+                    return `{Airtable Record ID}="${candidate}"`
+                }).join(',')
+                console.log(candidateInterestedIn)
+            }
+                const filteredOptions = `IF(OR(${candidateInterestedIn}),"true")`
+        
+                const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+                fetchProfiles(filterEncode)
         })
         .catch(error => console.log('error', error));
 }
@@ -515,15 +501,14 @@ MemberStack.onReady.then(function(member) {
         userCompanyId = member['company-airtable-id']
         loggedInUserId = member['airtable-id-two']
         loggedInUserType = member['user-type']
-        if(userCompanyId) getCompanyData(userCompanyId)
-        if (paidMember) banner.style.display = 'none'
-        console.log(paidMember)
+        // if (paidMember) banner.style.display = 'none'
+        console.log(userCompanyId)
         getLoggedInUserData(loggedInUserId)
         fetchFilterData()
+        
     }
 })
 
 
-
-    // if user hidden companies field matches a company name of the user viewing, hide from DOM?
-
+// grab the list of users (recIDs) that like the company
+// create filter by appending OR(REC id = "id")
