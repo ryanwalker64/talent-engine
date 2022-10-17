@@ -21,6 +21,7 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 // let offset
 let paidMember
+let candidatesInterestedIn
 let userCompanyId
 let companyData
 let loggedInUserId
@@ -55,12 +56,10 @@ function handleFilterSelection() {
     if (remoteSelection === "All locations") filter.push(getRemoteValue())
     // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
     console.log("current filters:", filterObj)
-    if (companyData.fields["Interested Candidates"]) {
-        interestedCandidates = companyData.fields["Interested Candidates"].map(candidate => {
+    if (loggedInUserObj.fields["Candidates interested in"]) {
+        candidatesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
             return `{Airtable Record ID}="${candidate}"`
         }).join(',')
-        console.log(interestedCandidates)
-
     }
 
     if (checkForEmptyFilters()) {
@@ -244,6 +243,7 @@ function fetchProfiles(filter) {
     };
 
     const APIURL = filter ? API + filter : API
+    console.log(APIURL)
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
@@ -356,8 +356,9 @@ function applyEventListeners() {
     likeCompanyBtns.forEach(btn => 
         btn.addEventListener('click', (e) => {
             const btn = e.currentTarget
-            console.log(btn.closest('.candidate-profile'))
+            const profileAttachedToBtn = btn.closest('.candidate-profile')
             const heartBtn = btn.querySelector('[data-heart="small"]')
+            if(heartBtn.classList.contains('liked')) profileAttachedToBtn.remove()
             heartBtn.classList.toggle('liked')
             updateLikedCandidates(handleLikedCandidates(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
             // change hover text to unlike company
@@ -480,15 +481,15 @@ function getLoggedInUserData(userId) {
         .then(() => {
             // const companyNameHeading = document.querySelector('[data-company="title"]')
             // companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
-            if (loggedInUserObj.fields["Candidate interested in"]) {
-                const candidateInterestedIn = loggedInUserObj.fields["Candidate interested in"].map(candidate => {
+            if (loggedInUserObj.fields["Candidates interested in"]) {
+                 candidatesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
                     return `{Airtable Record ID}="${candidate}"`
                 }).join(',')
-                console.log(candidateInterestedIn)
             }
-                const filteredOptions = `IF(OR(${candidateInterestedIn}),"true")`
-        
-                const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+            const filteredOptions = `IF(OR(${candidatesInterestedIn}),"true")`
+            
+            const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+            console.log(candidatesInterestedIn, filterEncode, filteredOptions)
                 fetchProfiles(filterEncode)
         })
         .catch(error => console.log('error', error));
