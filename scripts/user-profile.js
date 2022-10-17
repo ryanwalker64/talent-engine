@@ -197,10 +197,10 @@ function handleLikedCandidates(userObj, candidateId) {
     return likedCandidates
 }
 
-function heartStatus(loggedInUserData, company) {
+function heartStatus(loggedInUserData, candidate) {
 
     if (loggedInUserData.fields['Candidates interested in']) {
-        if (loggedInUserData.fields['Candidates interested in'].findIndex(id => id === company.id) !== -1) {
+        if (loggedInUserData.fields['Candidates interested in'].findIndex(id => id === candidate.id) !== -1) {
             const heartStatus = 'liked' 
             return heartStatus
         }
@@ -240,7 +240,7 @@ function getUserData() {
     
     };
 
-    fetch(API + "Users&id=" + userId, requestOptions)
+    fetch(API + "Users&id=" + userId + '&cacheTime=5', requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)

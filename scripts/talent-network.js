@@ -23,6 +23,9 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 let paidMember
 let userCompanyId
 let companyData
+let loggedInUserId
+let loggedInUserType
+let loggedInUserObj
 let userbase = []
 let filterObj = {
     'workType': [],
@@ -323,13 +326,83 @@ function displayProfiles(profiles){
                             : profile.score === countFilters()
                                 ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
                                 : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
+                ${loggedInUserType === 'EMPLOYER'
+                ? `<div class="heart-container" data-likebtn="${profile.id}">
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, profile)} tooltip"><span class="tooltiptext">Interested in working for this company? Let them know!</span>❤</a>
+                    </div>`
+                : ''
+                }
                 ${profileButtonsContainer(profile)}
             </div>
         </div> 
         `
     }).join('')
     directoryContainer.innerHTML = profilesHTML
+    if (loggedInUserType === 'EMPLOYER') applyEventListeners()
 }
+
+function applyEventListeners() {
+    const likeCompanyBtns = document.querySelectorAll('[data-likebtn]')
+    likeCompanyBtns.forEach(btn => 
+        btn.addEventListener('click', (e) => {
+            const btn = e.currentTarget
+            console.log(btn)
+            const heartBtn = btn.querySelector('[data-heart="small"]')
+            heartBtn.classList.toggle('liked')
+            updateLikedCandidates(handleLikedCandidates(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
+            // change hover text to unlike company
+        })
+    )
+}
+
+function updateLikedCandidates(candidatesList, userId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "put",
+        headers: myHeaders,
+        redirect: "follow",
+        body: JSON.stringify([{"id": userId,"fields":{"Candidates interested in": candidatesList}}])
+    };
+
+    fetch(API + "Users", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
+
+function handleLikedCandidates(userObj, candidateId) {
+    let likedCandidates = []
+    //if the liked list exists
+    if (userObj.fields['Candidates interested in']) {
+        likedCandidates = userObj.fields['Candidates interested in']
+        console.log('liked Candidates list found')
+        console.log(likedCandidates)
+        //if the company is already liked, remove it
+        if(likedCandidates.findIndex(id => id === candidateId) !== -1) {
+            likedCandidates.splice(likedCandidates.findIndex(id => id === candidateId), 1)
+            console.log('Candidate has been already liked now removed')
+            console.log(likedCandidates)
+            return likedCandidates
+        } 
+    }
+    likedCandidates.push(candidateId)
+    console.log('candidate has been liked')
+    console.log(likedCandidates)
+    return likedCandidates
+}
+
+
+function heartStatus(loggedInUserData, candidate) {
+
+    if (loggedInUserData.fields['Candidates interested in']) {
+        if (loggedInUserData.fields['Candidates interested in'].findIndex(id => id === candidate.id) !== -1) {
+            const heartStatus = 'liked' 
+            return heartStatus
+        }
+    }
+}
+
 
 function saveFilterToURL(filters){
     let url = new URL(window.location.href);
@@ -413,41 +486,44 @@ function getCompanyData(companyId) {
         .catch(error => console.log('error', error));
 }
 
+function getLoggedInUserData(userId) {
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    
+    };
+
+    fetch(API + "Users&id=" + userId, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            loggedInUserObj = result
+            console.log(loggedInUserObj)
+            // get user's profile data
+            fetchProfiles()
+        })
+        .catch(error => console.log('error', error));
+}
+
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         console.log('User is logged in')
         paidMember = member['paying-user']
         userCompanyId = member['company-airtable-id']
+        loggedInUserId = member['airtable-id-two']
+        loggedInUserType = member['user-type']
         if(userCompanyId) getCompanyData(userCompanyId)
         if (paidMember) banner.style.display = 'none'
         console.log(paidMember)
-        fetchProfiles()
+        getLoggedInUserData(loggedInUserId)
         fetchFilterData()
     }
 })
 
 
-    // Setup Tom Select for industires, roles, locaiton, remote
-    // Make sure they all work to filter
-    // store filters in URL
-    // if filters in URL fetch those profiles
-    // if more than 20 profiles, store the offset
-    // if less than 20 get 20 more profiles, remove any who's id's match the existing number, then push them to USERBASE till it hits 20
-// show what filters a user is matching
-    // clear button or no filters restores 20
-
-    // On load grab 20 candidates, no employers, only profiles that are visible
-    // Store the offset 
-    // Add a loading state whilst retrieving the profiles 
-    // grab total number of records and update the counts for displaying and total candidates
-
-    // At bottom of list add button to show 20 more candidates
-    // Add a loading state whilst retrieving the profiles
-    // fetch 20 more candidates with the URL + offset ( + filter if set)
-    // append the 20 new candidates to the userbase
-    // update offset
-    // Append the 20 profiles to the DOM
-    // update the counts for displaying and total candidates
 
     // if user hidden companies field matches a company name of the user viewing, hide from DOM?
 
