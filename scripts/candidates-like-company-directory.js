@@ -401,6 +401,10 @@ function getCompanyData(companyId) {
         .then(result => {
             console.log(result)
             companyData = result
+            const companyNameHeading = document.querySelector('[data-company="name"]')
+            const totalCandidatesHeading = document.querySelector('[data-company="total-candidates"]')
+            companyNameHeading.textContent = companyData.fields.name
+            totalCandidatesHeading.textContent = companyData.fields["Interested Candidates"].length
         })
         .then(() => {
             if (companyData.fields["Interested Candidates"]) {
@@ -426,6 +430,7 @@ MemberStack.onReady.then(function(member) {
         console.log(userCompanyId)
         getCompanyData(userCompanyId)
         fetchFilterData()
+        
     }
 })
 
