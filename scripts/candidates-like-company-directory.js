@@ -227,7 +227,7 @@ function clearFilters() {
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
-    fetchProfiles(companyId)
+    fetchFilterData(userCompanyId)
 }
 
 
@@ -403,7 +403,7 @@ function getCompanyData(companyId) {
             companyData = result
             const companyNameHeading = document.querySelector('[data-company="name"]')
             const totalCandidatesHeading = document.querySelector('[data-company="total-candidates"]')
-            companyNameHeading.textContent = companyData.fields.name
+            companyNameHeading.textContent = companyData.fields['Name']
             totalCandidatesHeading.textContent = companyData.fields["Interested Candidates"].length
         })
         .then(() => {

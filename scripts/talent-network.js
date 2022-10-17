@@ -392,11 +392,13 @@ function getCompanyData(companyId) {
             companyData = result
         })
         .then(() => {
-            if (companyData && companyData.fields['Interested Candidates'].length > 0) {
+            if (companyData 
+                && companyData.fields['Interested Candidates'] 
+                && companyData.fields['Interested Candidates'].length > 0) {
                const interestedCandidatesBanner = document.querySelector('[data-upgrade="interested-candidates"]')
                const interestedCandidatesBannerText = document.querySelector('[data-upgrade="interested-candidates-text"]')
-               interestedCandidatesBannerText.textContent = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
-               interestedCandidatesBanner.style.display = "block"
+               interestedCandidatesBannerText.innerHTML = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
+               interestedCandidatesBanner.style.display = "flex"
             }
         })
         .catch(error => console.log('error', error));
