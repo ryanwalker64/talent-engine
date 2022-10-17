@@ -21,6 +21,8 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 // let offset
 let paidMember
+let userCompanyId
+let companyData
 let userbase = []
 let filterObj = {
     'workType': [],
@@ -373,10 +375,39 @@ fetchFilterData().then(([roles, locations, industries]) => {
     remoteSelector.on('change', (e) => {handleFilterSelection()})
 })
 
+function getCompanyData(companyId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    
+    };
+
+    fetch(API + "Companies&fields=Interested%20Candidates,Name&id=" + companyId, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            companyData = result
+        })
+        .then(() => {
+            if (companyData && companyData.fields['Interested Candidates'].length > 0) {
+               const interestedCandidatesBanner = document.querySelector('[data-upgrade="interested-candidates"]')
+               const interestedCandidatesBannerText = document.querySelector('[data-upgrade="interested-candidates-text"]')
+               interestedCandidatesBannerText.textContent = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
+               interestedCandidatesBanner.style.display = "block"
+            }
+        })
+        .catch(error => console.log('error', error));
+}
+
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         console.log('User is logged in')
         paidMember = member['paying-user']
+        userCompanyId = member['company-airtable-id']
+        if(userCompanyId) getCompanyData(userCompanyId)
         if (paidMember) banner.style.display = 'none'
         console.log(paidMember)
         fetchProfiles()

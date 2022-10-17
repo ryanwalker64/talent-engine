@@ -408,12 +408,12 @@ function getCompanyData(companyId) {
         })
         .then(() => {
             if (companyData.fields["Interested Candidates"]) {
-                interestedCandidates = companyData.fields["Interested Candidates"].map(candidate => {
+                companyData = companyData.fields["Interested Candidates"].map(candidate => {
                     return `{Airtable Record ID}="${candidate}"`
                 }).join(',')
-                console.log(interestedCandidates)
+                console.log(companyData)
             }
-                const filteredOptions = `IF(OR(${interestedCandidates}),"true")`
+                const filteredOptions = `IF(OR(${companyData}),"true")`
         
                 const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
                 fetchProfiles(filterEncode)
