@@ -14,6 +14,8 @@ const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableN
 let companyProfile = {}
 let companyJobs = []
 let userMatchesCompany
+let loggedInUserObj
+let userType
 
 const profileContainer = document.querySelector('[data-profile="container"]')
 
@@ -71,12 +73,13 @@ function displayProfile(companyProfile) {
                 </div>
                 <div class="candidate-buttons-container">
                     ${userMatchesCompany === true
-                        ? '<a href="#" class="candidate-button-v2 more-button w-button">Edit Company</a>'
-                        : ''}
-                    <div class="heart-container">
-                        <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button">❤</a>
-                        <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">Like this company?</a>
-                    </div>
+                        ?   '<a href="#" class="candidate-button-v2 more-button w-button">Edit Company</a>'
+                        :   ''}
+                    ${userType === 'CANDIDATE'
+                        ?   `<div class="heart-container" data-likebtn="${companyProfile.id}">
+                            <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, companyProfile)} tooltip"><span class="tooltiptext">Interested in working for this company? Let them know!</span>❤</a>
+                            </div>`
+                        :   ''}
                     ${companyProfile.fields['Open to conversations']
                         ? '<a href="#" class="candidate-button-v2 contact-btn w-button">Open to conversations</a>'
                         : ''}
@@ -112,6 +115,50 @@ function displayProfile(companyProfile) {
         </div>    
         `
         profileContainer.innerHTML = profileHTML
+        if (userType === 'CANDIDATE') applyEventListeners()
+}
+
+function applyEventListeners() {
+    const likeCompanyBtns = document.querySelectorAll('[data-likebtn]')
+    likeCompanyBtns.forEach(btn => 
+        btn.addEventListener('click', (e) => {
+            const btn = e.currentTarget
+            console.log(btn)
+            const heartBtn = btn.querySelector('[data-heart="small"]')
+            heartBtn.classList.toggle('liked')
+            if (heartBtn.classList.contains('liked')) {
+                
+                // heartBtnText.style.background = "black"
+            } else {
+                
+                // heartBtnText.style.background = "red"
+                
+            }
+            updateLikedCompanies(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
+            // change hover text to unlike company
+        })
+    )
+}
+
+function handleLikedCompanies(userObj, companyid) {
+    let likedCompanies = []
+    //if the liked list exists
+    if (userObj.fields['Companies interested in']) {
+        likedCompanies = userObj.fields['Companies interested in']
+        console.log('liked companies list found')
+        console.log(likedCompanies)
+        //if the company is already liked, remove it
+        if(likedCompanies.findIndex(id => id === companyid) !== -1) {
+            likedCompanies.splice(likedCompanies.findIndex(id => id === companyid), 1)
+            console.log('company has been already liked now removed')
+            console.log(likedCompanies)
+            return likedCompanies
+        } 
+    }
+    likedCompanies.push(companyid)
+    console.log('company has been liked')
+    console.log(likedCompanies)
+    return likedCompanies
 }
 
 function createJobListing(jobData) {
@@ -179,13 +226,46 @@ function getCompanyId()  {
     return id
 }
 
+function heartStatus(loggedInUserData, company) {
+
+    if (loggedInUserData.fields['Companies interested in']) {
+        if (loggedInUserData.fields['Companies interested in'].findIndex(id => id === company.id) !== -1) {
+            const heartStatus = 'liked' 
+            return heartStatus
+        }
+    }
+}
+
+function getUserData(userId) {
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    };
+
+    fetch(API + "Users&id=" + userId, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            // console.log(result)
+            loggedInUserObj = result
+            console.log(loggedInUserObj)
+        })
+        .catch(error => console.log('error', error));
+}
+
+
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn && member["company-airtable-id"] === getCompanyId()) {
-        console.log('User is viewing their own company')
         userMatchesCompany = true
-    } else {
+    } 
+        const loggedInUser = member['airtable-id-two']
+        getUserData(loggedInUser)
+        userType = member['user-type']
         userMatchesCompany = false
-    }
+    
     getCompanyData()
 })
 

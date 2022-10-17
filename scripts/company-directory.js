@@ -16,6 +16,7 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 let userIsLoggedIn 
 let loggedInUserObj
 // let offset
+let userType
 let companiesUserbase = []
 let filterObj = {
     'location': [],
@@ -261,15 +262,18 @@ function displayCompanies(companies){
             </div>
             <div class="div-block-75">
                 ${score}
-                <div class="heart-container" data-likebtn="${company.id}">
+                ${userType === 'CANDIDATE'
+                ? `<div class="heart-container" data-likebtn="${company.id}">
                     <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, company)} tooltip"><span class="tooltiptext">Interested in working for this company? Let them know!</span>❤</a>
-                </div>
+                    </div>`
+                : ''
+                }
                 <a href="/app/company?id=${company.id}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
             </div>
         </div>`
     }).join('')
     directoryContainer.innerHTML = companiesHTML
-    applyEventListeners()
+    if (userType === 'CANDIDATE') applyEventListeners()
 }
 
 function saveFilterToURL(filters){
@@ -393,6 +397,7 @@ MemberStack.onReady.then(function(member) {
         console.log('User is viewing their own profile')
         userIsLoggedIn = true
         const loggedInUser = member['airtable-id-two']
+        userType = member['user-type']
         
         getUserData(loggedInUser)
         fetchCompanies()

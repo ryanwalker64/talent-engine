@@ -46,7 +46,7 @@ function displayProfile() {
                                     : "Present"}`
 
     const handleHeadline = userProfile.fields['First Job?'] 
-                            ? `<div class="short-company-name newtext">Looking for first job</div>`
+                            ? `<div class="short-company-name newtext">Looking for first job </div>`
                             : userProfile.fields["User Type"] === 'EMPLOYER'
                                ? `<div class="candidate-short-details">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Name (from Employer)"]}</div>`
                                : userProfile.fields["Candidate Employer"]
@@ -74,6 +74,7 @@ function displayProfile() {
                         </div>
                     </div>
                     <div class="candidate-buttons-container">
+                    
                         ${loggedInUsersProfile 
                             ? `<a href="/app/edit-profile" class="candidate-button-v2 more-button w-button">Edit Profile</a>`
                             : ''}
@@ -137,8 +138,9 @@ function displayProfile() {
         profileContainer.innerHTML = profileHTML
 }
 
+
+
 function getUserData(userId) {
-    userId = getUserId()
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -170,6 +172,7 @@ function getUserId()  {
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         loggedInUserId = member['airtable-id-two']
+        userId = getUserId()
         loggedInUsersProfile = getUserId() === loggedInUserId ? true : false
         console.log(loggedInUserId)
         getUserData(userId)

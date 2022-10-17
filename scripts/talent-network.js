@@ -392,13 +392,22 @@ function getCompanyData(companyId) {
             companyData = result
         })
         .then(() => {
+            const interestedCandidatesBanner = document.querySelector('[data-upgrade="interested-candidates"]')
+            const interestedCandidatesBannerText = document.querySelector('[data-upgrade="interested-candidates-text"]')
             if (companyData 
                 && companyData.fields['Interested Candidates'] 
-                && companyData.fields['Interested Candidates'].length > 0) {
-               const interestedCandidatesBanner = document.querySelector('[data-upgrade="interested-candidates"]')
-               const interestedCandidatesBannerText = document.querySelector('[data-upgrade="interested-candidates-text"]')
-               interestedCandidatesBannerText.innerHTML = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
-               interestedCandidatesBanner.style.display = "flex"
+                && companyData.fields['Interested Candidates'].length > 0
+                && paidMember) {
+                    interestedCandidatesBannerText.innerHTML = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
+                    interestedCandidatesBanner.style.display = "flex"
+                    interestedCandidatesBanner.insertAdjacentHTML('beforeend', `<a href="/app/candidates-interested-directory" class="button-6 bannerbtn redbutton w-button"><span class="text-span-16">🔥</span> Show me</a>`)
+            } else if(companyData 
+                && companyData.fields['Interested Candidates'] 
+                && companyData.fields['Interested Candidates'].length > 9) {
+                    interestedCandidatesBannerText.innerHTML = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
+                    interestedCandidatesBanner.style.display = "flex"
+                    interestedCandidatesBanner.insertAdjacentHTML('beforeend', `<a onclick="upgradeModule()" class="button-6 bannerbtn redbutton w-button"><span class="text-span-16">🔥</span> Show me</a>`)
+
             }
         })
         .catch(error => console.log('error', error));

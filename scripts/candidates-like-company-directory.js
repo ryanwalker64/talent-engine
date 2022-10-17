@@ -401,10 +401,8 @@ function getCompanyData(companyId) {
         .then(result => {
             console.log(result)
             companyData = result
-            const companyNameHeading = document.querySelector('[data-company="name"]')
-            const totalCandidatesHeading = document.querySelector('[data-company="total-candidates"]')
-            companyNameHeading.textContent = companyData.fields['Name']
-            totalCandidatesHeading.textContent = companyData.fields["Interested Candidates"].length
+            const companyNameHeading = document.querySelector('[data-company="title"]')
+            companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
         })
         .then(() => {
             if (companyData.fields["Interested Candidates"]) {
