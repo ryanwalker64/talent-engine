@@ -329,13 +329,13 @@ function applyEventListeners() {
                 // heartBtnText.style.background = "red"
                 
             }
-            updateLikedCompanies(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
+            updateLikedCandidates(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
             // change hover text to unlike company
         })
     )
 }
 
-function updateLikedCompanies(companiesList, userId) {
+function updateLikedCandidates(companiesList, userId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -367,6 +367,7 @@ function getUserData(userId) {
             // console.log(result)
             loggedInUserObj = result
             console.log(loggedInUserObj)
+            fetchCompanies()
         })
         .catch(error => console.log('error', error));
 }
@@ -400,7 +401,7 @@ MemberStack.onReady.then(function(member) {
         userType = member['user-type']
         
         getUserData(loggedInUser)
-        fetchCompanies()
+        
     } else {
         userIsLoggedIn = false
     }

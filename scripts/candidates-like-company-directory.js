@@ -401,10 +401,10 @@ function getCompanyData(companyId) {
         .then(result => {
             console.log(result)
             companyData = result
-            const companyNameHeading = document.querySelector('[data-company="title"]')
-            companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
         })
         .then(() => {
+            const companyNameHeading = document.querySelector('[data-company="title"]')
+            companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
             if (companyData.fields["Interested Candidates"]) {
                 companyData = companyData.fields["Interested Candidates"].map(candidate => {
                     return `{Airtable Record ID}="${candidate}"`

@@ -134,13 +134,13 @@ function applyEventListeners() {
                 // heartBtnText.style.background = "red"
                 
             }
-            updateLikedCompanies(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
+            updateLikedCandidates(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
             // change hover text to unlike company
         })
     )
 }
 
-function updateLikedCompanies(companiesList, userId) {
+function updateLikedCandidates(companiesList, userId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {

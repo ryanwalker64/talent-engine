@@ -2,8 +2,10 @@
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
 
 let userProfile = {}
+let loggedInUserObj
 let userId
 let loggedInUserId
+let loggedInUserType
 let userType
 let loggedInUsersProfile
 
@@ -78,6 +80,11 @@ function displayProfile() {
                         ${loggedInUsersProfile 
                             ? `<a href="/app/edit-profile" class="candidate-button-v2 more-button w-button">Edit Profile</a>`
                             : ''}
+                        ${userType === 'EMPLOYER'
+                        ?   `<div class="heart-container" data-likebtn="${userProfile.id}">
+                            <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, userProfile)} tooltip"><span class="tooltiptext">Save this candidate?</span>❤</a>
+                            </div>`
+                        :   ''}
                         ${!loggedInUsersProfile 
                             ? `<a href="https://talent.startmate.com/message/send?user=${userProfile.id}" class="candidate-button-v2 contact-btn w-button">Contact</a>`
                             : ''}
@@ -136,12 +143,94 @@ function displayProfile() {
         </div>
         `
         profileContainer.innerHTML = profileHTML
+        if (userType === 'EMPLOYER') applyEventListeners()
 }
 
+function applyEventListeners() {
+    const likeCompanyBtns = document.querySelectorAll('[data-likebtn]')
+    likeCompanyBtns.forEach(btn => 
+        btn.addEventListener('click', (e) => {
+            const btn = e.currentTarget
+            console.log(btn)
+            const heartBtn = btn.querySelector('[data-heart="small"]')
+            heartBtn.classList.toggle('liked')
+            updateLikedCandidates(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
+            // change hover text to unlike company
+        })
+    )
+}
 
+function updateLikedCandidates(candidatesList, userId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "put",
+        headers: myHeaders,
+        redirect: "follow",
+        body: JSON.stringify([{"id": userId,"fields":{"Candidates interested in": candidatesList}}])
+    };
 
-function getUserData(userId) {
+    fetch(API + "Users", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
 
+function handleLikedCompanies(userObj, candidateId) {
+    let likedCandidates = []
+    //if the liked list exists
+    if (userObj.fields['Candidates interested in']) {
+        likedCandidates = userObj.fields['Candidates interested in']
+        console.log('liked Candidates list found')
+        console.log(likedCandidates)
+        //if the company is already liked, remove it
+        if(likedCandidates.findIndex(id => id === candidateId) !== -1) {
+            likedCandidates.splice(likedCandidates.findIndex(id => id === candidateId), 1)
+            console.log('Candidate has been already liked now removed')
+            console.log(likedCandidates)
+            return likedCandidates
+        } 
+    }
+    likedCompanies.push(companyid)
+    console.log('company has been liked')
+    console.log(likedCompanies)
+    return likedCompanies
+}
+
+function heartStatus(loggedInUserData, company) {
+
+    if (loggedInUserData.fields['Candidates interested in']) {
+        if (loggedInUserData.fields['Candidates interested in'].findIndex(id => id === company.id) !== -1) {
+            const heartStatus = 'liked' 
+            return heartStatus
+        }
+    }
+}
+
+function getLoggedInUserData(userId) {
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    
+    };
+
+    fetch(API + "Users&id=" + userId, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            loggedInUserObj = result
+            console.log(loggedInUserObj)
+            // get user's profile data
+            getUserData()
+        })
+        .catch(error => console.log('error', error));
+}
+
+function getUserData() {
+    userId = getUserId()
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -172,10 +261,12 @@ function getUserId()  {
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         loggedInUserId = member['airtable-id-two']
-        userId = getUserId()
+        loggedInUserType = member['user-type']
+        
         loggedInUsersProfile = getUserId() === loggedInUserId ? true : false
         console.log(loggedInUserId)
-        getUserData(userId)
+        // Get loggedin User Data
+        getLoggedInUserData(loggedInUserId)
     } 
 })
 
