@@ -80,7 +80,7 @@ function displayProfile() {
                         ${loggedInUsersProfile 
                             ? `<a href="/app/edit-profile" class="candidate-button-v2 more-button w-button">Edit Profile</a>`
                             : ''}
-                        ${userType === 'EMPLOYER'
+                        ${loggedInUserType === 'EMPLOYER'
                         ?   `<div class="heart-container" data-likebtn="${userProfile.id}">
                             <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, userProfile)} tooltip"><span class="tooltiptext">Save this candidate?</span>❤</a>
                             </div>`
@@ -143,7 +143,7 @@ function displayProfile() {
         </div>
         `
         profileContainer.innerHTML = profileHTML
-        if (userType === 'EMPLOYER') applyEventListeners()
+        if (loggedInUserType === 'EMPLOYER') applyEventListeners()
 }
 
 function applyEventListeners() {
@@ -154,7 +154,7 @@ function applyEventListeners() {
             console.log(btn)
             const heartBtn = btn.querySelector('[data-heart="small"]')
             heartBtn.classList.toggle('liked')
-            updateLikedCandidates(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
+            updateLikedCandidates(handleLikedCandidates(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
             // change hover text to unlike company
         })
     )
@@ -176,7 +176,7 @@ function updateLikedCandidates(candidatesList, userId) {
     .catch(error => console.log('error', error));
 }
 
-function handleLikedCompanies(userObj, candidateId) {
+function handleLikedCandidates(userObj, candidateId) {
     let likedCandidates = []
     //if the liked list exists
     if (userObj.fields['Candidates interested in']) {
@@ -191,10 +191,10 @@ function handleLikedCompanies(userObj, candidateId) {
             return likedCandidates
         } 
     }
-    likedCompanies.push(companyid)
-    console.log('company has been liked')
-    console.log(likedCompanies)
-    return likedCompanies
+    likedCandidates.push(candidateId)
+    console.log('candidate has been liked')
+    console.log(likedCandidates)
+    return likedCandidates
 }
 
 function heartStatus(loggedInUserData, company) {

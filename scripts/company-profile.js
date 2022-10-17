@@ -134,7 +134,7 @@ function applyEventListeners() {
                 // heartBtnText.style.background = "red"
                 
             }
-            updateLikedCandidates(handleLikedCompanies(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
+            updateLikedCandidates(handleLikedCandidates(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
             // change hover text to unlike company
         })
     )
@@ -156,7 +156,7 @@ function updateLikedCandidates(companiesList, userId) {
     .catch(error => console.log('error', error));
 }
 
-function handleLikedCompanies(userObj, companyid) {
+function handleLikedCandidates(userObj, companyid) {
     let likedCompanies = []
     //if the liked list exists
     if (userObj.fields['Companies interested in']) {
