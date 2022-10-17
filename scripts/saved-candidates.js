@@ -229,7 +229,7 @@ function clearFilters() {
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
-    fetchFilterData(userCompanyId)
+    getLoggedInUserData(loggedInUserId)
 }
 
 
