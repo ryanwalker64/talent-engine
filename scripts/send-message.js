@@ -3,6 +3,7 @@ const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableN
 let recieverUserProfile
 let senderUserProfile
 let userIsLoggedIn
+let senderUserId
 
 const container = document.querySelector('[data-container="container"]')
 const sendMsgContainer = document.querySelector('[data-container="sendmsg"]')
@@ -70,9 +71,8 @@ MemberStack.onReady.then( async function(member) {
     if (member.loggedIn) {
         userIsLoggedIn = true
         const receiverUserId =  getRecieverUserId()
-        const senderUserId = member["airtable-id-two"]
-        recieverUserProfile = await fetchData(getRecieverUserId(), 'reciever')
-        senderUserProfile = await fetchData(senderUserId, 'sender')
+        senderUserId = member["airtable-id-two"]
+        fetchData(getRecieverUserId(), 'reciever')
         
     } else {
         userIsLoggedIn = false
@@ -103,6 +103,7 @@ function fetchData(id, type) {
     .then(result => {
         if(type === "reciever") {
             recieverUserProfile = result
+            fetchData(senderUserId, 'sender')
         } else if (type === "sender") {
             senderUserProfile = result
             initMessage(recieverUserProfile)

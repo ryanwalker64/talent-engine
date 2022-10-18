@@ -102,19 +102,9 @@ function declineIntroduction() {
 }
 
 MemberStack.onReady.then( async function(member) {
-    if (member.loggedIn) {
-        userIsLoggedIn = true
-        recieverUserProfile = await fetchData(getRecieverUserId())
-        
-    } else {
-        userIsLoggedIn = false
-    }
+    fetchData(getRecieverUserId())
     
-}).then(() => {
-    initMessage(recieverUserProfile)
-    declineBox.style.display = 'block'
 })
-
 function getRecieverUserId()  {
     const url_string = window.location.href;
     const url = new URL(url_string);
@@ -135,6 +125,11 @@ function fetchData(id) {
 
    return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Profile%20Picture&id=" + id, requestOptions)
     .then(response => response.json())
+    .then(result => {
+        recieverUserProfile = result
+        initMessage(recieverUserProfile)
+        declineBox.style.display = 'block'
+    })
     
 }
 

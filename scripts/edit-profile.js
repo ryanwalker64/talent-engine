@@ -319,9 +319,12 @@ function checkRequiredFields() {
     if(!emailInput.checkValidity()) {
         errorPopUp('Please enter your email address')
         valid = false }
-    if(!bioInput.checkValidity()) {
-        errorPopUp('Please enter a bio')
-        valid = false }
+
+    if(userType === 'CANDIDATE') {
+        if(!bioInput.checkValidity()) {
+            errorPopUp('Please enter a bio')
+            valid = false }
+    }
      
         // locatedSelector.getValue() ? '' : invalidFields.push(locatedSelector)
     return valid
