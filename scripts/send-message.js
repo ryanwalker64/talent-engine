@@ -74,7 +74,7 @@ function fetchData(id) {
     
     };
 
-   return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Profile%20Picture&id=" + id, requestOptions)
+   return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Name+(from+Employer),Profile%20Picture&id=" + id, requestOptions)
     .then(response => response.json())
     
 }
@@ -153,7 +153,7 @@ function previewMsg(msg) {
                     </div>
                 </div>
                 <div class="div-block-88">
-                    <a href="#" class="button-5 w-button">Reply to SENDER</a>
+                    <a href="#" class="button-5 w-button">Reply to ${reciever.fields['Full Name']}</a>
                     <a href="#">No thanks</a>
                     <div class="div-block-89"></div>
                 </div>

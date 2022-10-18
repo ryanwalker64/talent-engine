@@ -23,6 +23,7 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 let paidMember
 let userCompanyId
 let companyData
+let companyDataMapped
 let userbase = []
 let filterObj = {
     'workType': [],
@@ -60,6 +61,7 @@ function handleFilterSelection() {
 
     }
 
+    
     if (checkForEmptyFilters()) {
         clearFilters()
     } else {
@@ -407,12 +409,12 @@ function getCompanyData(companyId) {
             companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
             
             if (companyData.fields["Interested Candidates"]) {
-                companyData = companyData.fields["Interested Candidates"].map(candidate => {
+                companyDataMapped = companyData.fields["Interested Candidates"].map(candidate => {
                     return `{Airtable Record ID}="${candidate}"`
                 }).join(',')
-                console.log(companyData)
+                console.log(companyDataMapped)
             }
-                const filteredOptions = `IF(OR(${companyData}),"true")`
+                const filteredOptions = `IF(OR(${companyDataMapped}),"true")`
         
                 const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
                 fetchProfiles(filterEncode)
