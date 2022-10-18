@@ -3,6 +3,11 @@ const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableN
 const acceptBtn = document.querySelector('[data-btn="accept"]')
 const recieverProfileContainer = document.querySelector('[data-user="receiver"]')
 
+const container = document.querySelector('[data-container="container"]')
+const acceptMsgContainer = document.querySelector('[data-container="acceptmsg"]')
+const loader = document.querySelector('[data-loader="loading"]')
+
+
 let recieverUserProfile
 let senderUserProfile
 let userIsLoggedIn
@@ -38,9 +43,13 @@ function getMsgId()  {
     return id
 }
 
-acceptBtn.addEventListener('click', declineIntroduction)
+acceptBtn.addEventListener('click', () => {
+    acceptIntroduction()
+    acceptMsgContainer.style.display = 'none'
+    loader.style.display = 'flex'
+})
 
-function declineIntroduction() {
+function acceptIntroduction() {
     const msgID = getMsgId()
 
     var myHeaders = new Headers();
@@ -59,7 +68,11 @@ function declineIntroduction() {
 
     fetch(API + "Introductions", requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            console.log(result)
+            loader.style.display = 'none'
+            setSuccessMessageScreen()
+        })
         .catch(error => console.log('error', error));
 }
 
@@ -96,7 +109,26 @@ function fetchData(id) {
     
     };
 
-   return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Profile%20Picture&id=" + id, requestOptions)
+   return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Name+(from+Employer),Profile%20Picture&id=" + id, requestOptions)
     .then(response => response.json())
     
+}
+
+
+function setSuccessMessageScreen() {
+    container.innerHTML = `
+        <div class="userprofile-container middeligned">
+                <div class="text-block-89">Introduction accepted!</div>
+                <div class="divider-v2 _100"></div>
+                <div class="text-block-88">What happens now?</div>
+                <div class="div-block-102">
+                    <h1 class="emojishome">📩</h1>
+                    <div class="text-block-87">In the next 5-10 minutes we will connect you both together via your email addresses. </div>
+                </div>
+                <div class="div-block-102">
+                    <h1 class="emojishome">👋</h1>
+                    <div class="text-block-87">We’ll check in after 14 days to see how the conversation is progressing.</div>
+                </div>
+                <a href="/app/company-directory" class="button-7 w-button">Return to the Talent Engine</a></div>`
+ 
 }
