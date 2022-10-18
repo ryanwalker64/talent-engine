@@ -260,7 +260,7 @@ function createProfile(userData, userAirtableId) {
                     "account-status": 'COMPLETE',
                 }, false)
             })
-            window.location.href = "https://talent.startmate.com/profile?user=recjt1dPBgjbq0g7S";
+            window.location.href = `https://talent.startmate.com/profile?user=${userAirtableId}`;
         })
         .catch(error => console.log('error', error));
 
