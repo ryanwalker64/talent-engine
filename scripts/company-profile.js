@@ -56,6 +56,7 @@ function fetchJob(jobId) {
 function displayProfile(companyProfile) {
 
     const profileHTML = `
+    <a href="/app/company-directory" class="link-11">← Back to Companies</a>
     <div class="directory-container-v2" data-id="${companyProfile.id}">
         <div class="userprofile-container">
             <div class="div-block-73">

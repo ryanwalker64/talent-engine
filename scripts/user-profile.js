@@ -64,6 +64,7 @@ function displayProfile() {
                             
 
     const profileHTML = `
+        ${loggedInUserType === 'EMPLOYER' && userId !== loggedInUserId ? `<a href="/app/talent-directory" class="link-11">← Back to Talent Network</a>` : ''}
         <div class="directory-container-v2" data-id="${userProfile.id}">
             <div class="userprofile-container">
                 <div class="div-block-73">
