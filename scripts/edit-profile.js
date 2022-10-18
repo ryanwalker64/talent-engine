@@ -225,7 +225,7 @@ function checkForUpdates(data) {
     
     let profileUpdates = {}
     
-    
+    profileUpdates["Date Last Edited"] = new Date(),
     fNameInput.value !== data['First Name'] ? profileUpdates["First Name"] = fNameInput.value : ''
     lNameInput.value !== data['Last Name'] ? profileUpdates["Last Name"] = lNameInput.value : ''
     emailInput.value !== data['Email'] ? profileUpdates["Email"] = emailInput.value : ''

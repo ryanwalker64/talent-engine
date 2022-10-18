@@ -206,6 +206,7 @@ form.addEventListener('submit', (e) => {
     createProfile(userData, userAirtableId)
 })
 
+
 function submitProfile() {
     const formData = new FormData(form);
     const formProps = Object.fromEntries(formData);
@@ -238,6 +239,7 @@ function submitProfile() {
         "Profile hidden from:": formProps['hidden-from'],
         "Account Status": 'COMPLETE',
         "Startmate Program": programsSelector.getValue(),
+        "Date Last Edited": new Date(),
     }
     console.log(formProps)
     console.log(userData)
@@ -266,7 +268,7 @@ function createProfile(userData, userAirtableId) {
                     "account-status": 'COMPLETE',
                 }, false)
             })
-            window.location.href = `https://talent.startmate.com/profile?user=${userAirtableId}`;
+            window.location.href = `https://talent.startmate.com/app/company-directory`;
         })
         .catch(error => console.log('error', error));
 

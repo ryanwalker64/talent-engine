@@ -104,6 +104,10 @@ function displayProfile(companyProfile) {
                         <div class="label-v2">Company Size</div>
                         <div class="profile-catg">${companyProfile.fields['Company Size']} employees</div>
                     </div>
+                    <div id="w-node-a39a8a14-8153-332f-ee8f-cc469567ca1d-503cba7a" class="job-pref-indiv">
+                        <div class="label-v2">Company Website</div>
+                        <div class="profile-catg"><a href="${companyProfile.fields['Website URL']}" target="_blank">${companyProfile.fields['Website URL']}</a></div>
+                    </div>
                 </div>
                 <div class="div-block-74">
                     <div class="label-v2">Job openings</div>
