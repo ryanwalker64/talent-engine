@@ -199,7 +199,7 @@ form.addEventListener('submit', (e) => {
         "Profile Picture": formProps['profile-pic'],
         "Profile Visibility": formProps['visibility'],
         "Profile hidden from:": formProps['hidden-from'],
-        "Startmate Program": programsSelector.getValue(),
+        // "Startmate Program": programsSelector.getValue(), 
     }
     console.log(formProps)
     console.log(userData)
@@ -238,8 +238,8 @@ function submitProfile() {
         "Profile Visibility": formProps['visibility'],
         "Profile hidden from:": formProps['hidden-from'],
         "Account Status": 'COMPLETE',
-        "Startmate Program": programsSelector.getValue(),
-        "Date Last Edited": new Date(),
+        // "Startmate Program": programsSelector.getValue(),
+        // "Date Last Edited": new Date(),
     }
     console.log(formProps)
     console.log(userData)
