@@ -80,7 +80,7 @@ function displayProfile() {
                         ${loggedInUsersProfile 
                             ? `<a href="/app/edit-profile" class="candidate-button-v2 more-button w-button">Edit Profile</a>`
                             : ''}
-                        ${loggedInUserType === 'EMPLOYER'
+                        ${loggedInUserType === 'EMPLOYER' && userId !== loggedInUserId
                         ?   `<div class="heart-container" data-likebtn="${userProfile.id}">
                             <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, userProfile)} tooltip"><span class="tooltiptext">Save this candidate?</span>❤</a>
                             </div>`

@@ -4,6 +4,9 @@ let recieverUserProfile
 let senderUserProfile
 let userIsLoggedIn
 
+const container = document.querySelector('[data-container="container"]')
+const sendMsgContainer = document.querySelector('[data-container="sendmsg"]')
+const loader = document.querySelector('[data-loader="loading"]')
 // Write Message Tab
 const recieverProfileContainer = document.querySelector('[data-user="receiver"]')
 const messageTab = document.querySelector('.message-hide')
@@ -37,7 +40,31 @@ editBtn.addEventListener('click', () => {
     previewTab.style.display = 'none'
 })
 
-sendBtn.addEventListener('click', handleMessage)
+sendBtn.addEventListener('click', () => {
+    handleMessage()
+    sendMsgContainer.style.display = 'none'
+    loader.style.display = 'flex'
+})
+
+function setSuccessMessageScreen() {
+    const firstName = recieverUserProfile.fields['Full Name'].split(' ')[0]
+    container.innerHTML = `
+        <div class="userprofile-container middeligned">
+            <img src="${recieverUserProfile.fields['Profile Picture'] ? recieverUserProfile.fields['Profile Picture'] : ''}" loading="lazy" alt="" class="img placeholder">
+                <div class="text-block-89">Message sent to ${firstName}!</div>
+                <div class="divider-v2 _100"></div>
+                <div class="text-block-88">What happens now?</div>
+                <div class="div-block-102">
+                    <h1 class="emojishome">📩</h1>
+                    <div class="text-block-87">If ${firstName} wishes to accept the message we will connect you both together via email.</div>
+                </div>
+                <div class="div-block-102">
+                    <h1 class="emojishome">👋</h1>
+                    <div class="text-block-87">We’ll check in after 14 days to see how the conversation is progressing.</div>
+                </div>
+                <a href="/app/talent-directory" class="button-7 w-button">Return to the Talent Network</a></div>`
+ 
+}
 
 MemberStack.onReady.then( async function(member) {
     if (member.loggedIn) {
@@ -96,7 +123,11 @@ function handleMessage() {
 
     fetch(API + 'Introductions', requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            console.log(result)
+            loader.style.display = 'none'
+            setSuccessMessageScreen()
+        })
         .catch(error => console.log('error', error));
 }
 
@@ -153,7 +184,7 @@ function previewMsg(msg) {
                     </div>
                 </div>
                 <div class="div-block-88">
-                    <a href="#" class="button-5 w-button">Reply to ${reciever.fields['Full Name']}</a>
+                    <a href="#" class="button-5 w-button">Reply to ${recieverUserProfile.fields['Full Name']}</a>
                     <a href="#">No thanks</a>
                     <div class="div-block-89"></div>
                 </div>
