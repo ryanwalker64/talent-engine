@@ -24,6 +24,7 @@ const currentlyWorkInput = document.querySelector('[data-input="currently-work-h
 const typeOfJobInput = document.querySelector('[data-input="types-of-jobs"]')
 const companySizeInput = document.querySelector('[data-input="company-size"]')
 const industriesInput = document.querySelector('[data-input="industries"]')
+const startmatePrograms = document.querySelector('[data-name="startmate-programs"]')
 
 async function fetchData() {
     const [rolesResponse, locationsResponse, industriesResponse, programsResponse] = await Promise.all([
@@ -42,12 +43,13 @@ async function fetchData() {
     const industries = await industriesResponse.json()
     const programs = await programsResponse.json()
     // const companies = await companiesResponse.json()
-    return [roles, locations, industries]
+    return [roles, locations, industries, programs]
 }
 
 fetchData().then(([roles, locations, industries, programs]) => {
     const rolesObj = roles.map(role => {return {'value': role, 'text': role}})
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
+    const programsObj = programs.map(program => {return {'value': program, 'text': program}})
     // const companiesHTML = companies.records.map(company => {
     //     return `<option value="${company.id}" data-src="${company.fields.Logo}">${company.fields.Name}</option>`
     // }).join('')
@@ -67,6 +69,7 @@ fetchData().then(([roles, locations, industries, programs]) => {
     roleSelector = new TomSelect(roleSelectorInput, {...generalSelectorSettings, options: rolesObj});
     interestedRolesSelector = new TomSelect(interestedRolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: 3});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
+    programsSelector = new TomSelect(startmatePrograms, {...generalSelectorSettings,  options: programsObj, maxItems: 5});
     
     locatedSelector.on('change', (e) => { workingLocationSelector.setValue(locatedSelector.getValue())})
 
@@ -110,6 +113,7 @@ let roleSelector
 let interestedRolesSelector
 let industriesSelector
 // let employerSelector
+let programsSelector
 let typeOfJobSelector = new TomSelect(typeOfJobInput, {...generalSelectorSettings, maxItems: null});
 let companySizeSelector = new TomSelect(companySizeInput, {...generalSelectorSettings, maxItems: null, sortField: {}});
 let startDateMonthSelector = new TomSelect(startDateMonthInput, {...generalSelectorSettings,  sortField: {}});
@@ -195,6 +199,7 @@ form.addEventListener('submit', (e) => {
         "Profile Picture": formProps['profile-pic'],
         "Profile Visibility": formProps['visibility'],
         "Profile hidden from:": formProps['hidden-from'],
+        "Startmate Program": programsSelector.getValue(),
     }
     console.log(formProps)
     console.log(userData)
@@ -232,6 +237,7 @@ function submitProfile() {
         "Profile Visibility": formProps['visibility'],
         "Profile hidden from:": formProps['hidden-from'],
         "Account Status": 'COMPLETE',
+        "Startmate Program": programsSelector.getValue(),
     }
     console.log(formProps)
     console.log(userData)
