@@ -287,7 +287,7 @@ function updateProfile(data, userId) {
                 "profile-photo": data["Profile Picture"],
                 "first-name": data["First Name"],
                 "last-name": data["Last Name"],
-                "email": data["Last Name"],
+                "email": data["Email"],
             }, false)
         })
     })
