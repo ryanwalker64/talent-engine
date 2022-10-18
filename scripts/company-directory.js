@@ -264,7 +264,7 @@ function displayCompanies(companies){
                 ${score}
                 ${userType === 'CANDIDATE'
                 ? `<div class="heart-container" data-likebtn="${company.id}">
-                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, company)} tooltip"><span class="tooltiptext">Interested in working for this company? Let them know!</span>❤</a>
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, company)} tooltip"><span class="tooltiptext">Interested to work for this company? Let them know by favouriting them!</span>❤</a>
                     </div>`
                 : ''
                 }

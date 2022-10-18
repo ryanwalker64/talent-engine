@@ -96,7 +96,7 @@ function createCompany(userData, userAirtableId) {
                     "account-status": 'COMPLETE',
                 }, false)
             })
-            window.location.href = "https://talent.startmate.com/app/dashboard";
+            window.location.href = "https://talent.startmate.com/app/talent-directory";
         })
         .catch(error => console.log('error', error));
 

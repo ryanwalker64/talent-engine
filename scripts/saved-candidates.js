@@ -21,7 +21,7 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 
 // let offset
 let paidMember
-let candidatesInterestedIn
+let companiesInterestedIn
 let userCompanyId
 let companyData
 let loggedInUserId
@@ -57,7 +57,7 @@ function handleFilterSelection() {
     // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
     console.log("current filters:", filterObj)
     if (loggedInUserObj.fields["Candidates interested in"]) {
-        candidatesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
+        companiesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
             return `{Airtable Record ID}="${candidate}"`
         }).join(',')
     }
@@ -67,8 +67,8 @@ function handleFilterSelection() {
     } else {
         const filteredOptions = 
             remoteSelection === "Based on location"
-                ? `IF(AND(OR(${candidatesInterestedIn}),OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-                : `IF(AND(OR(${candidatesInterestedIn}),OR(${filter.join(',')})),"true")`
+                ? `IF(AND(OR(${companiesInterestedIn}),OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+                : `IF(AND(OR(${companiesInterestedIn}),OR(${filter.join(',')})),"true")`
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         console.log(remoteSelector.getValue())      
@@ -482,14 +482,14 @@ function getLoggedInUserData(userId) {
             // const companyNameHeading = document.querySelector('[data-company="title"]')
             // companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
             if (loggedInUserObj.fields["Candidates interested in"]) {
-                 candidatesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
+                 companiesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
                     return `{Airtable Record ID}="${candidate}"`
                 }).join(',')
             }
-            const filteredOptions = `IF(OR(${candidatesInterestedIn}),"true")`
+            const filteredOptions = `IF(OR(${companiesInterestedIn}),"true")`
             
             const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-            console.log(candidatesInterestedIn, filterEncode, filteredOptions)
+            console.log(companiesInterestedIn, filterEncode, filteredOptions)
                 fetchProfiles(filterEncode)
         })
         .catch(error => console.log('error', error));
