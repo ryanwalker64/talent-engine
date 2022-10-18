@@ -9,17 +9,10 @@ const radioBtns = document.querySelectorAll('[name="reason"]')
 let recieverUserProfile 
 let userIsLoggedIn
 
-radioBtns.forEach(btn => {
-    btn.addEventListener('change', (e) => {
-        const value = e.target.value
+const container = document.querySelector('[data-container="container"]')
+const declineMsgContainer = document.querySelector('[data-container="declinemsg"]')
+const loader = document.querySelector('[data-loader="loading"]')
 
-        // if (value === "Other") {
-            otherTextBox.classList.remove('hidden')
-        // } else {
-        //     otherTextBox.classList.add('hidden')
-        // }
-    })
-})
 
 function initMessage(reciever) {
     const profilePic = 
@@ -40,6 +33,18 @@ function initMessage(reciever) {
         </div>`
 
     recieverProfileContainer.innerHTML = html
+
+    radioBtns.forEach(btn => {
+        btn.addEventListener('change', (e) => {
+            const value = e.target.value
+    
+            // if (value === "Other") {
+                otherTextBox.classList.remove('hidden')
+            // } else {
+            //     otherTextBox.classList.add('hidden')
+            // }
+        })
+    })
 }
 
 
@@ -59,7 +64,11 @@ function checkRadioBtns() {
     return valid
 }
 
-declineBtn.addEventListener('click', declineIntroduction)
+declineBtn.addEventListener('click', () => {
+    declineIntroduction()
+    declineMsgContainer.style.display = 'none'
+    loader.style.display = 'flex'
+})
 
 function declineIntroduction() {
     if(!checkRadioBtns()) return console.log('pick an option') // aADDD to this
@@ -84,7 +93,11 @@ function declineIntroduction() {
 
     fetch(API + "Introductions", requestOptions)
         .then(response => response.text())
-        .then(result => console.log(result))
+        .then(result => {
+            console.log(result)
+            loader.style.display = 'none'
+            setSuccessMessageScreen()  
+        })
         .catch(error => console.log('error', error));
 }
 
@@ -123,4 +136,13 @@ function fetchData(id) {
    return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Profile%20Picture&id=" + id, requestOptions)
     .then(response => response.json())
     
+}
+
+function setSuccessMessageScreen() {
+    container.innerHTML = `
+        <div class="userprofile-container middeligned">
+                <div class="text-block-89">Thank you for closing the loop</div>
+                <a href="/app/company-directory" class="button-7 w-button">Return to the Talent Engine</a>
+        </div>`
+ 
 }

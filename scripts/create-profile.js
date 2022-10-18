@@ -198,7 +198,7 @@ form.addEventListener('submit', (e) => {
     }
     console.log(formProps)
     console.log(userData)
-    createCompany(userData, userAirtableId)
+    createProfile(userData, userAirtableId)
 })
 
 function submitProfile() {
@@ -235,10 +235,10 @@ function submitProfile() {
     }
     console.log(formProps)
     console.log(userData)
-    createCompany(userData, userAirtableId)
+    createProfile(userData, userAirtableId)
 }
 
-function createCompany(userData, userAirtableId) {
+function createProfile(userData, userAirtableId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -248,7 +248,7 @@ function createCompany(userData, userAirtableId) {
     body: JSON.stringify([{"id": userAirtableId,"fields":userData}])
 };
 
-    fetch(API + "Users", requestOptions)
+    fetch(API + "Users&typecast=true", requestOptions)
         .then(response => response.text())
         .then(result => {
             console.log(result)

@@ -116,6 +116,9 @@ function fetchData(id) {
 
 
 function setSuccessMessageScreen() {
+
+    const firstName = recieverUserProfile.fields['Full Name'].split(' ')[0]
+    
     container.innerHTML = `
         <div class="userprofile-container middeligned">
                 <div class="text-block-89">Introduction accepted!</div>

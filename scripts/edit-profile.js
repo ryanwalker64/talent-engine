@@ -225,41 +225,45 @@ function checkForUpdates(data) {
     
     let profileUpdates = {}
     
+    
     fNameInput.value !== data['First Name'] ? profileUpdates["First Name"] = fNameInput.value : ''
     lNameInput.value !== data['Last Name'] ? profileUpdates["Last Name"] = lNameInput.value : ''
     emailInput.value !== data['Email'] ? profileUpdates["Email"] = emailInput.value : ''
     linkedinInput.value !== data['Linkedin'] ? profileUpdates["Linkedin"] = linkedinInput.value : ''
     profilePicInput.value !== data['Profile Picture'] ? profileUpdates["Profile Picture"] = profilePicInput.value : ''
     locatedSelector.getValue() !== data['Location'] ? profileUpdates["Location"] = [locatedSelector.getValue()] : ''
-    bio.value !== data['Bio'] ? profileUpdates["Bio"] = bio.value : ''
-    programsSelector.getValue() !== data['Startmate Program'] ? profileUpdates["Startmate Program"] = programsSelector.getValue() : ''
+    if(userType === 'EMPLOYER') { jobTitleInput.value !== data['Job Title'] ? profileUpdates['Job Title'] = jobTitleInput.value : '' }
+
+    if(userType === 'CANDIDATE') {
+        bio.value !== data['Bio'] ? profileUpdates["Bio"] = bio.value : ''
+        programsSelector.getValue() !== data['Startmate Program'] ? profileUpdates["Startmate Program"] = programsSelector.getValue() : ''
+
+        roleSelector.getValue() !== data['What do you do?'] ? profileUpdates['What do you do?'] = [roleSelector.getValue()] : ''
+        workExperienceInput.value !== data['Work Experience'] ? profileUpdates["Work Experience"] = workExperienceInput.value : ''
+        profileUpdates['First Job?'] = firstJobInput.checked ? `${firstJobInput.checked}` : ''
+        currentEmployerInput.value !== data['Candidate Employer'] ? profileUpdates['Candidate Employer'] = currentEmployerInput.value : ''
+        jobTitleInput.value !== data['Job Title'] ? profileUpdates['Job Title'] = jobTitleInput.value : ''
+        if (`${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}` !== data['Employment Start Date']) profileUpdates['Employment Start Date'] = `${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}`
+        if (`${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}` !== data['Employment End Date']) profileUpdates['Employment End Date'] = `${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}`
+        profileUpdates['Currently work at employer?'] = currentlyWorkingAtEmployerInput.checked ? `${currentlyWorkingAtEmployerInput.checked}` : ''
 
 
-    roleSelector.getValue() !== data['What do you do?'] ? profileUpdates['What do you do?'] = [roleSelector.getValue()] : ''
-    workExperienceInput.value !== data['Work Experience'] ? profileUpdates["Work Experience"] = workExperienceInput.value : ''
-    profileUpdates['First Job?'] = firstJobInput.checked ? `${firstJobInput.checked}` : ''
-    currentEmployerInput.value !== data['Candidate Employer'] ? profileUpdates['Candidate Employer'] = currentEmployerInput.value : ''
-    jobTitleInput.value !== data['Job Title'] ? profileUpdates['Job Title'] = jobTitleInput.value : ''
-    if (`${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}` !== data['Employment Start Date']) profileUpdates['Employment Start Date'] = `${startDateMonthSelector.getValue()} ${startDateYearSelector.getValue()}`
-    if (`${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}` !== data['Employment End Date']) profileUpdates['Employment End Date'] = `${endDateMonthSelector.getValue()} ${endDateYearSelector.getValue()}`
-    profileUpdates['Currently work at employer?'] = currentlyWorkingAtEmployerInput.checked ? `${currentlyWorkingAtEmployerInput.checked}` : ''
-
-
-    for (let i = 0; i < stageOfJobHuntInput.length; i++) {
-        if(stageOfJobHuntInput[i].checked === true) {
-            stageOfJobHuntInput[i].value !== data["Stage of Job Hunt"] ? profileUpdates["Stage of Job Hunt"] = stageOfJobHuntInput.value : ''
+        for (let i = 0; i < stageOfJobHuntInput.length; i++) {
+            if(stageOfJobHuntInput[i].checked === true) {
+                stageOfJobHuntInput[i].value !== data["Stage of Job Hunt"] ? profileUpdates["Stage of Job Hunt"] = stageOfJobHuntInput.value : ''
+            }
         }
-    }
-    interestedRolesSelector.getValue() !== data['Job Pref: Relevant roles'] ? profileUpdates['Job Pref: Relevant roles'] = interestedRolesSelector.getValue() : ''
-    typeOfJobSelector.getValue() !== data['Job Pref: Type of role'] ? profileUpdates['Job Pref: Type of role'] = typeOfJobSelector.getValue() : ''
-    companySizeSelector.getValue() !== data['Job Pref: Company size'] ? profileUpdates['Job Pref: Company size'] = companySizeSelector.getValue() : ''
-    industriesSelector.getValue() !== data['Job Pref: Industries'] ? profileUpdates['Job Pref: Industries'] = industriesSelector.getValue() : ''
-    workingLocationSelector.getValue() !== data['Job Pref: Working Locations'] ? profileUpdates['Job Pref: Working Locations'] = workingLocationSelector.getValue() : ''
-    profileUpdates['Job Pref: Open to remote work'] = prefRemoteWorkInput.checked ? `${prefRemoteWorkInput.checked}` : ''
-    prefRoleBioInput.value !== data['Next Role'] ? profileUpdates['Next Role'] = prefRoleBioInput.value : ''
-    for (let i = 0; i < profileVisibilityInput.length; i++) {
-        if(profileVisibilityInput[i].checked === true) {
-            profileVisibilityInput[i].value !== data['Profile Visibility'] ? profileUpdates['Profile Visibility'] = profileVisibilityInput.value : ''
+        interestedRolesSelector.getValue() !== data['Job Pref: Relevant roles'] ? profileUpdates['Job Pref: Relevant roles'] = interestedRolesSelector.getValue() : ''
+        typeOfJobSelector.getValue() !== data['Job Pref: Type of role'] ? profileUpdates['Job Pref: Type of role'] = typeOfJobSelector.getValue() : ''
+        companySizeSelector.getValue() !== data['Job Pref: Company size'] ? profileUpdates['Job Pref: Company size'] = companySizeSelector.getValue() : ''
+        industriesSelector.getValue() !== data['Job Pref: Industries'] ? profileUpdates['Job Pref: Industries'] = industriesSelector.getValue() : ''
+        workingLocationSelector.getValue() !== data['Job Pref: Working Locations'] ? profileUpdates['Job Pref: Working Locations'] = workingLocationSelector.getValue() : ''
+        profileUpdates['Job Pref: Open to remote work'] = prefRemoteWorkInput.checked ? `${prefRemoteWorkInput.checked}` : ''
+        prefRoleBioInput.value !== data['Next Role'] ? profileUpdates['Next Role'] = prefRoleBioInput.value : ''
+        for (let i = 0; i < profileVisibilityInput.length; i++) {
+            if(profileVisibilityInput[i].checked === true) {
+                profileVisibilityInput[i].value !== data['Profile Visibility'] ? profileUpdates['Profile Visibility'] = profileVisibilityInput.value : ''
+            }
         }
     }
 
