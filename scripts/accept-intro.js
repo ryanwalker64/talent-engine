@@ -78,17 +78,7 @@ function acceptIntroduction() {
 
 
 MemberStack.onReady.then( async function(member) {
-    if (member.loggedIn) {
-        userIsLoggedIn = true
-        recieverUserProfile = await fetchData(getRecieverUserId())
-        
-    } else {
-        userIsLoggedIn = false
-    }
-    
-}).then(() => {
-    initMessage(recieverUserProfile)
-    acceptBtn.classList.remove('hidden') 
+    fetchData(getRecieverUserId(), "reciever")
 })
 
 function getRecieverUserId()  {
@@ -99,7 +89,7 @@ function getRecieverUserId()  {
     return id
 }
 
-function fetchData(id) {
+function fetchData(id, type) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -111,6 +101,14 @@ function fetchData(id) {
 
    return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Name+(from+Employer),Profile%20Picture&id=" + id, requestOptions)
     .then(response => response.json())
+    .then(result => {
+        if(type === "reciever") {
+            recieverUserProfile = result
+            console.log(recieverUserProfile)
+            initMessage(recieverUserProfile)
+            acceptBtn.classList.remove('hidden')
+        }
+    })
     
 }
 

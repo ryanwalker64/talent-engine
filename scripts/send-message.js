@@ -71,16 +71,13 @@ MemberStack.onReady.then( async function(member) {
         userIsLoggedIn = true
         const receiverUserId =  getRecieverUserId()
         const senderUserId = member["airtable-id-two"]
-        recieverUserProfile = await fetchData(getRecieverUserId())
-        senderUserProfile = await fetchData(senderUserId)
+        recieverUserProfile = await fetchData(getRecieverUserId(), 'reciever')
+        senderUserProfile = await fetchData(senderUserId, 'sender')
         
     } else {
         userIsLoggedIn = false
     }
     
-}).then(() => {
-    initMessage(recieverUserProfile)
-    messageTab.style.display = 'block'
 })
 
 function getRecieverUserId()  {
@@ -91,7 +88,7 @@ function getRecieverUserId()  {
     return id
 }
 
-function fetchData(id) {
+function fetchData(id, type) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -103,6 +100,15 @@ function fetchData(id) {
 
    return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Name+(from+Employer),Profile%20Picture&id=" + id, requestOptions)
     .then(response => response.json())
+    .then(result => {
+        if(type === "reciever") {
+            recieverUserProfile = result
+        } else if (type === "sender") {
+            senderUserProfile = result
+            initMessage(recieverUserProfile)
+            messageTab.style.display = 'block'
+        }
+    })
     
 }
 
