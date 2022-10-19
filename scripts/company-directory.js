@@ -252,7 +252,7 @@ function displayCompanies(companies){
         <div class="company-profile">
             <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
             <div class="candidate-info">
-                <div class="company-name">${company.fields['Name']}</div>
+                <div class="company-name"><a class="clickable-profile" href="/app/company?id=${company.id}" target="_blank">${company.fields['Name']}</a></div>
                 <div class="company-slogan">${company.fields['Slogan']}</div>
                 <div class="company-categories">
                     ${company.fields['Startmate Company?']
@@ -264,7 +264,7 @@ function displayCompanies(companies){
                 ${score}
                 ${userType === 'CANDIDATE'
                 ? `<div class="heart-container" data-likebtn="${company.id}">
-                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, company)} tooltip"><span class="tooltiptext">Interested to work for this company? Let them know by favouriting them!</span>❤</a>
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, company)} tooltip"><span class="tooltiptext">Interested to work for this company? Favourite this company to get notified about new jobs!</span>❤</a>
                     </div>`
                 : ''
                 }

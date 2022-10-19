@@ -2,6 +2,7 @@ const directoryContainer = document.querySelector('.directory-container-v2')
 const form = document.querySelector('[data-filter="form"]')
 const formInputs = document.querySelectorAll('[data-filter="input"]') 
 const locationsInput = document.querySelector('[data-input="location"]')
+const typeOfJobInput = document.querySelector('[data-input="types-of-jobs"]')
 const remoteInput = document.querySelector('[data-input="remote"]')
 const rolesInput = document.querySelector('[data-input="roles"]')
 const industriesInput = document.querySelector('[data-input="industries"]')
@@ -38,6 +39,7 @@ let filterObj = {
 }
 let locationSelector
 let remoteSelector = new TomSelect(remoteInput, {...generalSelectorSettings});
+let typeOfJobSelector = new TomSelect(typeOfJobInput, {...generalSelectorSettings, maxItems: null});
 let roleSelector
 let industriesSelector
 //&cacheTime=5
@@ -104,14 +106,23 @@ function getExperienceValues() {
     const values = checked.map(checkbox => {return `{experience-stage}="${checkbox.dataset.experience}"`}).join(',')
     return values
 }
+// OLD WORK TYPE
+// function getWorkTypeValues() {
+//     filterObj.workType = []
+//     const inputs = [...document.querySelectorAll('[data-worktype]')]
+//     const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox }); 
+//     if (checked.length === 0) return
+//     filterObj.workType = checked.map(checkbox => {return checkbox.dataset.worktype})
+//     const values = checked.map(checkbox => {return `FIND("${checkbox.dataset.worktype}",{Job Pref: Type of role})`}).join(',')
+//     return values
+// }
 
 function getWorkTypeValues() {
     filterObj.workType = []
-    const inputs = [...document.querySelectorAll('[data-worktype]')]
-    const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox }); 
-    if (checked.length === 0) return
-    filterObj.workType = checked.map(checkbox => {return checkbox.dataset.worktype})
-    const values = checked.map(checkbox => {return `FIND("${checkbox.dataset.worktype}",{Job Pref: Type of role})`}).join(',')
+    if (typeOfJobSelector.getValue().length === 0) return
+    const selected = typeOfJobSelector.getValue()
+    filterObj.workType = typeOfJobSelector.getValue()
+    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Type of role})`}).join(',')
     return values
 }
 
@@ -153,7 +164,7 @@ function getSMProgramValues() {
 
 function checkRemoteValue() {
     filterObj.remote = []
-    const input = document.querySelector('[remotecheckbox]')
+    const input = document.querySelector('[data-remote="remotecheckbox"]')
     if(!input.checked) return
     filterObj.remote = [true]
     const value = `IF({Job Pref: Open to remote work}, TRUE())`
@@ -168,26 +179,47 @@ function countProfiles(arr) {
 function scoreProfiles(filtersToCheck, fetchedUsers) {
     const scoredProfiles = fetchedUsers.map(profile => {
         let score = 0
-        if(filtersToCheck.workType.length > 0) {
-            filtersToCheck.workType.forEach(filter => {
-                if (profile.fields["Job Pref: Type of role"].includes(filter)) score += 1
+        let matchedFilters = []
+        if(filtersToCheck.roles.length > 0) {
+            filtersToCheck.roles.forEach(filter => {
+                if (profile.fields["Job Pref: Relevant roles"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
             })
         }
         if(filtersToCheck.experience.length > 0) {
             filtersToCheck.experience.forEach(filter => {
-                if (profile.fields["experience-stage"].includes(filter)) score += 1
+                if (profile.fields["experience-stage"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
+            })
+        }
+        if(filtersToCheck.location.length > 0) {
+            filtersToCheck.location.forEach(filter => {
+                if (profile.fields["Job Pref: Working Locations"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
+            })
+        }
+        if(filtersToCheck.remote.length > 0) {
+            if (profile.fields["Job Pref: Open to remote work"]){
+                score += 1
+                matchedFilters.push('Open to Remote Work')
+            }
+        }
+        if(filtersToCheck.workType.length > 0) {
+            filtersToCheck.workType.forEach(filter => {
+                if (profile.fields["Job Pref: Type of role"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
             })
         }
         if(filtersToCheck.SMProgram.length > 0) {
                 if (profile.fields["Startmate Program"]) score += 1
-        }
-        if(filtersToCheck.remote.length > 0) {
-            if (profile.fields["Job Pref: Open to remote work"]) score += 1
-        }
-        if(filtersToCheck.location.length > 0) {
-            filtersToCheck.location.forEach(filter => {
-                if (profile.fields["Job Pref: Working Locations"].includes(filter)) score += 1
-            })
         }
         if(filtersToCheck.industry.length > 0) {
             filtersToCheck.industry.forEach(filter => {
@@ -195,6 +227,8 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
             })
         }
         profile.score = score
+        profile.matchedFilters = matchedFilters
+        console.log(matchedFilters)
         return profile
     })
     return scoredProfiles
@@ -239,6 +273,7 @@ function clearFilters() {
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
+    typeOfJobSelector.setValue('', 'silent')
     fetchProfiles()
 }
 
@@ -287,13 +322,14 @@ function fetchFilteredProfiles(filter) {
 function displayUserHeadline(profile) {
     let headline
     if (paidMember) {
+        const fullHeadline = `<div class="candidate-name"><a class="clickable-profile" href="/app/profile?user=${profile.id}" target="_blank">`
         headline = profile.fields["First Job?"]
-                    ? `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
+                    ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>` 
                     : profile.fields["Candidate Employer"] 
-                        ? `${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}`
-                        : `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
+                        ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}</a></div>`
+                        : `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>`
     } else {
-        headline = `${profile.fields["What do you do?"]}`
+        headline = `<div class="candidate-name">${profile.fields["What do you do?"]}</div>`
     }
 
     return headline
@@ -325,7 +361,7 @@ function displayProfiles(profiles){
         <div class="candidate-profile">
             <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
             <div class="candidate-info">
-                <div class="candidate-name">${displayUserHeadline(profile)}</div>
+                ${displayUserHeadline(profile)}
                 <div class="candidate-details-container">
                     <div class="candidate-short-details">
                     ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>

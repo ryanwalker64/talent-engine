@@ -278,13 +278,14 @@ function fetchFilteredProfiles(filter) {
 function displayUserHeadline(profile) {
     let headline
     if (paidMember) {
+        const fullHeadline = `<div class="candidate-name"><a class="clickable-profile" href="/app/profile?user=${profile.id}" target="_blank">`
         headline = profile.fields["First Job?"]
-                    ? `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
+                    ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>` 
                     : profile.fields["Candidate Employer"] 
-                        ? `${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}`
-                        : `${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}`
+                        ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}</a></div>`
+                        : `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>`
     } else {
-        headline = `${profile.fields["What do you do?"]}`
+        headline = `<div class="candidate-name">${profile.fields["What do you do?"]}</div>`
     }
 
     return headline
@@ -316,7 +317,7 @@ function displayProfiles(profiles){
         <div class="candidate-profile">
             <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
             <div class="candidate-info">
-                <div class="candidate-name">${displayUserHeadline(profile)}</div>
+                ${displayUserHeadline(profile)}
                 <div class="candidate-details-container">
                     <div class="candidate-short-details">
                     ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>
