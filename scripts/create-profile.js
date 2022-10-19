@@ -4,6 +4,7 @@ const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
 let userProfile = {}
 let userId
 let userIsLoggedIn
+let memberID
 
 // Form inputs
 const form = document.querySelector('[data-form="create-profile"]') 
@@ -239,7 +240,7 @@ function submitProfile() {
         "Profile hidden from:": formProps['hidden-from'],
         "Account Status": 'COMPLETE',
         // "Startmate Program": programsSelector.getValue(),
-        // "Date Last Edited": new Date(),
+        "Date Last Edited": `${new Date()}`,
     }
     console.log(formProps)
     console.log(userData)
@@ -267,8 +268,10 @@ function createProfile(userData, userAirtableId) {
                     "last-name": userData["Last Name"],
                     "account-status": 'COMPLETE',
                 }, false)
+                memberID = member['airtable-id-two']
+            }).then(()=> {
+                window.location.href = `https://talent.startmate.com/app/profile?user=${memberID}`;
             })
-            window.location.href = `https://talent.startmate.com/app/company-directory`;
         })
         .catch(error => console.log('error', error));
 
