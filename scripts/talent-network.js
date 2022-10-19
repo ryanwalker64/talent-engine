@@ -46,6 +46,7 @@ let industriesSelector
 
 function handleFilterSelection() {
     let filter = []
+    const filterSetting =  getFilterSetting()
     if (getExperienceValues()) filter.push(getExperienceValues())
     if (getRoleValues()) filter.push(getRoleValues())
     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
@@ -62,7 +63,7 @@ function handleFilterSelection() {
     if (checkForEmptyFilters()) {
         clearFilters()
     } else {
-        const filteredOptions = `IF(OR(${filter.join(',')}),"true")`
+        const filteredOptions = `IF(${filterSetting}(${filter.join(',')}),"true")`
 
         // OLD REMOTE SETUP
         // const filteredOptions = 
@@ -96,6 +97,17 @@ modalCloseBtn.addEventListener('click', closeModal)
 //     return value
 
 // }
+
+function getFilterSetting() {
+    const filterSettingButtons = document.querySelectorAll('[data-input="filter-settings"]')
+    let setFilterValue 
+    for (let i = 0; i < filterSettingButtons.length; i++) {
+        if(filterSettingButtons[i].checked === true) {
+            setFilterValue = filterSettingButtons[i].value 
+        }
+    }
+    return setFilterValue
+}
 
 function getExperienceValues() {
     filterObj.experience = []
@@ -496,6 +508,7 @@ fetchFilterData().then(([roles, locations, industries]) => {
     roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: 5});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
 
+    typeOfJobSelector.on('change', (e) => {handleFilterSelection()})
     locationSelector.on('change', (e) => {handleFilterSelection()})
     industriesSelector.on('change', (e) => {handleFilterSelection()})
     roleSelector.on('change', (e) => {handleFilterSelection()})
