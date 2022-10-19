@@ -48,6 +48,7 @@ function handleFilterSelection() {
     if (getRoleValues()) filter.push(getRoleValues())
     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
     if (getSMProgramValues()) filter.push(getSMProgramValues())
+    if (checkRemoteValue()) filter.push(checkRemoteValue())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
 
