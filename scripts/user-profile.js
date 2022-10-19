@@ -43,17 +43,17 @@ function displayProfile() {
                                 </div>
                                 <div class="short-company-date">
                                     ${userProfile.fields["Employment Start Date"]} - 
-                                    ${userProfile.fields['Currently work at employer?'] !== "on" 
+                                    ${userProfile.fields['Currently work at employer?'] !== "true" 
                                     ? userProfile.fields["Employment End Date"]
                                     : "Present"}`
 
     const handleHeadline = userProfile.fields['First Job?'] 
-                            ? `<div class="short-company-name newtext">Looking for first job </div>`
+                            ? `<div class="candidate-short-details">${userProfile.fields["Location"]}</div>`
                             : userProfile.fields["User Type"] === 'EMPLOYER'
-                               ? `<div class="candidate-short-details">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Name (from Employer)"]}</div>`
+                               ? `<div class="candidate-short-details">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Name (from Employer)"]}, ${userProfile.fields["Location"]}</div>`
                                : userProfile.fields["Candidate Employer"]
-                                    ? `<div class="candidate-short-details">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Candidate Employer"]}</div>`
-                                    : `<div class="candidate-short-details">${userProfile.fields["Job Title"]}</div>`
+                                    ? `<div class="candidate-short-details">${userProfile.fields["Job Title"]} @ ${userProfile.fields["Candidate Employer"]}, ${userProfile.fields["Location"]}</div>`
+                                    : `<div class="candidate-short-details">${userProfile.fields["Job Title"]}, ${userProfile.fields["Location"]}</div>`
 
 
     const stageOfJobHunt = userProfile.fields["Stage of Job Hunt"] === 'Actively Looking'
@@ -97,9 +97,13 @@ function displayProfile() {
                     <div class="user-experience-container">
                         <div id="w-node-d1b484be-b039-f163-f2bd-141e8ff68677-89aee008" class="user-experience">
                             <div class="label-v2">Experience</div>
-                            <div class="short-company">
+                            <div class="" style="
+                                border: 1px solid #eee;
+                                border-radius: 15px;
+                                padding: 5px 10px;
+                                display: inline-block;">
                                 ${employerLogo}
-                                <div class="company-desc-profile new">
+                                <div class="">
                                     ${handleExperienceContainer}
                                 </div>
                             </div>

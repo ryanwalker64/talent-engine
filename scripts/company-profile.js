@@ -212,7 +212,7 @@ function getCompanyData() {
     
     };
 
-    fetch(API + "Companies&id=" + companyId, requestOptions)
+    fetch(API + "Companies&id=" + companyId + '&cacheTime=0', requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)

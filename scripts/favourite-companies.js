@@ -19,7 +19,7 @@ function fetchCompanies(filter) {
         redirect: "follow",
     };
 
-    fetch(API + 'Companies' + filter, requestOptions)
+    fetch(API + 'Companies' + filter + '&cacheTime=0', requestOptions)
         .then(response => response.json())
         .then(result => {
             companiesUserbase = result.records

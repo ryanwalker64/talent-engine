@@ -265,7 +265,7 @@ function fetchFilteredProfiles(filter) {
     };
 
     const APIURL = filter ? API + filter : API
-    fetch(APIURL, requestOptions)
+    fetch(APIURL + '&cacheTime=0', requestOptions)
         .then(response => response.json())
         .then(result => {
             const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
