@@ -73,6 +73,7 @@ fetchData().then(([roles, locations, industries, programs]) => {
     programsSelector = new TomSelect(startmatePrograms, {...generalSelectorSettings,  options: programsObj, maxItems: 5});
     
     locatedSelector.on('change', (e) => { workingLocationSelector.setValue(locatedSelector.getValue())})
+    roleSelector.on('change', (e) => { interestedRolesSelector.setValue(roleSelector.getValue())})
 
     // MemberStack.onReady.then(function(member) {
     //     if (member.loggedIn) {
@@ -239,7 +240,7 @@ function submitProfile() {
         "Profile Visibility": formProps['visibility'],
         "Profile hidden from:": formProps['hidden-from'],
         "Account Status": 'COMPLETE',
-        // "Startmate Program": programsSelector.getValue(),
+        "Startmate Program": programsSelector.getValue(),
         "Date Last Edited": `${new Date()}`,
     }
     console.log(formProps)

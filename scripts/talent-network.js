@@ -50,17 +50,22 @@ function handleFilterSelection() {
     if (getSMProgramValues()) filter.push(getSMProgramValues())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
-    const remoteSelection = remoteSelector.getValue()
-    if (remoteSelection === "All locations") filter.push(getRemoteValue())
-    // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
+
+    // OLD REMOTE SETUP
+    // const remoteSelection = remoteSelector.getValue()
+    // if (remoteSelection === "All locations") filter.push(getRemoteValue())
+
     console.log("current filters:", filterObj)
     if (checkForEmptyFilters()) {
         clearFilters()
     } else {
-        const filteredOptions = 
-            remoteSelection === "Based on location"
-                ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-                : `IF(OR(${filter.join(',')}),"true")`
+        const filteredOptions = `IF(OR(${filter.join(',')}),"true")`
+
+        // OLD REMOTE SETUP
+        // const filteredOptions = 
+        //     remoteSelection === "Based on location"
+        //         ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+        //         : `IF(OR(${filter.join(',')}),"true")`
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         console.log(remoteSelector.getValue())      
@@ -78,16 +83,16 @@ modalContainer.addEventListener('click', closeModal)
 modalCloseBtn.addEventListener('click', closeModal)
 
 
+// OLD REMOTE SETUP
+// function getRemoteValue() {
+//     filterObj.remote = []
+//     if (remoteSelector.getValue().length === 0) return
+//     const selected = remoteSelector.getValue()
+//     filterObj.remote = [selected]
+//     const value = `{Job Pref: Open to remote work}`
+//     return value
 
-function getRemoteValue() {
-    filterObj.remote = []
-    if (remoteSelector.getValue().length === 0) return
-    const selected = remoteSelector.getValue()
-    filterObj.remote = [selected]
-    const value = `{Job Pref: Open to remote work}`
-    return value
-
-}
+// }
 
 function getExperienceValues() {
     filterObj.experience = []
@@ -145,6 +150,15 @@ function getSMProgramValues() {
     return value
 }
 
+function checkRemoteValue() {
+    filterObj.remote = []
+    const input = document.querySelector('[remotecheckbox]')
+    if(!input.checked) return
+    filterObj.remote = [true]
+    const value = `IF({Job Pref: Open to remote work}, TRUE())`
+    return value
+}
+
 function countProfiles(arr) {
     const profileCount = document.querySelector('[data-count="viewing"]')
     profileCount.textContent = arr.length
@@ -165,6 +179,9 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
         }
         if(filtersToCheck.SMProgram.length > 0) {
                 if (profile.fields["Startmate Program"]) score += 1
+        }
+        if(filtersToCheck.remote.length > 0) {
+            if (profile.fields["Job Pref: Open to remote work"]) score += 1
         }
         if(filtersToCheck.location.length > 0) {
             filtersToCheck.location.forEach(filter => {
