@@ -31,6 +31,7 @@ let industriesSelector
 
 function handleFilterSelection() {
     let filter = []
+    const filterSetting = getFilterSetting()
     if (getEmployeeValues()) filter.push(getEmployeeValues())
     if (getSMCompanyValues()) filter.push(getSMCompanyValues())
     if (getRemoteValues()) filter.push(getRemoteValues())
@@ -40,7 +41,7 @@ function handleFilterSelection() {
     if (checkForEmptyFilters()) {
         clearFilters()
     } else { 
-        const filterEncode = "&filterByFormula=" + encodeURI(`IF(OR(${filter.join(',')}),"true")`)  
+        const filterEncode = "&filterByFormula=" + encodeURI(`IF(${filterSetting}(${filter.join(',')}),"true")`)  
         // console.log(filteredOptions, filterEncode, filter)
         console.log(filterEncode, filter)
         fetchFilteredProfiles(filterEncode)
@@ -53,7 +54,16 @@ formInputs.forEach(filter => {
 
 clearBtn.addEventListener('click', clearFilters)
 
-
+function getFilterSetting() {
+    const filterSettingButtons = document.querySelectorAll('[data-input="filter-settings"]')
+    let setFilterValue 
+    for (let i = 0; i < filterSettingButtons.length; i++) {
+        if(filterSettingButtons[i].checked === true) {
+            setFilterValue = filterSettingButtons[i].value 
+        }
+    }
+    return setFilterValue
+}
 
 function getEmployeeValues() {
     filterObj.employee = []
@@ -153,9 +163,11 @@ function checkForEmptyFilters() {
 
 function clearCheckboxes() {
     formInputs.forEach(checkbox => {
+        if(!checkbox.name === 'filter-settings') {
         checkbox.checked = false
         const selectedCheckboxes = document.querySelectorAll('.w--redirected-checked')
         selectedCheckboxes.forEach(checkbox => {checkbox.classList.remove('w--redirected-checked')})
+        }
     })
 }
 

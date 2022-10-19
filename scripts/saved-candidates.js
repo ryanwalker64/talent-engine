@@ -9,6 +9,7 @@ const clearBtn = document.querySelector('[data-filter="clear"]')
 const modalContainer = document.querySelector('[data-upgrade="modalbackground"]')
 const modalCloseBtn = document.querySelector('[data-upgrade="closebtn"]')
 const banner = document.querySelector('[data-upgrade="banner"]')
+const typeOfJobInput = document.querySelector('[data-input="types-of-jobs"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
     sortField: {field: "text", direction: "asc"}
@@ -39,6 +40,7 @@ let filterObj = {
 }
 let locationSelector
 let remoteSelector = new TomSelect(remoteInput, {...generalSelectorSettings});
+let typeOfJobSelector = new TomSelect(typeOfJobInput, {...generalSelectorSettings, maxItems: null});
 let roleSelector
 let industriesSelector
 //&cacheTime=5
@@ -46,15 +48,20 @@ let industriesSelector
 function handleFilterSelection() {
     let filter = []
     let interestedCandidates
+    const filterSetting = getFilterSetting()
     if (getExperienceValues()) filter.push(getExperienceValues())
     if (getRoleValues()) filter.push(getRoleValues())
     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
     if (getSMProgramValues()) filter.push(getSMProgramValues())
+    if (checkRemoteValue()) filter.push(checkRemoteValue())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
-    const remoteSelection = remoteSelector.getValue()
-    if (remoteSelection === "All locations") filter.push(getRemoteValue())
-    // if (remoteSelector.getValue() === "All locations") filter.push(getRemoteValue())
+
+    // OLD REMOTE SETUP
+    // const remoteSelection = remoteSelector.getValue()
+    // if (remoteSelection === "All locations") filter.push(getRemoteValue())
+
+
     console.log("current filters:", filterObj)
     if (loggedInUserObj.fields["Candidates interested in"]) {
         companiesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
@@ -65,11 +72,14 @@ function handleFilterSelection() {
     if (checkForEmptyFilters()) {
         clearFilters()
     } else {
-        const filteredOptions = 
-            remoteSelection === "Based on location"
-                ? `IF(AND(OR(${companiesInterestedIn}),OR(${filter.join(',')}),${getRemoteValue()}),"true")`
-                : `IF(AND(OR(${companiesInterestedIn}),OR(${filter.join(',')})),"true")`
+        const filteredOptions = `IF(${filterSetting}(${filter.join(',')}),"true")`
 
+        // OLD REMOTE SETUP
+        // const filteredOptions = 
+        //     remoteSelection === "Based on location"
+        //         ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
+        //         : `IF(OR(${filter.join(',')}),"true")`
+        
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         console.log(remoteSelector.getValue())      
         console.log(filteredOptions, filterEncode, filter)
@@ -86,15 +96,35 @@ modalContainer.addEventListener('click', closeModal)
 modalCloseBtn.addEventListener('click', closeModal)
 
 
+// OLD
+// function getRemoteValue() {
+//     filterObj.remote = []
+//     if (remoteSelector.getValue().length === 0) return
+//     const selected = remoteSelector.getValue()
+//     filterObj.remote = [selected]
+//     const value = `{Job Pref: Open to remote work}`
+//     return value
 
-function getRemoteValue() {
+// }
+
+function checkRemoteValue() {
     filterObj.remote = []
-    if (remoteSelector.getValue().length === 0) return
-    const selected = remoteSelector.getValue()
-    filterObj.remote = [selected]
-    const value = `{Job Pref: Open to remote work}`
+    const input = document.querySelector('[data-remote="remotecheckbox"]')
+    if(!input.checked) return
+    filterObj.remote = [true]
+    const value = `IF({Job Pref: Open to remote work}, TRUE())`
     return value
+}
 
+function getFilterSetting() {
+    const filterSettingButtons = document.querySelectorAll('[data-input="filter-settings"]')
+    let setFilterValue 
+    for (let i = 0; i < filterSettingButtons.length; i++) {
+        if(filterSettingButtons[i].checked === true) {
+            setFilterValue = filterSettingButtons[i].value 
+        }
+    }
+    return setFilterValue
 }
 
 function getExperienceValues() {
@@ -106,16 +136,26 @@ function getExperienceValues() {
     const values = checked.map(checkbox => {return `{experience-stage}="${checkbox.dataset.experience}"`}).join(',')
     return values
 }
+// OLD
+// function getWorkTypeValues() {
+//     filterObj.workType = []
+//     const inputs = [...document.querySelectorAll('[data-worktype]')]
+//     const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox }); 
+//     if (checked.length === 0) return
+//     filterObj.workType = checked.map(checkbox => {return checkbox.dataset.worktype})
+//     const values = checked.map(checkbox => {return `FIND("${checkbox.dataset.worktype}",{Job Pref: Type of role})`}).join(',')
+//     return values
+// }
 
 function getWorkTypeValues() {
     filterObj.workType = []
-    const inputs = [...document.querySelectorAll('[data-worktype]')]
-    const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox }); 
-    if (checked.length === 0) return
-    filterObj.workType = checked.map(checkbox => {return checkbox.dataset.worktype})
-    const values = checked.map(checkbox => {return `FIND("${checkbox.dataset.worktype}",{Job Pref: Type of role})`}).join(',')
+    if (typeOfJobSelector.getValue().length === 0) return
+    const selected = typeOfJobSelector.getValue()
+    filterObj.workType = typeOfJobSelector.getValue()
+    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Type of role})`}).join(',')
     return values
 }
+
 
 function getLocationValues() {
     filterObj.location = []
@@ -161,23 +201,47 @@ function countProfiles(arr) {
 function scoreProfiles(filtersToCheck, fetchedUsers) {
     const scoredProfiles = fetchedUsers.map(profile => {
         let score = 0
-        if(filtersToCheck.workType.length > 0) {
-            filtersToCheck.workType.forEach(filter => {
-                if (profile.fields["Job Pref: Type of role"].includes(filter)) score += 1
+        let matchedFilters = []
+        if(filtersToCheck.roles.length > 0) {
+            filtersToCheck.roles.forEach(filter => {
+                if (profile.fields["Job Pref: Relevant roles"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
             })
         }
         if(filtersToCheck.experience.length > 0) {
             filtersToCheck.experience.forEach(filter => {
-                if (profile.fields["experience-stage"].includes(filter)) score += 1
+                if (profile.fields["experience-stage"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
+            })
+        }
+        if(filtersToCheck.location.length > 0) {
+            filtersToCheck.location.forEach(filter => {
+                if (profile.fields["Job Pref: Working Locations"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
+            })
+        }
+        if(filtersToCheck.remote.length > 0) {
+            if (profile.fields["Job Pref: Open to remote work"]){
+                score += 1
+                matchedFilters.push('Open to Remote Work')
+            }
+        }
+        if(filtersToCheck.workType.length > 0) {
+            filtersToCheck.workType.forEach(filter => {
+                if (profile.fields["Job Pref: Type of role"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
             })
         }
         if(filtersToCheck.SMProgram.length > 0) {
                 if (profile.fields["Startmate Program"]) score += 1
-        }
-        if(filtersToCheck.location.length > 0) {
-            filtersToCheck.location.forEach(filter => {
-                if (profile.fields["Job Pref: Working Locations"].includes(filter)) score += 1
-            })
         }
         if(filtersToCheck.industry.length > 0) {
             filtersToCheck.industry.forEach(filter => {
@@ -185,10 +249,13 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
             })
         }
         profile.score = score
+        profile.matchedFilters = matchedFilters
+        console.log(matchedFilters)
         return profile
     })
     return scoredProfiles
 }
+
 
 function countFilters() {
     let totalScore = 0;
@@ -208,9 +275,11 @@ function checkForEmptyFilters() {
 
 function clearCheckboxes() {
     formInputs.forEach(checkbox => {
+        if(!checkbox.name === 'filter-settings') {
         checkbox.checked = false
         const selectedCheckboxes = document.querySelectorAll('.w--redirected-checked')
         selectedCheckboxes.forEach(checkbox => {checkbox.classList.remove('w--redirected-checked')})
+        }
     })
 }
 
@@ -229,6 +298,7 @@ function clearFilters() {
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
+    typeOfJobSelector.setValue('', 'silent')
     getLoggedInUserData(loggedInUserId)
 }
 
@@ -460,6 +530,7 @@ fetchFilterData().then(([roles, locations, industries]) => {
     industriesSelector.on('change', (e) => {handleFilterSelection()})
     roleSelector.on('change', (e) => {handleFilterSelection()})
     remoteSelector.on('change', (e) => {handleFilterSelection()})
+    typeOfJobSelector.on('change', (e) => {handleFilterSelection()})
 })
 
 

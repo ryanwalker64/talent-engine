@@ -46,7 +46,7 @@ let industriesSelector
 
 function handleFilterSelection() {
     let filter = []
-    const filterSetting =  getFilterSetting()
+    const filterSetting = getFilterSetting()
     if (getExperienceValues()) filter.push(getExperienceValues())
     if (getRoleValues()) filter.push(getRoleValues())
     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
@@ -72,7 +72,7 @@ function handleFilterSelection() {
         //         : `IF(OR(${filter.join(',')}),"true")`
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-        console.log(remoteSelector.getValue())      
+        // console.log(remoteSelector.getValue())      
         console.log(filteredOptions, filterEncode, filter)
         fetchFilteredProfiles(filterEncode)
     }
@@ -264,9 +264,11 @@ function checkForEmptyFilters() {
 
 function clearCheckboxes() {
     formInputs.forEach(checkbox => {
+        if(!checkbox.name === 'filter-settings') {
         checkbox.checked = false
         const selectedCheckboxes = document.querySelectorAll('.w--redirected-checked')
         selectedCheckboxes.forEach(checkbox => {checkbox.classList.remove('w--redirected-checked')})
+        }
     })
 }
 
