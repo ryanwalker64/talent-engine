@@ -356,7 +356,7 @@ function displayUserHeadline(profile) {
                         ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}</a></div>`
                         : `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>`
     } else {
-        headline = `<div class="candidate-name">${profile.fields["What do you do?"]}</div>`
+        headline = `<div class="candidate-name" onclick="upgradeModule()"><span class="blur-name">Subscribe Today,</span> ${profile.fields["What do you do?"]}</div>`
     }
 
     return headline
@@ -407,13 +407,83 @@ function displayProfiles(profiles){
                             : profile.score === countFilters()
                                 ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
                                 : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
+                ${loggedInUserType === 'EMPLOYER'
+                ? `<div class="heart-container" data-likebtn="${profile.id}">
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, profile)} tooltip"><span class="tooltiptext">Save this candidate to favourites?</span>❤</a>
+                    </div>`
+                : ''
+                }
                 ${profileButtonsContainer(profile)}
             </div>
         </div> 
         `
     }).join('')
     directoryContainer.innerHTML = profilesHTML
+    if (loggedInUserType === 'EMPLOYER') applyEventListeners()
 }
+
+function applyEventListeners() {
+    const likeCompanyBtns = document.querySelectorAll('[data-likebtn]')
+    likeCompanyBtns.forEach(btn => 
+        btn.addEventListener('click', (e) => {
+            const btn = e.currentTarget
+            console.log(btn)
+            const heartBtn = btn.querySelector('[data-heart="small"]')
+            heartBtn.classList.toggle('liked')
+            updateLikedCandidates(handleLikedCandidates(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
+            // change hover text to unlike company
+        })
+    )
+}
+
+
+function updateLikedCandidates(candidatesList, userId) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "put",
+        headers: myHeaders,
+        redirect: "follow",
+        body: JSON.stringify([{"id": userId,"fields":{"Candidates interested in": candidatesList}}])
+    };
+
+    fetch(API + "Users", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
+
+function handleLikedCandidates(userObj, candidateId) {
+    let likedCandidates = []
+    //if the liked list exists
+    if (userObj.fields['Candidates interested in']) {
+        likedCandidates = userObj.fields['Candidates interested in']
+        console.log('liked Candidates list found')
+        console.log(likedCandidates)
+        //if the company is already liked, remove it
+        if(likedCandidates.findIndex(id => id === candidateId) !== -1) {
+            likedCandidates.splice(likedCandidates.findIndex(id => id === candidateId), 1)
+            console.log('Candidate has been already liked now removed')
+            console.log(likedCandidates)
+            return likedCandidates
+        } 
+    }
+    likedCandidates.push(candidateId)
+    console.log('candidate has been liked')
+    console.log(likedCandidates)
+    return likedCandidates
+}
+
+function heartStatus(loggedInUserData, candidate) {
+
+    if (loggedInUserData.fields['Candidates interested in']) {
+        if (loggedInUserData.fields['Candidates interested in'].findIndex(id => id === candidate.id) !== -1) {
+            const heartStatus = 'liked' 
+            return heartStatus
+        }
+    }
+}
+
 
 function saveFilterToURL(filters){
     let url = new URL(window.location.href);

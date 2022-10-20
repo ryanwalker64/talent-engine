@@ -79,7 +79,7 @@ function handleFilterSelection() {
         //     remoteSelection === "Based on location"
         //         ? `IF(AND(OR(${filter.join(',')}),${getRemoteValue()}),"true")`
         //         : `IF(OR(${filter.join(',')}),"true")`
-        
+
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         console.log(remoteSelector.getValue())      
         console.log(filteredOptions, filterEncode, filter)
@@ -357,7 +357,7 @@ function displayUserHeadline(profile) {
                         ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}</a></div>`
                         : `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>`
     } else {
-        headline = `<div class="candidate-name">${profile.fields["What do you do?"]}</div>`
+        headline = `<div class="candidate-name" onclick="upgradeModule()"><span class="blur-name">Subscribe Today,</span> ${profile.fields["What do you do?"]}</div>`
     }
 
     return headline

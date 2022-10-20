@@ -231,11 +231,17 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
             })
         }
         if(filtersToCheck.SMProgram.length > 0) {
-                if (profile.fields["Startmate Program"]) score += 1
+                if (profile.fields["Startmate Program"]) { 
+                    score += 1
+                    matchedFilters.push('Startmate Fellow')
+                }
         }
         if(filtersToCheck.industry.length > 0) {
             filtersToCheck.industry.forEach(filter => {
-                if (profile.fields["Job Pref: Industries"].includes(filter)) score += 1
+                if (profile.fields["Job Pref: Industries"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
             })
         }
         profile.score = score
@@ -286,7 +292,7 @@ function clearFilters() {
     industriesSelector.setValue('', 'silent')
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
-    roleSelector.setValue('', 'silent')
+    // roleSelector.setValue('', 'silent')
     typeOfJobSelector.setValue('', 'silent')
     fetchProfiles()
 }
@@ -343,7 +349,7 @@ function displayUserHeadline(profile) {
                         ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}</a></div>`
                         : `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>`
     } else {
-        headline = `<div class="candidate-name">${profile.fields["What do you do?"]}</div>`
+        headline = `<div class="candidate-name" onclick="upgradeModule()"><span class="blur-name">Subscribe Today,</span> ${profile.fields["What do you do?"]}</div>`
     }
 
     return headline
@@ -389,14 +395,18 @@ function displayProfiles(profiles){
                     ? `<div></div>`
                     : profile.score === 0 
                         ? `<div class="filter-match" data-filter="matches">No filters matched</div>`
-                        : profile.score > 1 && profile.score !== countFilters()
-                            ? `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`
-                            : profile.score === countFilters()
-                                ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
-                                : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
+                        :  profile.score === 1 &&  profile.score === countFilters()
+                            ?  `<div class="filter-match all-matched" data-filter="matches">${profile.matchedFilters}</div>`
+                            :  profile.score > 0 && profile.score < 3 && profile.score !== countFilters()
+                                ? `<div class="filter-match some-matches" data-filter="matches">${profile.matchedFilters.join(', ')}</div>`
+                                : profile.score > 1 && profile.score !== countFilters()
+                                    ? `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`
+                                    : profile.score === countFilters()
+                                        ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
+                                        : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
                 ${loggedInUserType === 'EMPLOYER'
                 ? `<div class="heart-container" data-likebtn="${profile.id}">
-                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, profile)} tooltip"><span class="tooltiptext">Save this candidate?</span>❤</a>
+                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, profile)} tooltip"><span class="tooltiptext">Save this candidate to favourites?</span>❤</a>
                     </div>`
                 : ''
                 }
@@ -507,8 +517,8 @@ fetchFilterData().then(([roles, locations, industries]) => {
         searchField: ['value'],
         maxItems: 5,
         options: locations});
-    roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: 5});
-    industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
+    roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: null});
+    industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: null});
 
     typeOfJobSelector.on('change', (e) => {handleFilterSelection()})
     locationSelector.on('change', (e) => {handleFilterSelection()})
@@ -545,7 +555,7 @@ function getCompanyData(companyId) {
                     interestedCandidatesBanner.insertAdjacentHTML('beforeend', `<a href="/app/candidates-interested-directory" class="button-6 bannerbtn redbutton w-button"><span class="text-span-16">🔥</span> Show me</a>`)
             } else if(companyData 
                 && companyData.fields['Interested Candidates'] 
-                && companyData.fields['Interested Candidates'].length > 9) {
+                && companyData.fields['Interested Candidates'].length > 4) {
                     interestedCandidatesBannerText.innerHTML = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
                     interestedCandidatesBanner.style.display = "flex"
                     interestedCandidatesBanner.insertAdjacentHTML('beforeend', `<a onclick="upgradeModule()" class="button-6 bannerbtn redbutton w-button"><span class="text-span-16">🔥</span> Show me</a>`)

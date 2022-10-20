@@ -265,7 +265,7 @@ function displayCompanies(companies){
             <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
             <div class="candidate-info">
                 <div class="company-name"><a class="clickable-profile" href="/app/company?id=${company.id}" target="_blank">${company.fields['Name']}</a></div>
-                <div class="company-slogan">${company.fields['Slogan']}</div>
+                <div class="company-slogan" style="max-width: 500px;">${company.fields['Slogan']}</div>
                 <div class="company-categories">
                     ${company.fields['Startmate Company?']
                         ? '<div class="company-category orange-catg">Startmate Company</div>'

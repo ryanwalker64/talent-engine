@@ -64,7 +64,7 @@ function displayProfile(companyProfile) {
                 <div class="candidate-info">
                     <div class="company-name">${companyProfile.fields['Name']}</div>
                     <div class="candidate-details-container">
-                        <div class="company-slogan">${companyProfile.fields['Slogan']}</div>
+                        <div class="company-slogan" style="max-width: 500px;">${companyProfile.fields['Slogan']}</div>
                     </div>
                     <div class="company-categories">
                         ${companyProfile.fields['Startmate Company?'] 
