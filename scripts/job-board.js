@@ -101,7 +101,7 @@ function getExperienceValues() {
     const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox });
     if (checked.length === 0) return 
     filterObj.experience = checked.map(checkbox => {return checkbox.dataset.experience})
-    const values = checked.map(checkbox => {return `{experience-stage}="${checkbox.dataset.experience}"`}).join(',')
+    const values = checked.map(checkbox => {return `{Level}="${checkbox.dataset.experience}"`}).join(',')
     return values
 }
 // OLD WORK TYPE
@@ -120,7 +120,7 @@ function getWorkTypeValues() {
     if (typeOfJobSelector.getValue().length === 0) return
     const selected = typeOfJobSelector.getValue()
     filterObj.workType = typeOfJobSelector.getValue()
-    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Type of role})`}).join(',')
+    const values = selected.map(value => {return `FIND("${value}",{Type of Job})`}).join(',')
     return values
 }
 
@@ -129,7 +129,7 @@ function getLocationValues() {
     if (locationSelector.getValue().length === 0) return
     const selected = locationSelector.getValue()
     filterObj.location = locationSelector.getValue()
-    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Working Locations})`}).join(',')
+    const values = selected.map(value => {return `FIND("${value}",{Location})`}).join(',')
     return values
 }
 
@@ -138,7 +138,7 @@ function getRoleValues() {
     if (roleSelector.getValue().length === 0) return
     const selected = roleSelector.getValue()
     filterObj.roles = roleSelector.getValue()
-    const values = selected.map(value => {return `FIND("${value}",{Job Pref: Relevant roles})`}).join(',')
+    const values = selected.map(value => {return `FIND("${value}",{Similar Roles})`}).join(',')
     return values
 }
 
@@ -163,7 +163,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
         let matchedFilters = []
         if(filtersToCheck.roles.length > 0) {
             filtersToCheck.roles.forEach(filter => {
-                if (profile.fields["Job Pref: Relevant roles"].includes(filter)) {
+                if (profile.fields["Similar Roles"].includes(filter)) {
                     score += 1
                     matchedFilters.push(filter)
                 }
@@ -171,7 +171,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
         }
         if(filtersToCheck.experience.length > 0) {
             filtersToCheck.experience.forEach(filter => {
-                if (profile.fields["experience-stage"].includes(filter)) {
+                if (profile.fields["Level"].includes(filter)) {
                     score += 1
                     matchedFilters.push(filter)
                 }
@@ -179,21 +179,21 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
         }
         if(filtersToCheck.location.length > 0) {
             filtersToCheck.location.forEach(filter => {
-                if (profile.fields["Job Pref: Working Locations"].includes(filter)) {
+                if (profile.fields["Location"].includes(filter)) {
                     score += 1
                     matchedFilters.push(filter)
                 }
             })
         }
         if(filtersToCheck.remote.length > 0) {
-            if (profile.fields["Job Pref: Open to remote work"]){
+            if (profile.fields["Is this job open to remote candidates?"]){
                 score += 1
                 matchedFilters.push('Open to Remote Work')
             }
         }
         if(filtersToCheck.workType.length > 0) {
             filtersToCheck.workType.forEach(filter => {
-                if (profile.fields["Job Pref: Type of role"].includes(filter)) {
+                if (profile.fields["Type of Job"].includes(filter)) {
                     score += 1
                     matchedFilters.push(filter)
                 }
@@ -244,7 +244,7 @@ function clearFilters() {
     locationSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
     typeOfJobSelector.setValue('', 'silent')
-    fetchProfiles()
+    fetchJobs()
 }
 
 
@@ -297,27 +297,27 @@ function createCategories(arr) {
         } else return ''
     } 
 
-function translateExperienceLevels(level) {
-    let levelTranslated
-    if (level === "Mid-level (3-4 years)") {
-        levelTranslated = 'Mid-level'
+// function translateExperienceLevels(level) {
+//     let levelTranslated
+//     if (level === "Mid-level (3-4 years)") {
+//         levelTranslated = 'Mid-level'
 
-    } else if (level === "Entry-level") {
-        levelTranslated = 'Entry-level'
+//     } else if (level === "Entry-level") {
+//         levelTranslated = 'Entry-level'
 
-    } else if (level === "Senior (5-7 years)") {
-        levelTranslated = 'Senior'
+//     } else if (level === "Senior (5-7 years)") {
+//         levelTranslated = 'Senior'
 
-    } else if (level === "Expert") {
-        levelTranslated = 'Expert'
+//     } else if (level === "Expert") {
+//         levelTranslated = 'Expert'
 
-    } else if (level === "Junior (1-2 years)") {
-        levelTranslated = 'Junior'
-    }
+//     } else if (level === "Junior (1-2 years)") {
+//         levelTranslated = 'Junior'
+//     }
 
-    return levelTranslated
+//     return levelTranslated
         
-}
+// }
 
 function locationTranslate(job) {
     let location
@@ -325,7 +325,7 @@ function locationTranslate(job) {
         location = `${job.fields['International Location']}, International`
     } else if (job.fields['Location Type'] === "Australia") {
         location = `${job.fields['Location AUS']}, Australia`
-    } else if (job.fields['Location Type'] === "Australia") {
+    } else if (job.fields['Location Type'] === "New Zealand") {
         location = `${job.fields['Location NZ']}, New Zealand`
     }
     return location
@@ -345,7 +345,7 @@ function displayJobs(jobs){
                     : `<div class="filter-match some-matches" data-filter="matches">Matches ${job.score} filters</div>`
 
 
-        const tagline = `${translateExperienceLevels(job.fields['Experience Level'])} • ${job.fields['Type of Job']} • ${locationTranslate(job)}`
+        const tagline = `${job.fields['Level']} • ${job.fields['Type of Job']} • ${locationTranslate(job)}`
 
         return ` <div class="job-posting">
                     <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
