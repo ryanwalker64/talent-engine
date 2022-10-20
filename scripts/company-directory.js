@@ -267,15 +267,15 @@ function heartStatus(loggedInUserData, company) {
 
 function displayCompanies(companies){
     const companiesHTML = companies.map(company => {
-        const score = !company.score
-        ? `<div></div>`
-        : company.score === 0 
-            ? `<div class="filter-match" data-filter="matches">No filters matched</div>`
-            : company.score > 1 && company.score !== countFilters()
-                ? `<div class="filter-match some-matches" data-filter="matches">Matches ${company.score} filters</div>`
-                : company.score === countFilters()
-                    ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
-                    : `<div class="filter-match some-matches" data-filter="matches">Matches ${company.score} filters</div>`
+        // const score = !company.score
+        // ? `<div></div>`
+        // : company.score === 0 
+        //     ? `<div class="filter-match" data-filter="matches">No filters matched</div>`
+        //     : company.score > 1 && company.score !== countFilters()
+        //         ? `<div class="filter-match some-matches" data-filter="matches">Matches ${company.score} filters</div>`
+        //         : company.score === countFilters()
+        //             ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
+        //             : `<div class="filter-match some-matches" data-filter="matches">Matches ${company.score} filters</div>`
 
 
         return `
@@ -292,7 +292,7 @@ function displayCompanies(companies){
                     </div>
                 </div>
                 <div class="div-block-75">
-                    ${score}
+                    
                     ${userType === 'CANDIDATE'
                     ? `<div class="heart-container" data-likebtn="${company.id}">
                         <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, company)} tooltip"><span class="tooltiptext">Interested to work for this company? Favourite this company to get notified about new jobs!</span>❤</a>
@@ -302,13 +302,13 @@ function displayCompanies(companies){
                     <a href="/app/company?id=${company.id}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
                 </div>
             </div>
-            ${!profile.score
+            ${!company.score
                 ? `<div></div>`
                 : `<div class="div-block-104">
                         <div class="div-block-105">
                             <div class="candidate-short-details matches-text">Matches:</div>
                             <div>
-                                ${createCategories(profile.matchedFilters, 'outlined')}
+                                ${createCategories(company.matchedFilters, 'outlined')}
                             </div>
                         </div>
                     </div>`}
