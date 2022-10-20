@@ -373,45 +373,65 @@ function closeModal(e) {
     }
 }
 
+//  ${!profile.score
+// ? `<div></div>`
+// : profile.score === 0 
+//     ? `<div class="filter-match" data-filter="matches">No filters matched</div>`
+//     :  profile.score === 1 &&  profile.score === countFilters()
+//         ?  `<div class="filter-match all-matched" data-filter="matches">${profile.matchedFilters}</div>`
+//         :  profile.score > 0 && profile.score < 3 && profile.score !== countFilters()
+//             ? `<div class="filter-match some-matches" data-filter="matches">${profile.matchedFilters.join(', ')}</div>`
+//             : profile.score > 1 && profile.score !== countFilters()
+//                 ? `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`
+//                 : profile.score === countFilters()
+//                     ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
+//                     : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
+
+function createCategories(arr, className) {
+    if (arr) {
+        return arr.map(category => {
+            return `<div class="profile-catg ${className}">${category}</div>`
+            }).join('')
+        }
+    } 
 
 function displayProfiles(profiles){
     const profilesHTML = profiles.map(profile => {
         
         return `
-        <div class="candidate-profile">
-            <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
-            <div class="candidate-info">
-                ${displayUserHeadline(profile)}
-                <div class="candidate-details-container">
-                    <div class="candidate-short-details">
-                    ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>
-                    ${profile.fields["Stage of Job Hunt"] === "Actively Looking"
-                        ? `<div class="candidate-status actively-looking">Actively Looking</div>`
-                        : `<div></div>`}
+        <div class="information-container">
+            <div class="candidate-profile">
+                <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
+                <div class="candidate-info">
+                    ${displayUserHeadline(profile)}
+                    <div class="candidate-details-container">
+                        <div class="candidate-short-details">
+                        ${profile.fields["experience-stage"]} • ${profile.fields["Location"]}</div>
+                        ${profile.fields["Stage of Job Hunt"] === "Actively Looking"
+                            ? `<div class="candidate-status actively-looking">Actively Looking</div>`
+                            : `<div></div>`}
+                    </div>
+                </div>
+                <div class="candidate-buttons-container">
+                    ${loggedInUserType === 'EMPLOYER'
+                    ? `<div class="heart-container" data-likebtn="${profile.id}">
+                        <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, profile)} tooltip"><span class="tooltiptext">Save this candidate to favourites?</span>❤</a>
+                        </div>`
+                    : ''
+                    }
+                    ${profileButtonsContainer(profile)}
                 </div>
             </div>
-            <div class="candidate-buttons-container">
-                ${!profile.score
-                    ? `<div></div>`
-                    : profile.score === 0 
-                        ? `<div class="filter-match" data-filter="matches">No filters matched</div>`
-                        :  profile.score === 1 &&  profile.score === countFilters()
-                            ?  `<div class="filter-match all-matched" data-filter="matches">${profile.matchedFilters}</div>`
-                            :  profile.score > 0 && profile.score < 3 && profile.score !== countFilters()
-                                ? `<div class="filter-match some-matches" data-filter="matches">${profile.matchedFilters.join(', ')}</div>`
-                                : profile.score > 1 && profile.score !== countFilters()
-                                    ? `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`
-                                    : profile.score === countFilters()
-                                        ? `<div class="filter-match all-matched" data-filter="matches">Matches all filters</div>`
-                                        : `<div class="filter-match some-matches" data-filter="matches">Matches ${profile.score} filters</div>`}
-                ${loggedInUserType === 'EMPLOYER'
-                ? `<div class="heart-container" data-likebtn="${profile.id}">
-                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, profile)} tooltip"><span class="tooltiptext">Save this candidate to favourites?</span>❤</a>
-                    </div>`
-                : ''
-                }
-                ${profileButtonsContainer(profile)}
-            </div>
+            ${!profile.score
+                ? `<div></div>`
+                : `<div class="div-block-104">
+                        <div class="div-block-105">
+                            <div class="candidate-short-details matches-text">Matches:</div>
+                            <div>
+                                ${createCategories(profile.matchedFilters, outlined)}
+                            </div>
+                        </div>
+                    </div>`}
         </div> 
         `
     }).join('')

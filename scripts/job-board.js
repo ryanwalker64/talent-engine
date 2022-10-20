@@ -148,7 +148,7 @@ function checkRemoteValue() {
     const input = document.querySelector('[data-remote="remotecheckbox"]')
     if(!input.checked) return
     filterObj.remote = [true]
-    const value = `IF({Job Pref: Open to remote work}, TRUE())`
+    const value = `IF({Is this job open to remote candidates?}, TRUE())`
     return value
 }
 
@@ -396,9 +396,9 @@ fetchFilterData().then(([locations, roles]) => {
         options: locations});
 
     roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: null});
+
     locationSelector.on('change', (e) => {handleFilterSelection()})
     typeOfJobSelector.on('change', (e) => {handleFilterSelection()})
-    locationSelector.on('change', (e) => {handleFilterSelection()})
     roleSelector.on('change', (e) => {handleFilterSelection()})
 })
 

@@ -27,32 +27,6 @@ function createCategories(arr) {
         }
     } 
 
-function fetchJob(jobId) {
-    fetch(API + "Jobs&id=" + jobId, requestOptions)
-        .then(response => response.json())
-        .then(jobData => {
-            console.log(jobData)
-
-            const job = `
-                <div class="job-posting company-page">
-                    <img src="#" loading="lazy" alt="" class="logo">
-                    <div class="candidate-info job-post-directroy">
-                        <div class="job-title">Product Manager - Startmate</div>
-                        <div class="candidate-short-details">Expert • Lawyer • Full-time • Sydney Australia </div>
-                    </div>
-                    <div class="seemore-container">
-                        <div class="text-block-72">Posted: 4th August</div>
-                        <a href="#" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
-                    </div>
-                </div>
-            `
-            return job
-        })
-        .catch(error => console.log('error', error));
-}
-
-
-
 function displayProfile(companyProfile) {
 
     const profileHTML = `
@@ -112,7 +86,9 @@ function displayProfile(companyProfile) {
                 <div class="div-block-74">
                     <div class="label-v2">Job openings</div>
                     <div class="job-listings" data-container="jobs">
-                        ${!companyProfile.fields['Jobs'] ? "No Jobs Like this company to track new jobs" : ''}
+                        ${!companyProfile.fields['Jobs'] 
+                            ? `<span style="margin: 20px;display: block;">Currently there are no job openings at <strong>${companyProfile.fields['Name']}</strong><br>Add this company to your favourites to be notified about new roles</span>` 
+                            : ''}
                     </div>
                 </div>
             </div>
@@ -182,19 +158,32 @@ function handleLikedCandidates(userObj, companyid) {
     return likedCompanies
 }
 
+function locationTranslate(job) {
+    let location
+    if (job.fields['Location Type'] === "International") {
+        location = `${job.fields['International Location']}, International`
+    } else if (job.fields['Location Type'] === "Australia") {
+        location = `${job.fields['Location AUS']}, Australia`
+    } else if (job.fields['Location Type'] === "New Zealand") {
+        location = `${job.fields['Location NZ']}, New Zealand`
+    }
+    return location
+}
+
 function createJobListing(jobData) {
-    const job = `
-            <div class="job-posting company-page">
-                <img src="${companyProfile.fields['Logo']}" loading="lazy" alt="" class="logo">
-                <div class="candidate-info job-post-directroy">
-                    <div class="job-title">${jobData.fields['Job Title']} - ${jobData.fields['Name (from Company)']}</div>
-                    <div class="candidate-short-details">Expert • Lawyer • ${jobData.fields['Type of Job']} • ${jobData.fields['Job Location']} </div>
-                </div>
-                <div class="seemore-container">
-                    <div class="text-block-72">Posted: 4th August</div>
-                    <a href="#" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
-                </div>
-            </div>`
+    const tagline = `${job.fields['Level']} • ${job.fields['Type of Job']} • ${locationTranslate(job)}`
+    const job =   `
+                    <div class="job-posting company-page">
+                    <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                    <div class="candidate-info job-post-directroy">
+                        <div class="job-title"><a class="clickable-profile" href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']}</a></div>
+                        <div class="candidate-short-details">${tagline}</div>
+                    </div>
+                    <div class="seemore-container">
+                        <div class="text-block-72">Posted: ${job.fields['Created']}</div>
+                        <a href="${job.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
+                    </div>
+                </div>`
 
      return job
 }
