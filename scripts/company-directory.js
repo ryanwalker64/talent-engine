@@ -120,28 +120,46 @@ function countProfiles(arr) {
 function scoreProfiles(filtersToCheck, fetchedUsers) {
     const scoredProfiles = fetchedUsers.map(profile => {
         let score = 0
+        let matchedFilters = []
         if(filtersToCheck.employee.length > 0) {
             filtersToCheck.employee.forEach(filter => {
-                if (profile.fields["Company Size"].includes(filter)) score += 1
+                if (profile.fields["Company Size"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
             })
         }
         if(filtersToCheck.location.length > 0) {
             filtersToCheck.location.forEach(filter => {
-                if (profile.fields["Location"].includes(filter)) score += 1
+                if (profile.fields["Location"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
             })
         }
         if(filtersToCheck.industry.length > 0) {
             filtersToCheck.industry.forEach(filter => {
-                if (profile.fields["Industry"].includes(filter)) score += 1
+                if (profile.fields["Industry"].includes(filter)) {
+                    score += 1
+                    matchedFilters.push(filter)
+                }
             })
         }
         if(filtersToCheck.SMCompany.length > 0) {
-            if (profile.fields["Startmate Company?"]) score += 1
+            if (profile.fields["Startmate Company"]){
+                score += 1
+                matchedFilters.push('Startmate Company')
+            }
         }
         if(filtersToCheck.remote.length > 0) {
-            if (profile.fields["Remote Friendly"]) score += 1
+            if (profile.fields["Remote Friendly"]){
+                score += 1
+                matchedFilters.push('Remote Friendly')
+            }
         }
         profile.score = score
+        profile.matchedFilters = matchedFilters
+        console.log(matchedFilters)
         return profile
     })
     return scoredProfiles
@@ -227,12 +245,12 @@ function fetchFilteredProfiles(filter) {
         .catch(error => console.log('error', error));
 }
 
-function createCategories(arr) {
+function createCategories(arr, className) {
     if (arr) {
         return arr.map(category => {
-            return `<div class="profile-catg">${category}</div>`
+            return `<div class="profile-catg ${className}">${category}</div>`
             }).join('')
-        } else return ''
+        }
     } 
 
 function heartStatus(loggedInUserData, company) {
@@ -260,28 +278,40 @@ function displayCompanies(companies){
                     : `<div class="filter-match some-matches" data-filter="matches">Matches ${company.score} filters</div>`
 
 
-        return ` 
-        <div class="company-profile">
-            <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
-            <div class="candidate-info">
-                <div class="company-name"><a class="clickable-profile" href="/app/company?id=${company.id}" target="_blank">${company.fields['Name']}</a></div>
-                <div class="company-slogan" style="max-width: 500px;">${company.fields['Slogan']}</div>
-                <div class="company-categories">
-                    ${company.fields['Startmate Company?']
-                        ? '<div class="company-category orange-catg">Startmate Company</div>'
-                        : ''}
+        return `
+        <div class="information-container"> 
+            <div class="company-profile no-border">
+                <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
+                <div class="candidate-info">
+                    <div class="company-name"><a class="clickable-profile" href="/app/company?id=${company.id}" target="_blank">${company.fields['Name']}</a></div>
+                    <div class="company-slogan" style="max-width: 500px;">${company.fields['Slogan']}</div>
+                    <div class="company-categories">
+                        ${company.fields['Startmate Company?']
+                            ? '<div class="company-category orange-catg">Startmate Company</div>'
+                            : ''}
+                    </div>
+                </div>
+                <div class="div-block-75">
+                    ${score}
+                    ${userType === 'CANDIDATE'
+                    ? `<div class="heart-container" data-likebtn="${company.id}">
+                        <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, company)} tooltip"><span class="tooltiptext">Interested to work for this company? Favourite this company to get notified about new jobs!</span>❤</a>
+                        </div>`
+                    : ''
+                    }
+                    <a href="/app/company?id=${company.id}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
                 </div>
             </div>
-            <div class="div-block-75">
-                ${score}
-                ${userType === 'CANDIDATE'
-                ? `<div class="heart-container" data-likebtn="${company.id}">
-                    <a data-heart="small" href="#" class="candidate-button-v2 sml-heart w-button ${heartStatus(loggedInUserObj, company)} tooltip"><span class="tooltiptext">Interested to work for this company? Favourite this company to get notified about new jobs!</span>❤</a>
-                    </div>`
-                : ''
-                }
-                <a href="/app/company?id=${company.id}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
-            </div>
+            ${!profile.score
+                ? `<div></div>`
+                : `<div class="div-block-104">
+                        <div class="div-block-105">
+                            <div class="candidate-short-details matches-text">Matches:</div>
+                            <div>
+                                ${createCategories(profile.matchedFilters, 'outlined')}
+                            </div>
+                        </div>
+                    </div>`}
         </div>`
     }).join('')
     directoryContainer.innerHTML = companiesHTML

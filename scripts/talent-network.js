@@ -292,7 +292,7 @@ function clearFilters() {
     industriesSelector.setValue('', 'silent')
     locationSelector.setValue('', 'silent')
     remoteSelector.setValue('', 'silent')
-    // roleSelector.setValue('', 'silent')
+    roleSelector.setValue('', 'silent')
     typeOfJobSelector.setValue('', 'silent')
     fetchProfiles()
 }
