@@ -400,7 +400,7 @@ function displayProfiles(profiles){
         
         return `
         <div class="information-container">
-            <div class="candidate-profile">
+            <div class="candidate-profile no-border">
                 <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
                 <div class="candidate-info">
                     ${displayUserHeadline(profile)}
@@ -428,7 +428,7 @@ function displayProfiles(profiles){
                         <div class="div-block-105">
                             <div class="candidate-short-details matches-text">Matches:</div>
                             <div>
-                                ${createCategories(profile.matchedFilters, outlined)}
+                                ${createCategories(profile.matchedFilters, 'outlined')}
                             </div>
                         </div>
                     </div>`}
