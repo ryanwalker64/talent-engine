@@ -68,7 +68,9 @@ function displayProfile() {
         <div class="directory-container-v2" data-id="${userProfile.id}">
             <div class="userprofile-container">
                 <div class="div-block-73">
-                    <img src="${userProfile.fields["Profile Picture"]}" loading="lazy" sizes="60px" alt="" class="img">
+                    <div class="sixty">
+                        <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
+                    </div>
                     <div class="candidate-info">
                         <div class="candidate-name">${userProfile.fields["Full Name"]}</div>
                         <div class="candidate-details-container">

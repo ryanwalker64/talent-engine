@@ -171,17 +171,19 @@ function locationTranslate(job) {
 }
 
 function createJobListing(jobData) {
-    const tagline = `${job.fields['Level']} • ${job.fields['Type of Job']} • ${locationTranslate(job)}`
+    const tagline = `${jobData.fields['Level']} • ${jobData.fields['Type of Job']} • ${locationTranslate(jobData)}`
     const job =   `
                     <div class="job-posting company-page">
-                    <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                    <div class="sixty">
+                        <img src="${jobData.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                    </div>
                     <div class="candidate-info job-post-directroy">
-                        <div class="job-title"><a class="clickable-profile" href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']}</a></div>
+                        <div class="job-title"><a class="clickable-profile" href="${jobData.fields['converted-app-link']}" target="_blank">${jobData.fields['Job Title']}</a></div>
                         <div class="candidate-short-details">${tagline}</div>
                     </div>
                     <div class="seemore-container">
-                        <div class="text-block-72">Posted: ${job.fields['Created']}</div>
-                        <a href="${job.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
+                        <div class="text-block-72">Posted: ${jobData.fields['Created']}</div>
+                        <a href="${jobData.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
                     </div>
                 </div>`
 
@@ -213,7 +215,7 @@ function getCompanyData() {
         .then(() => {
             if(companyProfile.fields.Jobs) {
                 companyProfile.fields['Jobs'].forEach(jobId => {
-                    fetch(API + "Jobs&id=" + jobId, requestOptions)
+                    fetch(API + "Jobs&view=JobsPosted&id=" + jobId, requestOptions)
                     .then(response => response.json())
                     .then(jobData => {
                         console.log(jobData)

@@ -281,7 +281,7 @@ function checkForEmptyFilters() {
 
 function clearCheckboxes() {
     formInputs.forEach(checkbox => {
-        if(!checkbox.name === 'filter-settings') {
+        if(checkbox.name !== 'filter-settings') {
         checkbox.checked = false
         const selectedCheckboxes = document.querySelectorAll('.w--redirected-checked')
         selectedCheckboxes.forEach(checkbox => {checkbox.classList.remove('w--redirected-checked')})
@@ -404,7 +404,9 @@ function displayProfiles(profiles){
         return `
         <div class="information-container">
             <div class="candidate-profile no-border">
-                <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
+                <div class="sixty">
+                    <img src="${profile.fields["Profile Picture"]}-/quality/lightest/" sizes="60px" alt="" class="img" loading="lazy"/>
+                </div>
                 <div class="candidate-info">
                     ${displayUserHeadline(profile)}
                     <div class="candidate-details-container">

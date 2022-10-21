@@ -181,7 +181,7 @@ function checkForEmptyFilters() {
 
 function clearCheckboxes() {
     formInputs.forEach(checkbox => {
-        if(!checkbox.name === 'filter-settings') {
+        if(checkbox.name !== 'filter-settings') {
         checkbox.checked = false
         const selectedCheckboxes = document.querySelectorAll('.w--redirected-checked')
         selectedCheckboxes.forEach(checkbox => {checkbox.classList.remove('w--redirected-checked')})
@@ -281,7 +281,9 @@ function displayCompanies(companies){
         return `
         <div class="information-container"> 
             <div class="company-profile no-border">
-                <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
+                <div class="sixty">
+                    <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
+                </div>
                 <div class="candidate-info">
                     <div class="company-name"><a class="clickable-profile" href="/app/company?id=${company.id}" target="_blank">${company.fields['Name']}</a></div>
                     <div class="company-slogan" style="max-width: 500px;">${company.fields['Slogan']}</div>

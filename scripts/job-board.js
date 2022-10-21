@@ -348,7 +348,9 @@ function displayJobs(jobs){
         const tagline = `${job.fields['Level']} • ${job.fields['Type of Job']} • ${locationTranslate(job)}`
 
         return ` <div class="job-posting">
-                    <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                    <div class="sixty">
+                        <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                    </div>
                     <div class="candidate-info job-post-directroy">
                         <div class="job-title"><a class="clickable-profile" href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']} - ${job.fields['Name (from Company)']}</a></div>
                         <div class="candidate-short-details">${tagline}</div>

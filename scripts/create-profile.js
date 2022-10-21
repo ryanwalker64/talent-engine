@@ -66,9 +66,9 @@ fetchData().then(([roles, locations, industries, programs]) => {
     //     });
 
     locatedSelector = new TomSelect(locatedInput, {...locationSelectorSettings, options: locations});
-    workingLocationSelector = new TomSelect(workingLocationsInput, {...locationSelectorSettings, options: locations, maxItems: 3});
+    workingLocationSelector = new TomSelect(workingLocationsInput, {...locationSelectorSettings, options: locations, maxItems: 5});
     roleSelector = new TomSelect(roleSelectorInput, {...generalSelectorSettings, options: rolesObj});
-    interestedRolesSelector = new TomSelect(interestedRolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: 3});
+    interestedRolesSelector = new TomSelect(interestedRolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: 5});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});
     programsSelector = new TomSelect(startmatePrograms, {...generalSelectorSettings,  options: programsObj, maxItems: 5});
     
@@ -378,33 +378,34 @@ function nextPrev(n) {
 }
 
 function validateForm() {
-  // This function deals with validation of the form fields
-  let x, y, i, valid = true;
-  x = document.getElementsByClassName("tab");
-  y = [
-    ...x[currentTab].getElementsByTagName("input"),
-    ...x[currentTab].getElementsByTagName("select"),
-    ...x[currentTab].getElementsByTagName("textarea")];
-
-  // A loop that checks every input field in the current tab:
-  y.forEach(input => {
-    if (input.tagName === 'SELECT' 
-        && typeof input.tomselect === 'object' 
-        && input.tomselect.getValue() === '') {
-            if (!currentlyWorkInput.checked
-                || input.tomselect.inputId !== 'end-month' 
-                && input.tomselect.inputId !== 'end-year' ) {
-                    console.log(input.tomselect.inputId);
-                    valid = false; 
-                }
-
-    }  else if (input.tagName !== 'SELECT' && !input.checkValidity()) { 
-        console.log(input.tagName + ' false')
-        valid = false;
-    } 
-  })
-  return valid; // return the valid status
-}
+    // This function deals with validation of the form fields
+    let x, y, i, valid = true;
+    x = document.getElementsByClassName("tab");
+    y = [
+      ...x[currentTab].getElementsByTagName("input"),
+      ...x[currentTab].getElementsByTagName("select"),
+      ...x[currentTab].getElementsByTagName("textarea")];
+  
+    // A loop that checks every input field in the current tab:
+    y.forEach(input => {
+      if (firstJobInput.checked) {
+          return valid
+      }else if(input.tagName === 'SELECT' 
+          && typeof input.tomselect === 'object' 
+          && input.tomselect.getValue() === '') {
+              if (!currentlyWorkInput.checked
+                  || !firstJobInput.checked) {
+                      
+                      return valid = false; 
+                  }
+  
+      }  else if (input.tagName !== 'SELECT' && !input.checkValidity() && !firstJobInput.checked) { 
+          console.log(input.tagName + ' false')
+          valid = false;
+      } 
+    })
+    return valid; // return the valid status
+  }
 
 
 

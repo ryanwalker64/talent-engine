@@ -64,7 +64,9 @@ function displayCompanies(companies){
 
         return ` 
         <div class="company-profile">
-            <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
+            <div class="sixty">
+                <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
+            </div>
             <div class="candidate-info">
                 <div class="company-name"><a class="clickable-profile" href="/app/company?id=${company.id}" target="_blank">${company.fields['Name']}</a></div>
                 <div class="company-slogan">${company.fields['Slogan']}</div>
