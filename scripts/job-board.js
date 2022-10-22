@@ -349,7 +349,9 @@ function displayJobs(jobs){
 
         return ` <div class="job-posting">
                     <div class="sixty">
-                        <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                        <a href="/app/company?id=${job.fields['Airtable Record ID (from Company)']}" target="_blank">
+                            <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                        </a>
                     </div>
                     <div class="candidate-info job-post-directroy">
                         <div class="job-title"><a class="clickable-profile" href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']} - ${job.fields['Name (from Company)']}</a></div>

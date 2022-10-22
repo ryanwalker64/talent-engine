@@ -10,6 +10,7 @@ const clearBtn = document.querySelector('[data-filter="clear"]')
 const modalContainer = document.querySelector('[data-upgrade="modalbackground"]')
 const modalCloseBtn = document.querySelector('[data-upgrade="closebtn"]')
 const banner = document.querySelector('[data-upgrade="banner"]')
+const noFavouritesBanner = document.querySelector('[data-banner="disclaimer"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
     sortField: {field: "text", direction: "asc"}
@@ -569,18 +570,24 @@ function getCompanyData(companyId) {
         })
         .then(() => {
             const companyNameHeading = document.querySelector('[data-company="title"]')
-            companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
+            const profileCount = document.querySelector('[data-profiles="count"]')
             
             if (companyData.fields["Interested Candidates"]) {
+                companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
+                noFavouritesBanner.style.display = "none"
                 companyDataMapped = companyData.fields["Interested Candidates"].map(candidate => {
                     return `{Airtable Record ID}="${candidate}"`
                 }).join(',')
                 console.log(companyDataMapped)
-            }
                 const filteredOptions = `IF(OR(${companyDataMapped}),"true")`
         
                 const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
                 fetchProfiles(filterEncode)
+            } else {
+                companyNameHeading.innerHTML = `Interested Candidates`
+                profileCount.style.display = 'none'
+            
+            }
         })
         .catch(error => console.log('error', error));
 }

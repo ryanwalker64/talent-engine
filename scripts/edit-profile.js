@@ -108,6 +108,14 @@ fetchData().then(([roles, locations, industries, programs]) => {
         if (member.loggedIn) {
             const userID = member["airtable-id-two"]
             userType = member["user-type"]
+            const payingMember = member["paying-user"]
+
+            if(payingMember) {
+                const billingLink = document.querySelector('[data-hide="billing"]')
+                billingLink.style.display = 'block'
+
+            }
+
             fetchUserData(userID)
         } 
 })

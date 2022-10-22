@@ -1,4 +1,5 @@
 const directoryContainer = document.querySelector('.directory-container-v2')
+const noFavouritesBanner = document.querySelector('[data-banner="disclaimer"]')
 
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
 
@@ -146,15 +147,19 @@ function getUserData(userId) {
             // const companyNameHeading = document.querySelector('[data-company="title"]')
             // companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
             if (loggedInUserObj.fields["Companies interested in"]) {
-                 companiesInterestedIn = loggedInUserObj.fields["Companies interested in"].map(company => {
+                noFavouritesBanner.style.display = "none"
+                companiesInterestedIn = loggedInUserObj.fields["Companies interested in"].map(company => {
                     return `{Airtable Record ID}="${company}"`
                 }).join(',')
+                const filteredOptions = `IF(OR(${companiesInterestedIn}),"true")`
+                
+                const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+                console.log(companiesInterestedIn, filterEncode, filteredOptions)
+                    fetchCompanies(filterEncode)
+            } else {
+                
+                
             }
-            const filteredOptions = `IF(OR(${companiesInterestedIn}),"true")`
-            
-            const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-            console.log(companiesInterestedIn, filterEncode, filteredOptions)
-                fetchCompanies(filterEncode)
         })
         .catch(error => console.log('error', error));
 }

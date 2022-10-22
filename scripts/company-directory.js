@@ -24,6 +24,7 @@ let filterObj = {
     'remote': [],
     'industry': [],
     'SMCompany': [],
+    'openroles': [],
 }
 let locationSelector
 let industriesSelector
@@ -35,6 +36,7 @@ function handleFilterSelection() {
     if (getEmployeeValues()) filter.push(getEmployeeValues())
     if (getSMCompanyValues()) filter.push(getSMCompanyValues())
     if (getRemoteValues()) filter.push(getRemoteValues())
+    if (getOpenRoleValue()) filter.push(getOpenRoleValue())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
     console.log("current filters:", filterObj)
@@ -102,6 +104,14 @@ function getSMCompanyValues() {
     const value = `IF({Startmate Company?}, TRUE())`
     return value
 }
+function getOpenRoleValue() {
+    filterObj.openroles = []
+    const input = document.querySelector('[data-openroles]')
+    if(!input.checked) return
+    filterObj.openroles = [true]
+    const value = `IF({Airtable Record ID (from Jobs)}, TRUE())`
+    return value
+}
 
 function getRemoteValues() {
     filterObj.remote = []
@@ -157,6 +167,11 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
                 matchedFilters.push('Remote Friendly')
             }
         }
+        if(filtersToCheck.openroles.length > 0) {
+            if (profile.fields["Airtable Record ID (from Jobs)"]){
+                score += 1
+            }
+        }
         profile.score = score
         profile.matchedFilters = matchedFilters
         console.log(matchedFilters)
@@ -176,6 +191,7 @@ function checkForEmptyFilters() {
         && filterObj.location.length === 0
         && filterObj.remote.length === 0
         && filterObj.industry.length === 0
+        && filterObj.openroles.length === 0
         && filterObj.SMCompany.length === 0) return true
 }
 
@@ -196,6 +212,7 @@ function clearFilters() {
         'remote': [],
         'industry': [],
         'SMCompany': [],
+        'openroles': [],
     }
     clearCheckboxes()
     industriesSelector.setValue('', 'silent')
@@ -263,6 +280,20 @@ function heartStatus(loggedInUserData, company) {
     }
 }
 
+function openRoles(company) {
+    const roles = company.fields['Airtable Record ID (from Jobs)'] ? [company.fields['Airtable Record ID (from Jobs)']] : ''
+    if(roles) {
+        console.log(roles)
+        if(roles.length > 1) {
+            return `<div class="company-category">${roles.length} Open Roles</div>`
+        } else if (roles.length === 1) {
+            return `<div class="company-category">1 Open Role</div>`
+        }
+    } else {
+        return ''
+    }
+}
+
 // <a data-heart="large" href="#" class="candidate-button-v2 lge-heart like-company-btn w-button">${loggedInUserData.fields['Companies interested in'].findIndex(id => id === company.id) !== -1 ? 'Unfavourite company?' : 'Favourite company?'}</a>
 
 function displayCompanies(companies){
@@ -291,6 +322,7 @@ function displayCompanies(companies){
                         ${company.fields['Startmate Company?']
                             ? '<div class="company-category orange-catg">Startmate Company</div>'
                             : ''}
+                        ${openRoles(company)}
                     </div>
                 </div>
                 <div class="div-block-75">

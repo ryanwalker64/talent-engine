@@ -10,6 +10,7 @@ const modalContainer = document.querySelector('[data-upgrade="modalbackground"]'
 const modalCloseBtn = document.querySelector('[data-upgrade="closebtn"]')
 const banner = document.querySelector('[data-upgrade="banner"]')
 const typeOfJobInput = document.querySelector('[data-input="types-of-jobs"]')
+const noFavouritesBanner = document.querySelector('[data-banner="disclaimer"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
     sortField: {field: "text", direction: "asc"}
@@ -576,15 +577,16 @@ function getLoggedInUserData(userId) {
             // const companyNameHeading = document.querySelector('[data-company="title"]')
             // companyNameHeading.innerHTML = `${companyData.fields['Interested Candidates'].length} candidate${companyData.fields["Interested Candidates"].length > 1 ? 's are' : ' is'} interested in <span class="company-name-interests">${companyData.fields["Name"]}</span>`
             if (loggedInUserObj.fields["Candidates interested in"]) {
-                 companiesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
+                noFavouritesBanner.style.display = "none"
+                companiesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
                     return `{Airtable Record ID}="${candidate}"`
                 }).join(',')
+                const filteredOptions = `IF(OR(${companiesInterestedIn}),"true")`
+                
+                const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
+                console.log(companiesInterestedIn, filterEncode, filteredOptions)
+                    fetchProfiles(filterEncode)
             }
-            const filteredOptions = `IF(OR(${companiesInterestedIn}),"true")`
-            
-            const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-            console.log(companiesInterestedIn, filterEncode, filteredOptions)
-                fetchProfiles(filterEncode)
         })
         .catch(error => console.log('error', error));
 }
