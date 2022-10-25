@@ -69,8 +69,8 @@ function submitProfile() {
         "Profile Picture": formProps['profile-pic'],
         "Account Status": 'COMPLETE',
     }
-    console.log(formProps)
-    console.log(userData)
+    // console.log(formProps)
+    // console.log(userData)
     createCompany(userData, userAirtableId)
 }
 
@@ -87,7 +87,7 @@ function createCompany(userData, userAirtableId) {
     fetch(API + "Users", requestOptions)
         .then(response => response.text())
         .then(result => {
-            console.log(result)
+            // console.log(result)
             MemberStack.onReady.then(function(member) {  
                 member.updateProfile({
                     "profile-photo": userData["Profile Picture"],
@@ -169,11 +169,11 @@ function validateForm() {
     if (input.tagName === 'SELECT' 
         && typeof input.tomselect === 'object' 
         && input.tomselect.getValue() === '') {
-        console.log('tomselector false')
+        // console.log('tomselector false')
         valid = false; 
 
     }  else if (input.tagName !== 'SELECT' && !input.checkValidity()) { 
-        console.log(input.tagName + ' false')
+        // console.log(input.tagName + ' false')
         valid = false;
     } 
   })

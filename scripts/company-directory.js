@@ -39,13 +39,13 @@ function handleFilterSelection() {
     if (getOpenRoleValue()) filter.push(getOpenRoleValue())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
-    console.log("current filters:", filterObj)
+    // console.log("current filters:", filterObj)
     if (checkForEmptyFilters()) {
         clearFilters()
     } else { 
         const filterEncode = "&filterByFormula=" + encodeURI(`IF(${filterSetting}(${filter.join(',')}),"true")`)  
-        console.log(filteredOptions, filterEncode, filter)
-        console.log(filterEncode, filter)
+        // console.log(filteredOptions, filterEncode, filter)
+        // console.log(filterEncode, filter)
         fetchFilteredProfiles(filterEncode)
     }
 }
@@ -174,7 +174,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
         }
         profile.score = score
         profile.matchedFilters = matchedFilters
-        console.log(matchedFilters)
+        // console.log(matchedFilters)
         return profile
     })
     return scoredProfiles
@@ -236,7 +236,7 @@ function fetchCompanies() {
             companiesUserbase = result.records
             displayCompanies(companiesUserbase)
             countProfiles(companiesUserbase)
-            console.log(companiesUserbase)
+            // console.log(companiesUserbase)
         })
         .catch(error => console.log('error', error));
 }
@@ -283,7 +283,7 @@ function heartStatus(loggedInUserData, company) {
 function openRoles(company) {
     const roles = company.fields['Airtable Record ID (from Jobs)'] ? [company.fields['Airtable Record ID (from Jobs)']] : ''
     if(roles) {
-        console.log(roles)
+        // console.log(roles)
         if(roles.length > 1) {
             return `<div class="company-category">${roles.length} Open Roles</div>`
         } else if (roles.length === 1) {
@@ -396,7 +396,7 @@ function applyEventListeners() {
     likeCompanyBtns.forEach(btn => 
         btn.addEventListener('click', (e) => {
             const btn = e.currentTarget
-            console.log(btn)
+            // console.log(btn)
             const heartBtn = btn.querySelector('[data-heart="small"]')
             heartBtn.classList.toggle('liked')
             if (heartBtn.classList.contains('liked')) {
@@ -425,7 +425,7 @@ function updateLikedCandidates(companiesList, userId) {
 
     fetch(API + "Users", requestOptions)
     .then(response => response.text())
-    .then(result => console.log(result))
+    // .then(result => console.log(result))
     .catch(error => console.log('error', error));
 }
 
@@ -444,7 +444,7 @@ function getUserData(userId) {
         .then(result => {
             // console.log(result)
             loggedInUserObj = result
-            console.log(loggedInUserObj)
+            // console.log(loggedInUserObj)
             fetchCompanies()
         })
         .catch(error => console.log('error', error));
@@ -455,25 +455,25 @@ function handleLikedCandidates(userObj, companyid) {
     //if the liked list exists
     if (userObj.fields['Companies interested in']) {
         likedCompanies = userObj.fields['Companies interested in']
-        console.log('liked companies list found')
-        console.log(likedCompanies)
+        // console.log('liked companies list found')
+        // console.log(likedCompanies)
         //if the company is already liked, remove it
         if(likedCompanies.findIndex(id => id === companyid) !== -1) {
             likedCompanies.splice(likedCompanies.findIndex(id => id === companyid), 1)
-            console.log('company has been already liked now removed')
-            console.log(likedCompanies)
+            // console.log('company has been already liked now removed')
+            // console.log(likedCompanies)
             return likedCompanies
         } 
     }
     likedCompanies.push(companyid)
-    console.log('company has been liked')
-    console.log(likedCompanies)
+    // console.log('company has been liked')
+    // console.log(likedCompanies)
     return likedCompanies
 }
 
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
-        console.log('User is viewing their own profile')
+        // console.log('User is viewing their own profile')
         userIsLoggedIn = true
         const loggedInUser = member['airtable-id-two']
         userType = member['user-type']

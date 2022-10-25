@@ -275,7 +275,7 @@ function checkForUpdates(data) {
         }
     }
 
-    console.log(profileUpdates)
+    // console.log(profileUpdates)
     return profileUpdates
 }
 

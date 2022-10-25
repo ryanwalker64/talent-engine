@@ -88,7 +88,7 @@ function createCompany(companyAirtableID, userAirtableId) {
     fetch(API + "Users", requestOptions)
         .then(response => response.text())
         .then(result => {
-            console.log(result)
+            // console.log(result)
             MemberStack.onReady.then(function(member) {  
                 member.updateProfile({
                     "company-airtable-id": companyAirtableID,

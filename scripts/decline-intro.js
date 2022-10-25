@@ -52,7 +52,7 @@ function getMsgId()  {
     const url_string = window.location.href;
     const url = new URL(url_string);
     const id = url.searchParams.get("id");
-    console.log(id);
+    // console.log(id);
     return id
 }
 
@@ -94,7 +94,7 @@ function declineIntroduction() {
     fetch(API + "Introductions", requestOptions)
         .then(response => response.text())
         .then(result => {
-            console.log(result)
+            // console.log(result)
             loader.style.display = 'none'
             setSuccessMessageScreen()  
         })
@@ -109,7 +109,7 @@ function getRecieverUserId()  {
     const url_string = window.location.href;
     const url = new URL(url_string);
     const id = url.searchParams.get("user");
-    console.log(id);
+    // console.log(id);
     return id
 }
 

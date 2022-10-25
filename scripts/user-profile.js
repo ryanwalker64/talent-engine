@@ -177,7 +177,7 @@ function applyEventListeners() {
     likeCompanyBtns.forEach(btn => 
         btn.addEventListener('click', (e) => {
             const btn = e.currentTarget
-            console.log(btn)
+            // console.log(btn)
             const heartBtn = btn.querySelector('[data-heart="small"]')
             heartBtn.classList.toggle('liked')
             updateLikedCandidates(handleLikedCandidates(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
@@ -198,7 +198,7 @@ function updateLikedCandidates(candidatesList, userId) {
 
     fetch(API + "Users", requestOptions)
     .then(response => response.text())
-    .then(result => console.log(result))
+    // .then(result => console.log(result))
     .catch(error => console.log('error', error));
 }
 
@@ -207,19 +207,19 @@ function handleLikedCandidates(userObj, candidateId) {
     //if the liked list exists
     if (userObj.fields['Candidates interested in']) {
         likedCandidates = userObj.fields['Candidates interested in']
-        console.log('liked Candidates list found')
-        console.log(likedCandidates)
+        // console.log('liked Candidates list found')
+        // console.log(likedCandidates)
         //if the company is already liked, remove it
         if(likedCandidates.findIndex(id => id === candidateId) !== -1) {
             likedCandidates.splice(likedCandidates.findIndex(id => id === candidateId), 1)
-            console.log('Candidate has been already liked now removed')
-            console.log(likedCandidates)
+            // console.log('Candidate has been already liked now removed')
+            // console.log(likedCandidates)
             return likedCandidates
         } 
     }
     likedCandidates.push(candidateId)
-    console.log('candidate has been liked')
-    console.log(likedCandidates)
+    // console.log('candidate has been liked')
+    // console.log(likedCandidates)
     return likedCandidates
 }
 
@@ -248,7 +248,7 @@ function getLoggedInUserData(userId) {
         .then(response => response.json())
         .then(result => {
             loggedInUserObj = result
-            console.log(loggedInUserObj)
+            // console.log(loggedInUserObj)
             // get user's profile data
             getUserData()
         })
@@ -269,7 +269,7 @@ function getUserData() {
     fetch(API + "Users&id=" + userId + '&cacheTime=0', requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log(result)
+            // console.log(result)
             userProfile = result
             userType = userProfile.fields['User Type']
             displayProfile()
@@ -290,7 +290,7 @@ MemberStack.onReady.then(function(member) {
         loggedInUserType = member['user-type']
         
         loggedInUsersProfile = getUserId() === loggedInUserId ? true : false
-        console.log(loggedInUserId)
+        // console.log(loggedInUserId)
         // Get loggedin User Data
         getLoggedInUserData(loggedInUserId)
     } 

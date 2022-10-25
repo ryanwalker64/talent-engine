@@ -91,8 +91,8 @@ function submitProfile() {
         "Company Size": companySizeSelector.getValue(),
         "Employees": [formProps['airtable-id']],
     }
-    console.log(formProps)
-    console.log(companyData)
+    // console.log(formProps)
+    // console.log(companyData)
     createCompany(companyData)
 }
 
@@ -109,7 +109,7 @@ function createCompany(companyData) {
     fetch(API + "Companies", requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log(result)
+            // console.log(result)
             const companyAirtableID = result[0].id
             MemberStack.onReady.then(function(member) {  
                 member.updateProfile({
@@ -139,11 +139,11 @@ function validateForm() {
     if (input.tagName === 'SELECT' 
         && typeof input.tomselect === 'object' 
         && input.tomselect.getValue() === '') {
-        console.log('tomselector false')
+        // console.log('tomselector false')
         valid = false; 
 
     }  else if (input.tagName !== 'SELECT' && !input.checkValidity()) { 
-        console.log(input.tagName + ' false')
+        // console.log(input.tagName + ' false')
         valid = false;
     } 
   })

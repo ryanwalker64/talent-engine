@@ -141,7 +141,7 @@ function getUserData(userId) {
         .then(result => {
             // console.log(result)
             loggedInUserObj = result
-            console.log(loggedInUserObj)
+            // console.log(loggedInUserObj)
             
         }).then(() => {
             // const companyNameHeading = document.querySelector('[data-company="title"]')
@@ -154,7 +154,7 @@ function getUserData(userId) {
                 const filteredOptions = `IF(OR(${companiesInterestedIn}),"true")`
                 
                 const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-                console.log(companiesInterestedIn, filterEncode, filteredOptions)
+                // console.log(companiesInterestedIn, filterEncode, filteredOptions)
                     fetchCompanies(filterEncode)
             } else {
                 
@@ -169,25 +169,25 @@ function handleLikedCandidates(userObj, companyid) {
     //if the liked list exists
     if (userObj.fields['Companies interested in']) {
         likedCompanies = userObj.fields['Companies interested in']
-        console.log('liked companies list found')
-        console.log(likedCompanies)
+        // console.log('liked companies list found')
+        // console.log(likedCompanies)
         //if the company is already liked, remove it
         if(likedCompanies.findIndex(id => id === companyid) !== -1) {
             likedCompanies.splice(likedCompanies.findIndex(id => id === companyid), 1)
-            console.log('company has been already liked now removed')
-            console.log(likedCompanies)
+            // console.log('company has been already liked now removed')
+            // console.log(likedCompanies)
             return likedCompanies
         } 
     }
     likedCompanies.push(companyid)
-    console.log('company has been liked')
-    console.log(likedCompanies)
+    // console.log('company has been liked')
+    // console.log(likedCompanies)
     return likedCompanies
 }
 
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
-        console.log('User is viewing their own profile')
+        // console.log('User is viewing their own profile')
         userIsLoggedIn = true
         const loggedInUser = member['airtable-id-two']
         userType = member['user-type']

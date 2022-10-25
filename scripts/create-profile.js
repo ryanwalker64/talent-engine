@@ -203,8 +203,8 @@ form.addEventListener('submit', (e) => {
         "Profile hidden from:": formProps['hidden-from'],
         // "Startmate Program": programsSelector.getValue(), 
     }
-    console.log(formProps)
-    console.log(userData)
+    // console.log(formProps)
+    // console.log(userData)
     createProfile(userData, userAirtableId)
 })
 
@@ -243,8 +243,8 @@ function submitProfile() {
         "Startmate Program": programsSelector.getValue(),
         "Date Last Edited": `${new Date()}`,
     }
-    console.log(formProps)
-    console.log(userData)
+    // console.log(formProps)
+    // console.log(userData)
     createProfile(userData, userAirtableId)
 }
 
@@ -318,7 +318,7 @@ function getUserData(userId) {
     fetch(API + "Users&id=" + userId, requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log(result)
+            // console.log(result)
             setProfileInfo(result)
         })
         .catch(error => console.log('error', error));
@@ -400,7 +400,7 @@ function validateForm() {
                   }
   
       }  else if (input.tagName !== 'SELECT' && !input.checkValidity() && !firstJobInput.checked) { 
-          console.log(input.tagName + ' false')
+        //   console.log(input.tagName + ' false')
           valid = false;
       } 
     })

@@ -48,7 +48,7 @@ function handleFilterSelection() {
     // const remoteSelection = remoteSelector.getValue()
     // if (remoteSelection === "All locations") filter.push(getRemoteValue())
 
-    console.log("current filters:", filterObj)
+    // console.log("current filters:", filterObj)
     if (checkForEmptyFilters()) {
         clearFilters()
     } else {
@@ -62,7 +62,7 @@ function handleFilterSelection() {
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         // console.log(remoteSelector.getValue())      
-        console.log(filteredOptions, filterEncode, filter)
+        // console.log(filteredOptions, filterEncode, filter)
         fetchFilteredJobs(filterEncode)
     }
 }
@@ -202,7 +202,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
 
         profile.score = score
         profile.matchedFilters = matchedFilters
-        console.log(matchedFilters)
+        // console.log(matchedFilters)
         return profile
     })
     return scoredProfiles
@@ -263,7 +263,7 @@ function fetchJobs() {
             jobsData = result.records
             displayJobs(jobsData)
             countProfiles(jobsData)
-            console.log(jobsData)
+            // console.log(jobsData)
         })
         .catch(error => console.log('error', error));
 }

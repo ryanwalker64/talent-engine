@@ -104,7 +104,7 @@ function applyEventListeners() {
     likeCompanyBtns.forEach(btn => 
         btn.addEventListener('click', (e) => {
             const btn = e.currentTarget
-            console.log(btn)
+            // console.log(btn)
             const heartBtn = btn.querySelector('[data-heart="small"]')
             heartBtn.classList.toggle('liked')
             if (heartBtn.classList.contains('liked')) {
@@ -133,7 +133,7 @@ function updateLikedCandidates(companiesList, userId) {
 
     fetch(API + "Users", requestOptions)
     .then(response => response.text())
-    .then(result => console.log(result))
+    // .then(result => console.log(result))
     .catch(error => console.log('error', error));
 }
 
@@ -142,19 +142,19 @@ function handleLikedCandidates(userObj, companyid) {
     //if the liked list exists
     if (userObj.fields['Companies interested in']) {
         likedCompanies = userObj.fields['Companies interested in']
-        console.log('liked companies list found')
-        console.log(likedCompanies)
+        // console.log('liked companies list found')
+        // console.log(likedCompanies)
         //if the company is already liked, remove it
         if(likedCompanies.findIndex(id => id === companyid) !== -1) {
             likedCompanies.splice(likedCompanies.findIndex(id => id === companyid), 1)
-            console.log('company has been already liked now removed')
-            console.log(likedCompanies)
+            // console.log('company has been already liked now removed')
+            // console.log(likedCompanies)
             return likedCompanies
         } 
     }
     likedCompanies.push(companyid)
-    console.log('company has been liked')
-    console.log(likedCompanies)
+    // console.log('company has been liked')
+    // console.log(likedCompanies)
     return likedCompanies
 }
 
@@ -206,7 +206,7 @@ function getCompanyData() {
     fetch(API + "Companies&id=" + companyId + '&cacheTime=0', requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log(result)
+            // console.log(result)
             companyProfile = result
             displayProfile(companyProfile)
             document.title = companyProfile.fields["Name"]
@@ -218,7 +218,7 @@ function getCompanyData() {
                     fetch(API + "Jobs&view=JobsPosted&id=" + jobId, requestOptions)
                     .then(response => response.json())
                     .then(jobData => {
-                        console.log(jobData)
+                        // console.log(jobData)
                         companyJobs.push(jobData)
                         const jobContainer = document.querySelector('[data-container="jobs"]') 
                         jobContainer.insertAdjacentHTML('beforeend', createJobListing(jobData))
@@ -263,7 +263,7 @@ function getUserData(userId) {
         .then(result => {
             // console.log(result)
             loggedInUserObj = result
-            console.log(loggedInUserObj)
+            // console.log(loggedInUserObj)
             getCompanyData()
         })
         .catch(error => console.log('error', error));

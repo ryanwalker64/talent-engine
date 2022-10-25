@@ -63,7 +63,7 @@ function handleFilterSelection() {
     // if (remoteSelection === "All locations") filter.push(getRemoteValue())
 
 
-    console.log("current filters:", filterObj)
+    // console.log("current filters:", filterObj)
     if (loggedInUserObj.fields["Candidates interested in"]) {
         companiesInterestedIn = loggedInUserObj.fields["Candidates interested in"].map(candidate => {
             return `{Airtable Record ID}="${candidate}"`
@@ -82,8 +82,8 @@ function handleFilterSelection() {
         //         : `IF(OR(${filter.join(',')}),"true")`
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-        console.log(remoteSelector.getValue())      
-        console.log(filteredOptions, filterEncode, filter)
+        // console.log(remoteSelector.getValue())      
+        // console.log(filteredOptions, filterEncode, filter)
         fetchFilteredProfiles(filterEncode)
     }
 }
@@ -257,7 +257,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
         }
         profile.score = score
         profile.matchedFilters = matchedFilters
-        console.log(matchedFilters)
+        // console.log(matchedFilters)
         return profile
     })
     return scoredProfiles
@@ -320,14 +320,14 @@ function fetchProfiles(filter) {
     };
 
     const APIURL = filter ? API + filter : API
-    console.log(APIURL)
+    // console.log(APIURL)
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
             userbase = result.records
             displayProfiles(userbase)
             countProfiles(userbase)
-            console.log(userbase)
+            // console.log(userbase)
         })
         .catch(error => console.log('error', error));
 }
@@ -348,7 +348,7 @@ function fetchFilteredProfiles(filter) {
             const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
             displayProfiles(TempUserbase)
             countProfiles(TempUserbase)
-            console.log(TempUserbase)
+            // console.log(TempUserbase)
         })
         .catch(error => console.log('error', error));
 }
@@ -383,7 +383,7 @@ function upgradeModule() {
 }
 
 function closeModal(e) {
-    console.log(e.currentTarget)
+    // console.log(e.currentTarget)
     if(e.currentTarget === modalContainer) {
         modalContainer.style.display = 'none'
     }
@@ -472,7 +472,7 @@ function updateLikedCandidates(candidatesList, userId) {
 
     fetch(API + "Users", requestOptions)
     .then(response => response.text())
-    .then(result => console.log(result))
+    // .then(result => console.log(result))
     .catch(error => console.log('error', error));
 }
 
@@ -481,19 +481,19 @@ function handleLikedCandidates(userObj, candidateId) {
     //if the liked list exists
     if (userObj.fields['Candidates interested in']) {
         likedCandidates = userObj.fields['Candidates interested in']
-        console.log('liked Candidates list found')
-        console.log(likedCandidates)
+        // console.log('liked Candidates list found')
+        // console.log(likedCandidates)
         //if the company is already liked, remove it
         if(likedCandidates.findIndex(id => id === candidateId) !== -1) {
             likedCandidates.splice(likedCandidates.findIndex(id => id === candidateId), 1)
-            console.log('Candidate has been already liked now removed')
-            console.log(likedCandidates)
+            // console.log('Candidate has been already liked now removed')
+            // console.log(likedCandidates)
             return likedCandidates
         } 
     }
     likedCandidates.push(candidateId)
-    console.log('candidate has been liked')
-    console.log(likedCandidates)
+    // console.log('candidate has been liked')
+    // console.log(likedCandidates)
     return likedCandidates
 }
 
@@ -570,7 +570,7 @@ function getLoggedInUserData(userId) {
         .then(response => response.json())
         .then(result => {
             loggedInUserObj = result
-            console.log(loggedInUserObj)
+            // console.log(loggedInUserObj)
             // get user's profile data
         })
         .then(() => {
@@ -584,7 +584,7 @@ function getLoggedInUserData(userId) {
                 const filteredOptions = `IF(OR(${companiesInterestedIn}),"true")`
                 
                 const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
-                console.log(companiesInterestedIn, filterEncode, filteredOptions)
+                // console.log(companiesInterestedIn, filterEncode, filteredOptions)
                     fetchProfiles(filterEncode)
             }
         })
@@ -593,13 +593,13 @@ function getLoggedInUserData(userId) {
 
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
-        console.log('User is logged in')
+        // console.log('User is logged in')
         paidMember = member['paying-user']
         userCompanyId = member['company-airtable-id']
         loggedInUserId = member['airtable-id-two']
         loggedInUserType = member['user-type']
         // if (paidMember) banner.style.display = 'none'
-        console.log(userCompanyId)
+        // console.log(userCompanyId)
         getLoggedInUserData(loggedInUserId)
         fetchFilterData()
         
