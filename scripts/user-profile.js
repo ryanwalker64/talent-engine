@@ -43,7 +43,7 @@ function displayProfile() {
                                 </div>
                                 <div class="short-company-date">
                                     ${userProfile.fields["Employment Start Date"]} - 
-                                    ${userProfile.fields['Currently work at employer?'] !== "true" 
+                                    ${userProfile.fields['Currently work at employer?'] 
                                     ? userProfile.fields["Employment End Date"]
                                     : "Present"}`
 

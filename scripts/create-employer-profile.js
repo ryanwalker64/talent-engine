@@ -20,15 +20,22 @@ fetchData().then((locations) => {
 
     locatedSelector = new TomSelect(locatedInput, {...locationSelectorSettings, options: locations});
 
-    // MemberStack.onReady.then(function(member) {
-    //     if (member.loggedIn) {
-    //         console.log('User is editing their own profile')
-    //         const userEmail = member["email"]
-    //         // getUserData()
-            
-    //     } else {
-    //     }
-    // })
+    MemberStack.onReady.then( async function(member) {
+      if (member.loggedIn && member["airtable-id-two"]) {
+          userID = member["airtable-id-two"]
+          userType = member["user-type"]
+
+          if(payingMember) {
+            const container = document.querySelector('[data-container="container"]') 
+            const loadingContainer = document.querySelector('[data-loader]')
+            loadingContainer.style.display = 'none'
+            container.style.display = 'block'
+
+          }
+
+      } else {
+        setTimeout(function() { location.reload(true); }, 3000);
+      }
 })
 
 const locationSelectorSettings = {
@@ -56,10 +63,10 @@ const generalSelectorSettings = {
 // HTML Inputs >> Tom Selectors
 let locatedSelector
 
-function submitProfile() {
+function submitProfile(userId) {
     const formData = new FormData(form);
     const formProps = Object.fromEntries(formData);
-    const userAirtableId = formProps['airtable-id']
+    // const userAirtableId = formProps['airtable-id']
     const userData = {
         "First Name": formProps['first-name'],
         "Last Name": formProps['last-name'],
@@ -71,23 +78,23 @@ function submitProfile() {
     }
     // console.log(formProps)
     // console.log(userData)
-    createCompany(userData, userAirtableId)
+    createCompany(userData, userId)
 }
 
-function createCompany(userData, userAirtableId) {
+function createCompany(userData, userId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
     method: "put",
     headers: myHeaders,
     redirect: "follow",
-    body: JSON.stringify([{"id": userAirtableId,"fields":userData}])
+    body: JSON.stringify([{"id": userId,"fields":userData}])
 };
 
     fetch(API + "Users", requestOptions)
         .then(response => response.text())
         .then(result => {
-            // console.log(result)
+            console.log(result)
             MemberStack.onReady.then(function(member) {  
                 member.updateProfile({
                     "profile-photo": userData["Profile Picture"],

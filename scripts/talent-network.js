@@ -342,7 +342,7 @@ function fetchFilteredProfiles(filter) {
 function displayUserHeadline(profile) {
     let headline
     if (paidMember) {
-        const fullHeadline = `<div class="candidate-name"><a class="clickable-profile" href="/app/profile?user=${profile.id}" target="_blank">`
+        const fullHeadline = `<div class="candidate-name" style="max-width:600px"><a class="clickable-profile" href="/app/profile?user=${profile.id}" target="_blank">`
         headline = profile.fields["First Job?"]
                     ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>` 
                     : profile.fields["Candidate Employer"] 
@@ -397,7 +397,6 @@ function createCategories(arr, className) {
 
 function displayProfiles(profiles){
     const profilesHTML = profiles.map(profile => {
-        
         return `
         <div class="information-container">
             <div class="candidate-profile no-border">
