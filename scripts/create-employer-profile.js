@@ -22,7 +22,7 @@ fetchData().then((locations) => {
 
     MemberStack.onReady.then( async function(member) {
       if (member.loggedIn && member["airtable-id-two"]) {
-          userID = member["airtable-id-two"]
+        userId = member["airtable-id-two"]
           userType = member["user-type"]
 
           if(payingMember) {
@@ -36,6 +36,7 @@ fetchData().then((locations) => {
       } else {
         setTimeout(function() { location.reload(true); }, 3000);
       }
+  })
 })
 
 const locationSelectorSettings = {
@@ -49,15 +50,6 @@ const locationSelectorSettings = {
 	labelField: 'value',
 	searchField: ['value'],
     maxItems: 1,
-};
-
-const generalSelectorSettings = {
-	plugins: ['remove_button'],
-    maxItems: 1,
-    sortField: {
-		field: "text",
-		direction: "asc"
-	}
 };
 
 // HTML Inputs >> Tom Selectors
