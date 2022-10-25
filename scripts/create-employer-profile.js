@@ -21,7 +21,7 @@ fetchData().then((locations) => {
     locatedSelector = new TomSelect(locatedInput, {...locationSelectorSettings, options: locations});
 
     MemberStack.onReady.then( async function(member) {
-      if (member.loggedIn && member["airtable-id-two"]) {
+      if (member.loggedIn && member["airtable-id-two"].length > 1) {
         userId = member["airtable-id-two"]
           userType = member["user-type"]
 
@@ -36,7 +36,7 @@ fetchData().then((locations) => {
       } else {
         setTimeout(function() { location.reload(true); }, 3000);
       }
-  })
+    })
 })
 
 const locationSelectorSettings = {

@@ -75,15 +75,23 @@ fetchData().then(([roles, locations, industries, programs]) => {
     locatedSelector.on('change', (e) => { workingLocationSelector.setValue(locatedSelector.getValue())})
     roleSelector.on('change', (e) => { interestedRolesSelector.setValue(roleSelector.getValue())})
 
-    // MemberStack.onReady.then(function(member) {
-    //     if (member.loggedIn) {
-    //         console.log('User is editing their own profile')
-    //         const userEmail = member["email"]
-    //         // getUserData()
-            
-    //     } else {
-    //     }
-    // })
+    MemberStack.onReady.then( async function(member) {
+        if (member.loggedIn && member["airtable-id-two"].length > 1) {
+             userId = member["airtable-id-two"]
+            userType = member["user-type"]
+  
+            if(userType === "CANDIDATE") {
+              const container = document.querySelector('[data-container="container"]') 
+              const loadingContainer = document.querySelector('[data-loader]')
+              loadingContainer.style.display = 'none'
+              container.style.display = 'block'
+  
+            }
+  
+        } else {
+          setTimeout(function() { location.reload(true); }, 3000);
+        }
+      })
 })
 
 const locationSelectorSettings = {
@@ -174,7 +182,7 @@ form.addEventListener('submit', (e) => {
     e.preventDefault
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
-    const userAirtableId = formProps['airtable-id']
+    // const userAirtableId = formProps['airtable-id']
     const userData = {
         "First Name": formProps['first-name'],
         "Last Name": formProps['last-name'],
@@ -205,14 +213,14 @@ form.addEventListener('submit', (e) => {
     }
     // console.log(formProps)
     // console.log(userData)
-    createProfile(userData, userAirtableId)
+    createProfile(userData, userId)
 })
 
 
 function submitProfile() {
     const formData = new FormData(form);
     const formProps = Object.fromEntries(formData);
-    const userAirtableId = formProps['airtable-id']
+    // const userAirtableId = formProps['airtable-id']
     const userData = {
         "First Name": formProps['first-name'],
         "Last Name": formProps['last-name'],
@@ -245,17 +253,17 @@ function submitProfile() {
     }
     // console.log(formProps)
     // console.log(userData)
-    createProfile(userData, userAirtableId)
+    createProfile(userData, userId)
 }
 
-function createProfile(userData, userAirtableId) {
+function createProfile(userData, userId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
     method: "put",
     headers: myHeaders,
     redirect: "follow",
-    body: JSON.stringify([{"id": userAirtableId,"fields":userData}])
+    body: JSON.stringify([{"id": userId,"fields":userData}])
 };
 
     fetch(API + "Users&typecast=true", requestOptions)
