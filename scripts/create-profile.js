@@ -271,7 +271,7 @@ function createProfile(userData, userAirtableId) {
                 }, false)
                 memberID = member['airtable-id-two']
             }).then(()=> {
-                window.location.href = `https://talent.startmate.com/app/profile?user=${memberID}`;
+                window.location.href = "/setup/login-loader";
             })
         })
         .catch(error => console.log('error', error));
@@ -394,7 +394,7 @@ function validateForm() {
           && typeof input.tomselect === 'object' 
           && input.tomselect.getValue() === '') {
               if (!currentlyWorkInput.checked
-                  || !firstJobInput.checked) {
+                  && !firstJobInput.checked) {
                       
                       return valid = false; 
                   }

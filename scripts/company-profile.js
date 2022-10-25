@@ -34,7 +34,7 @@ function displayProfile(companyProfile) {
     <div class="directory-container-v2" data-id="${companyProfile.id}">
         <div class="userprofile-container">
             <div class="div-block-73">
-                <img src="${companyProfile.fields['Logo']}" loading="lazy" alt="" class="logo">
+                <img src="${companyProfile.fields['Logo']}" loading="lazy" alt="" class="logo" style="border-radius:15px;object-fit: contain;">
                 <div class="candidate-info">
                     <div class="company-name">${companyProfile.fields['Name']}</div>
                     <div class="candidate-details-container">

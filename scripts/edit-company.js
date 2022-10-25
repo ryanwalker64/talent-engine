@@ -55,7 +55,7 @@ async function fetchData() {
 
 fetchData().then(([locations, industries]) => {
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
-    companyLocationSelector = new TomSelect(companyLocationInput, {...locationSelectorSettings, options: locations});
+    companyLocationSelector = new TomSelect(companyLocationInput, {...locationSelectorSettings, options: locations, maxItems: null});
     companyIndustriesSelector = new TomSelect(companyindustriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 3});
 
 }).then(() => {

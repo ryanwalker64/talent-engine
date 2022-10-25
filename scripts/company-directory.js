@@ -44,7 +44,7 @@ function handleFilterSelection() {
         clearFilters()
     } else { 
         const filterEncode = "&filterByFormula=" + encodeURI(`IF(${filterSetting}(${filter.join(',')}),"true")`)  
-        // console.log(filteredOptions, filterEncode, filter)
+        console.log(filteredOptions, filterEncode, filter)
         console.log(filterEncode, filter)
         fetchFilteredProfiles(filterEncode)
     }
@@ -73,7 +73,7 @@ function getEmployeeValues() {
     const checked = inputs.filter(checkbox => {if (checkbox.checked) return checkbox });
     if (checked.length === 0) return 
     filterObj.employee = checked.map(checkbox => {return checkbox.dataset.employees})
-    const values = checked.map(checkbox => {return `{Company Size}="${checkbox.dataset.employees}"`}).join(',')
+    const values = checked.map(checkbox => {return `IF({Company Size}="${checkbox.dataset.employees}", TRUE())`}).join(',')
     return values
 }
 
@@ -230,7 +230,7 @@ function fetchCompanies() {
         redirect: "follow",
     };
 
-    fetch(API + 'Companies' + "&perPage=30", requestOptions)
+    fetch(API + 'Companies&view=PublicView' + "&perPage=30", requestOptions)
         .then(response => response.json())
         .then(result => {
             companiesUserbase = result.records
@@ -250,7 +250,7 @@ function fetchFilteredProfiles(filter) {
         redirect: "follow",
     };
 
-    const APIURL = API + 'Companies' + filter
+    const APIURL = API + 'Companies&view=PublicView' + filter
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
@@ -313,7 +313,9 @@ function displayCompanies(companies){
         <div class="information-container"> 
             <div class="company-profile no-border">
                 <div class="sixty">
-                    <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo">
+                    <a href="/app/company?id=${company.id}" target="_blank">
+                        <img src="${company.fields['Logo']}" loading="lazy" alt="" class="logo" style="border-radius:15px;object-fit: contain;">
+                    </a>
                 </div>
                 <div class="candidate-info">
                     <div class="company-name"><a class="clickable-profile" href="/app/company?id=${company.id}" target="_blank">${company.fields['Name']}</a></div>
