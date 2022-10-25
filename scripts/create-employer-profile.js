@@ -25,7 +25,7 @@ fetchData().then((locations) => {
         userId = member["airtable-id-two"]
           userType = member["user-type"]
 
-          if(payingMember) {
+          if(userType === "EMPLOYER") {
             const container = document.querySelector('[data-container="container"]') 
             const loadingContainer = document.querySelector('[data-loader]')
             loadingContainer.style.display = 'none'
