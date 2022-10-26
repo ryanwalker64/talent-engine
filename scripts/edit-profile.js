@@ -130,7 +130,7 @@ function fetchUserData(id) {
         redirect: "follow",
     };
 
-   return fetch(API + "Users&id=" + id, requestOptions)
+   return fetch(API + "Users&id=" + id + '&cacheTime=0', requestOptions)
     .then(response => response.json())
     .then(result => companyData = result)
     .then(() => {
@@ -301,7 +301,7 @@ function updateProfile(data, userId) {
                 "last-name": data["Last Name"],
                 "email": data["Email"],
             }, false)
-        })
+        }).then(() => {location.reload(true)})
     })
     .catch(error => console.log('error', error));
 }
