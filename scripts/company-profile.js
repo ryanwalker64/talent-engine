@@ -175,7 +175,7 @@ function createJobListing(jobData) {
     const job =   `
                     <div class="job-posting company-page">
                     <div class="sixty">
-                        <img src="${jobData.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                        <img src="${jobData.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo" style="border-radius:15px;object-fit: contain;">
                     </div>
                     <div class="candidate-info job-post-directroy">
                         <div class="job-title"><a class="clickable-profile" href="${jobData.fields['converted-app-link']}" target="_blank">${jobData.fields['Job Title']}</a></div>

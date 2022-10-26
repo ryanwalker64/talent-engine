@@ -246,7 +246,7 @@ function submitProfile() {
         "Job Pref: Company size": companySizeSelector.getValue(),
         "Profile Picture": formProps['profile-pic'],
         "Profile Visibility": formProps['visibility'],
-        "Profile hidden from:": formProps['hidden-from'],
+        // "Profile hidden from:": formProps['hidden-from'],
         "Account Status": 'COMPLETE',
         "Startmate Program": programsSelector.getValue(),
         "Date Last Edited": `${new Date()}`,

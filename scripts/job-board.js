@@ -350,7 +350,7 @@ function displayJobs(jobs){
         return ` <div class="job-posting">
                     <div class="sixty">
                         <a href="/app/company?id=${job.fields['Airtable Record ID (from Company)']}" target="_blank">
-                            <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo">
+                            <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo" style="border-radius:15px;object-fit: contain;">
                         </a>
                     </div>
                     <div class="candidate-info job-post-directroy">

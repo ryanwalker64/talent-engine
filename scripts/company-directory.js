@@ -281,7 +281,7 @@ function heartStatus(loggedInUserData, company) {
 }
 
 function openRoles(company) {
-    const roles = company.fields['Airtable Record ID (from Jobs)'] ? [company.fields['Airtable Record ID (from Jobs)']] : ''
+    const roles = company.fields['Airtable Record ID (from Jobs)'] ? company.fields['Airtable Record ID (from Jobs)'] : ''
     if(roles) {
         // console.log(roles)
         if(roles.length > 1) {
