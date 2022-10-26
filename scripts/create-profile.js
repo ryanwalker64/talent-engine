@@ -267,20 +267,23 @@ function createProfile(userData, userId) {
 };
 
     fetch(API + "Users&typecast=true", requestOptions)
-        .then(response => response.text())
+        .then(response => response.json())
         .then(result => {
-            console.log(result)
-            MemberStack.onReady.then(function(member) {  
-                member.updateProfile({
-                    "profile-photo": userData["Profile Picture"],
-                    "first-name": userData["First Name"],
-                    "last-name": userData["Last Name"],
-                    "account-status": 'COMPLETE',
-                }, false)
-                memberID = member['airtable-id-two']
-            }).then(()=> {
-                window.location.href = "/setup/login-loader";
-            })
+            if(result.message === 'Updated') {
+                console.log('Successfully Updated Airtable ID')
+                MemberStack.onReady.then(function(member) {  
+                    member.updateProfile({
+                        "profile-photo": userData["Profile Picture"],
+                        "first-name": userData["First Name"],
+                        "last-name": userData["Last Name"],
+                        "account-status": 'COMPLETE',
+                    }, false)
+                    memberID = member['airtable-id-two']
+                    
+                }).then(()=> {
+                    window.location.href = "/setup/login-loader";
+                }) 
+            }
         })
         .catch(error => console.log('error', error));
 

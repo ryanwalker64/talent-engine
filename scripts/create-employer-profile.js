@@ -84,9 +84,10 @@ function createCompany(userData, userId) {
 };
 
     fetch(API + "Users", requestOptions)
-        .then(response => response.text())
+        .then(response => response.json())
         .then(result => {
-            console.log(result)
+          if(result.message === 'Updated') {
+            console.log('Successfully Updated Airtable ID')
             MemberStack.onReady.then(function(member) {  
                 member.updateProfile({
                     "profile-photo": userData["Profile Picture"],
@@ -94,8 +95,10 @@ function createCompany(userData, userId) {
                     "last-name": userData["Last Name"],
                     "account-status": 'COMPLETE',
                 }, false)
-            })
-            window.location.href = "/setup/login-loader";
+              }).then(()=> {
+                window.location.href = "/setup/login-loader";
+            }) 
+        }
         })
         .catch(error => console.log('error', error));
 
