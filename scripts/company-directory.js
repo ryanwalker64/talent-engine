@@ -250,11 +250,11 @@ function fetchFilteredProfiles(filter) {
         redirect: "follow",
     };
 
-    const APIURL = API + 'Companies&view=PublicView' + filter
+    const APIURL = API + 'Companies&view=PublicView&perPage=all' + filter
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
-            const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
+            const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}) //.slice(0,50)
             displayCompanies(TempUserbase)
             countProfiles(TempUserbase)
             // console.log(TempUserbase)
@@ -439,7 +439,7 @@ function getUserData(userId) {
         redirect: "follow",
     };
 
-    fetch(API + "Users&id=" + userId, requestOptions)
+    fetch(API + "Users&id=" + userId + '&cacheTime=0', requestOptions)
         .then(response => response.json())
         .then(result => {
             // console.log(result)

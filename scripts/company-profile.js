@@ -258,7 +258,7 @@ function getUserData(userId) {
         redirect: "follow",
     };
 
-    fetch(API + "Users&id=" + userId, requestOptions)
+    fetch(API + "Users&id=" + userId + '&cacheTime=0', requestOptions)
         .then(response => response.json())
         .then(result => {
             // console.log(result)

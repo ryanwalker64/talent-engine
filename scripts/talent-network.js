@@ -327,11 +327,11 @@ function fetchFilteredProfiles(filter) {
         redirect: "follow",
     };
 
-    const APIURL = API + filter
+    const APIURL = API + filter + "&perPage=all"
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
-            const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,50)
+            const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}) //.slice(0,50)
             displayProfiles(TempUserbase)
             countProfiles(TempUserbase)
             // console.log(TempUserbase)
