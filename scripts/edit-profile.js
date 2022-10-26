@@ -258,7 +258,7 @@ function checkForUpdates(data) {
 
         for (let i = 0; i < stageOfJobHuntInput.length; i++) {
             if(stageOfJobHuntInput[i].checked === true) {
-                stageOfJobHuntInput[i].value !== data["Stage of Job Hunt"] ? profileUpdates["Stage of Job Hunt"] = stageOfJobHuntInput.value : ''
+                stageOfJobHuntInput[i].value !== data["Stage of Job Hunt"] ? profileUpdates["Stage of Job Hunt"] = stageOfJobHuntInput[i].value : ''
             }
         }
         interestedRolesSelector.getValue() !== data['Job Pref: Relevant roles'] ? profileUpdates['Job Pref: Relevant roles'] = interestedRolesSelector.getValue() : ''

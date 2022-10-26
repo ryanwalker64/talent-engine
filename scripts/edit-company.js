@@ -76,7 +76,7 @@ function fetchCompanyData(id) {
         redirect: "follow",
     };
 
-   return fetch(API + "Companies&id=" + id, requestOptions)
+   return fetch(API + "Companies&id=" + id + '&cacheTime=0', requestOptions)
     .then(response => response.json())
     .then(result => companyData = result)
     .then(() => {
