@@ -55,7 +55,7 @@ const locationSelectorSettings = {
 // HTML Inputs >> Tom Selectors
 let locatedSelector
 
-function submitProfile(userId) {
+function submitProfile() {
     const formData = new FormData(form);
     const formProps = Object.fromEntries(formData);
     // const userAirtableId = formProps['airtable-id']
@@ -80,10 +80,10 @@ function createCompany(userData, userId) {
     method: "put",
     headers: myHeaders,
     redirect: "follow",
-    body: JSON.stringify([{"id": userId,"fields":userData}])
+    body: JSON.stringify([{"id":userId,"fields":userData}])
 };
 
-    fetch(API + "Users", requestOptions)
+    fetch(API + "Users&typecast=true", requestOptions)
         .then(response => response.json())
         .then(result => {
           if(result.message === 'Updated') {
@@ -95,9 +95,12 @@ function createCompany(userData, userId) {
                     "last-name": userData["Last Name"],
                     "account-status": 'COMPLETE',
                 }, false)
+
               }).then(()=> {
                 window.location.href = "/setup/login-loader";
-            }) 
+            })
+            .catch(error => console.log('error', error));
+
         }
         })
         .catch(error => console.log('error', error));

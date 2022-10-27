@@ -256,14 +256,14 @@ function submitProfile() {
     createProfile(userData, userId)
 }
 
-function createProfile(userData, userId) {
+function createProfile(userData, userAirId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
     method: "put",
     headers: myHeaders,
     redirect: "follow",
-    body: JSON.stringify([{"id": userId,"fields":userData}])
+    body: JSON.stringify([{"id": userAirId,"fields":userData}])
 };
 
     fetch(API + "Users&typecast=true", requestOptions)
@@ -282,7 +282,9 @@ function createProfile(userData, userId) {
                     
                 }).then(()=> {
                     window.location.href = "/setup/login-loader";
-                }) 
+                })
+                .catch(error => console.log('error', error));
+ 
             }
         })
         .catch(error => console.log('error', error));
