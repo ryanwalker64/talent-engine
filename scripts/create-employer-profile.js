@@ -97,7 +97,7 @@ function createCompany(userData, userId) {
                 }, false)
 
               }).then(()=> {
-                window.location.href = "/setup/login-loader";
+                window.location.href = "/app/talent-directory";
             })
             .catch(error => console.log('error', error));
 
