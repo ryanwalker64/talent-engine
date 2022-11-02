@@ -347,7 +347,7 @@ function displayJobs(jobs){
 
         const tagline = `${job.fields['Level']} • ${job.fields['Type of Job']} • ${locationTranslate(job)}`
 
-        return ` <div class="job-posting">
+        return ` <div class="job-posting" data-id="${job.id}">
                     <div class="sixty">
                         <a href="/app/company?id=${job.fields['Airtable Record ID (from Company)']}" target="_blank">
                             <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo" style="border-radius:15px;object-fit: contain;">
@@ -427,6 +427,10 @@ fetchFilterData().then(([locations, roles]) => {
 //         })
 //     )
 // }
+
+function saveJobClick() {
+    
+}
 
 
 function getUserData(userId) {

@@ -281,7 +281,7 @@ function createProfile(userData, userAirId) {
                     memberID = member['airtable-id-two']
                     
                 }).then(()=> {
-                    window.location.href = "/setup/login-loader";
+                    window.location.href = "/app/job-directory";
                 })
                 .catch(error => console.log('error', error));
  
