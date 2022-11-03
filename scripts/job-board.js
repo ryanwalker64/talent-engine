@@ -354,17 +354,17 @@ function displayJobs(jobs){
                         </a>
                     </div>
                     <div class="candidate-info job-post-directroy">
-                        <div class="job-title"><a class="clickable-profile" href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']} - ${job.fields['Name (from Company)']}</a></div>
+                        <div class="job-title"><a class="clickable-profile" data-jobclick href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']} - ${job.fields['Name (from Company)']}</a></div>
                         <div class="candidate-short-details">${tagline}</div>
                     </div>
                     <div class="seemore-container">
                         <div class="text-block-72">Posted: ${job.fields['Created']}</div>
-                        <a href="${job.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
+                        <a data-jobclick href="${job.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
                     </div>
                 </div>`
     }).join('')
     directoryContainer.innerHTML = jobsHtml
-    // if (userType === 'CANDIDATE') applyEventListeners()
+    applyEventListeners()
 }
 
 function saveFilterToURL(filters){
@@ -406,30 +406,54 @@ fetchFilterData().then(([locations, roles]) => {
     roleSelector.on('change', (e) => {handleFilterSelection()})
 })
 
-// function applyEventListeners() {
-//     const likeCompanyBtns = document.querySelectorAll('[data-likebtn]')
-//     likeCompanyBtns.forEach(btn => 
-//         btn.addEventListener('click', (e) => {
-//             const btn = e.currentTarget
-//             console.log(btn)
-//             const heartBtn = btn.querySelector('[data-heart="small"]')
-//             heartBtn.classList.toggle('liked')
-//             if (heartBtn.classList.contains('liked')) {
-                
-//                 // heartBtnText.style.background = "black"
-//             } else {
-                
-//                 // heartBtnText.style.background = "red"
-                
-//             }
-//             updateLikedCandidates(handleLikedCandidates(loggedInUserObj, btn.dataset.likebtn), loggedInUserObj.id)
-//             // change hover text to unlike company
-//         })
-//     )
-// }
+function applyEventListeners() {
+    const jobLinks = document.querySelectorAll('[data-jobclick]')
+    jobLinks.forEach(btn => 
+        btn.addEventListener('click', handleJobClick)
+    )
+}
 
-function saveJobClick() {
-    
+function handleJobClick(e) {
+    const job = e.currentTarget.closest('.job-posting')
+    const jobid = job.dataset.id
+    console.log(jobid)
+    getJobClicks(jobid)
+}
+
+function getJobClicks(jobID) {
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "get",
+        headers: myHeaders,
+        redirect: "follow",
+    };
+
+    fetch(API + "Jobs&id=" + jobID + '&cacheTime=0', requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            const newClicks = result.fields.Clicks + 1
+            console.log(newClicks)
+            updateJobClicks(jobID, newClicks)
+        })
+        .catch(error => console.log('error', error));
+}
+
+function updateJobClicks(jobID, clicks) {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "put",
+        headers: myHeaders,
+        redirect: "follow",
+        body: JSON.stringify([{"id": jobID,"fields":{"Clicks": clicks}}])
+    };
+
+    fetch(API + "Jobs", requestOptions)
+    .then(response => response.text())
+    // .then(result => console.log(result))
+    .catch(error => console.log('error', error));
 }
 
 
