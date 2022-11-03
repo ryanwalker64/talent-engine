@@ -289,10 +289,10 @@ function fetchFilteredJobs(filter) {
         .catch(error => console.log('error', error));
 }
 
-function createCategories(arr) {
+function createCategories(arr, className) {
     if (arr) {
         return arr.map(category => {
-            return `<div class="profile-catg">${category}</div>`
+            return `<div class="profile-catg ${className}">${category}</div>`
             }).join('')
         } else return ''
     } 
@@ -347,20 +347,32 @@ function displayJobs(jobs){
 
         const tagline = `${job.fields['Level']} • ${job.fields['Type of Job']} • ${locationTranslate(job)}`
 
-        return ` <div class="job-posting" data-id="${job.id}">
-                    <div class="sixty">
-                        <a href="/app/company?id=${job.fields['Airtable Record ID (from Company)']}" target="_blank">
-                            <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo" style="border-radius:15px;object-fit: contain;">
-                        </a>
+        return `<div class="information-container">
+                    <div class="job-posting" data-id="${job.id}" style="border: none;">
+                        <div class="sixty">
+                            <a href="/app/company?id=${job.fields['Airtable Record ID (from Company)']}" target="_blank">
+                                <img src="${job.fields['Logo (from Company)']}" loading="lazy" alt="" class="logo" style="border-radius:15px;object-fit: contain;">
+                            </a>
+                        </div>
+                        <div class="candidate-info job-post-directroy">
+                            <div class="job-title"><a class="clickable-profile" data-jobclick href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']} - ${job.fields['Name (from Company)']}</a></div>
+                            <div class="candidate-short-details">${tagline}</div>
+                        </div>
+                        <div class="seemore-container">
+                            <div class="text-block-72">Posted: ${job.fields['Created']}</div>
+                            <a data-jobclick href="${job.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
+                        </div>
                     </div>
-                    <div class="candidate-info job-post-directroy">
-                        <div class="job-title"><a class="clickable-profile" data-jobclick href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']} - ${job.fields['Name (from Company)']}</a></div>
-                        <div class="candidate-short-details">${tagline}</div>
-                    </div>
-                    <div class="seemore-container">
-                        <div class="text-block-72">Posted: ${job.fields['Created']}</div>
-                        <a data-jobclick href="${job.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
-                    </div>
+                    ${!job.score
+                        ? `<div></div>`
+                        : `<div class="div-block-104">
+                                <div class="div-block-105">
+                                    <div class="candidate-short-details matches-text">Matches:</div>
+                                    <div>
+                                        ${createCategories(job.matchedFilters, 'outlined')}
+                                    </div>
+                                </div>
+                            </div>`}
                 </div>`
     }).join('')
     directoryContainer.innerHTML = jobsHtml
