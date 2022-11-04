@@ -73,7 +73,7 @@ function handleFilterSelection() {
 
         const filterEncode = "&filterByFormula=" + encodeURI(filteredOptions)  
         // console.log(remoteSelector.getValue())      
-        // console.log(filteredOptions, filterEncode, filter)
+        console.log(filteredOptions, filterEncode, filter)
         fetchFilteredProfiles(filterEncode)
     }
 }
