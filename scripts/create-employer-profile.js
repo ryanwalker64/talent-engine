@@ -94,12 +94,11 @@ function createCompany(userData, userId) {
                     "first-name": userData["First Name"],
                     "last-name": userData["Last Name"],
                     "account-status": 'COMPLETE',
-                }, false)
+                }, false).then(()=> {
+                  setTimeout(() => window.location.href = "/app/talent-directory", 1500);
+              }).catch(error => console.log('error', error));
 
-              }).then(()=> {
-                window.location.href = "/app/talent-directory";
-            })
-            .catch(error => console.log('error', error));
+              })
 
         }
         })
