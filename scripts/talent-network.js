@@ -316,7 +316,7 @@ function fetchProfiles() {
             userbase = result.records
             displayProfiles(userbase)
             countProfiles(userbase)
-            enableLoader()
+            // enableLoader()
             // console.log(userbase)
         })
         .catch(error => console.log('error', error));
