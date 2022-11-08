@@ -301,7 +301,7 @@ function clearFilters() {
 
 
 function fetchProfiles() {
-    enableLoader()
+    // enableLoader()
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
