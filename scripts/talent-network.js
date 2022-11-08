@@ -17,7 +17,7 @@ const generalSelectorSettings = {
 
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users&view=VisibleProfiles"
 const FIELDS = "?fields%5B%5D=Job+Pref%3A+Working+Locations&fields%5B%5D=Job+Pref%3A+Open+to+remote+work&fields%5B%5D=experience-stage&fields%5B%5D=Job+Pref%3A+Relevant+roles&fields%5B%5D=Job+Pref%3A+Type+of+role&fields%5B%5D=Job+Pref%3A+Industries&fields%5B%5D=Startmate+Program"
-const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@main/'
+const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@v1.3.6.9/'
 
 
 // let offset
@@ -153,6 +153,8 @@ function getRoleValues() {
     const selected = roleSelector.getValue()
     filterObj.roles = roleSelector.getValue()
     const values = selected.map(value => {return `FIND("${value}",{Job Pref: Relevant roles})`}).join(',')
+    // const valuesCurrentRole = selected.map(value => {return `FIND("${value}",{What do you do?})`}).join(',')
+    // const values = valuesRolesFuture.concat(valuesCurrentRole)
     return values
 }
 
@@ -299,6 +301,7 @@ function clearFilters() {
 
 
 function fetchProfiles() {
+    enableLoader()
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -313,12 +316,14 @@ function fetchProfiles() {
             userbase = result.records
             displayProfiles(userbase)
             countProfiles(userbase)
+            enableLoader()
             // console.log(userbase)
         })
         .catch(error => console.log('error', error));
 }
 
 function fetchFilteredProfiles(filter) {
+    // enableLoader()
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -334,6 +339,7 @@ function fetchFilteredProfiles(filter) {
             const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}) //.slice(0,50)
             displayProfiles(TempUserbase)
             countProfiles(TempUserbase)
+            // enableLoader()
             // console.log(TempUserbase)
         })
         .catch(error => console.log('error', error));
@@ -607,6 +613,13 @@ function getLoggedInUserData(userId) {
         })
         .catch(error => console.log('error', error));
 }
+
+// function enableLoader() {
+//     const loader = document.querySelector('.loader-container')
+//     directoryContainer.classList.toggle('hidden')
+//     loader.classList.toggle('active-loader')
+// }
+
 
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
