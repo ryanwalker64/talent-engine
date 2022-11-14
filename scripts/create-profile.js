@@ -252,7 +252,7 @@ function submitProfile() {
         "Date Last Edited": `${new Date()}`,
     }
     // console.log(formProps)
-    // console.log(userData)
+    console.log(userData)
     createProfile(userData, userId)
 }
 

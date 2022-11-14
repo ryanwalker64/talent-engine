@@ -194,7 +194,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
     const scoredProfiles = fetchedUsers.map(profile => {
         let score = 0
         let matchedFilters = []
-        if(filtersToCheck.roles.length > 0) {
+        if(filtersToCheck.roles.length > 0 && profile.fields["Job Pref: Relevant roles"]) {
             filtersToCheck.roles.forEach(filter => {
                 if (profile.fields["Job Pref: Relevant roles"].includes(filter)) {
                     score += 1
@@ -202,7 +202,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
                 }
             })
         }
-        if(filtersToCheck.experience.length > 0) {
+        if(filtersToCheck.experience.length > 0 && profile.fields["experience-stage"]) {
             filtersToCheck.experience.forEach(filter => {
                 if (profile.fields["experience-stage"].includes(filter)) {
                     score += 1
@@ -210,7 +210,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
                 }
             })
         }
-        if(filtersToCheck.location.length > 0) {
+        if(filtersToCheck.location.length > 0 && profile.fields["Job Pref: Working Locations"]) {
             filtersToCheck.location.forEach(filter => {
                 if (profile.fields["Job Pref: Working Locations"].includes(filter)) {
                     score += 1
@@ -218,13 +218,13 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
                 }
             })
         }
-        if(filtersToCheck.remote.length > 0) {
+        if(filtersToCheck.remote.length > 0 && profile.fields["Job Pref: Open to remote work"]) {
             if (profile.fields["Job Pref: Open to remote work"]){
                 score += 1
                 matchedFilters.push('Open to Remote Work')
             }
         }
-        if(filtersToCheck.workType.length > 0) {
+        if(filtersToCheck.workType.length > 0 && profile.fields["Job Pref: Type of role"]) {
             filtersToCheck.workType.forEach(filter => {
                 if (profile.fields["Job Pref: Type of role"].includes(filter)) {
                     score += 1
@@ -238,7 +238,7 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
                     matchedFilters.push('Startmate Fellow')
                 }
         }
-        if(filtersToCheck.industry.length > 0) {
+        if(filtersToCheck.industry.length > 0 && profile.fields["Job Pref: Industries"]) {
             filtersToCheck.industry.forEach(filter => {
                 if (profile.fields["Job Pref: Industries"].includes(filter)) {
                     score += 1
@@ -333,14 +333,16 @@ function fetchFilteredProfiles(filter) {
     };
 
     const APIURL = API + filter + "&perPage=all"
+    console.log(APIURL)
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
+            console.log(result)
             const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}) //.slice(0,50)
             displayProfiles(TempUserbase)
             countProfiles(TempUserbase)
             // enableLoader()
-            // console.log(TempUserbase)
+            console.log(TempUserbase)
         })
         .catch(error => console.log('error', error));
 }
