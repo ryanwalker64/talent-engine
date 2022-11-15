@@ -46,6 +46,8 @@ let industriesSelector
 //&cacheTime=5
 
 function handleFilterSelection() {
+    directoryContainer.innerHTML = `<div data-loader="loading" class="div-block-96"><img src="https://uploads-ssl.webflow.com/6126d5a7894b51b0b6d462f5/62328a278f08ed196ad34cdf_Spinner-1s-200px.gif" loading="lazy" width="194" alt=""></div>`
+    
     let filter = []
     let interestedCandidates
     const filterSetting = getFilterSetting()
