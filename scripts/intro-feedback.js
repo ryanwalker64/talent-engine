@@ -9,18 +9,6 @@ const radioBtns = document.querySelectorAll('[name="reason"]')
 let recieverUserProfile 
 let userIsLoggedIn
 
-radioBtns.forEach(btn => {
-    btn.addEventListener('change', (e) => {
-        const value = e.target.value
-
-        // if (value === "Other") {
-            otherTextBox.classList.remove('hidden')
-        // } else {
-        //     otherTextBox.classList.add('hidden')
-        // }
-    })
-})
-
 function initMessage(reciever) {
     const profilePic = 
     reciever.fields["Profile Picture"] 
@@ -51,21 +39,24 @@ function getMsgId()  {
     return id
 }
 
-function checkRadioBtns() {
-    let valid
-    radioBtns.forEach(btn => {
-        if(btn.checked) valid = true
-    })
-    return valid
+function getSenderType()  {
+    const url_string = window.location.href;
+    const url = new URL(url_string);
+    const typeSender = url.searchParams.get("t");
+    
+    console.log(typeSender);
+    return typeSender
 }
+
 
 declineBtn.addEventListener('click', declineIntroduction)
 
 function declineIntroduction() {
-    if(!checkRadioBtns()) return console.log('pick an option') // aADDD to this
+    const feedbackMessage = document.querySelector('[data-message="message"]').value
+    if(!feedbackMessage) return console.log('pick an option') // aADDD to this
     const msgID = getMsgId()
-    const declineReason = document.querySelector('[name="reason"]:checked').value
-
+    const senderType = getSenderType()
+    const typeOfSender = senderType === 's' ?  {"Feedback from Sender": feedbackMessage} : {"Feedback from Reciever": feedbackMessage}
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
@@ -74,14 +65,10 @@ function declineIntroduction() {
         redirect: "follow",
         body: JSON.stringify([{
             "id": msgID,
-            "fields":{
-                "Status":"DECLINED",
-                "Declined Reason": declineReason,
-                "Declined Message": otherTextBox.value,
-            }
+            "fields": typeOfSender 
         }])
     };
-
+    console.log(requestOptions)
     fetch(API + "Introductions", requestOptions)
         .then(response => response.text())
         // .then(result => console.log(result))
@@ -99,6 +86,8 @@ MemberStack.onReady.then( async function(member) {
     
 }).then(() => {
     initMessage(recieverUserProfile)
+    const userRecievingFeedback = document.querySelector('[data-name="username"]')
+    userRecievingFeedback.textContent = recieverUserProfile.fields['Full Name']
     declineBox.style.display = 'block'
 })
 
@@ -123,4 +112,35 @@ function fetchData(id) {
    return fetch(API + "Users&fields=Full%20Name,Job%20Title,Candidate%20Employer,Employer,Profile%20Picture&id=" + id, requestOptions)
     .then(response => response.json())
     
+}
+
+function sendQuickFeedback() {
+    const url_string = window.location.href;
+    const url = new URL(url_string);
+    const feedbackOption = url.searchParams.get("f");
+    console.log(feedbackOption);
+    const msgID = getMsgId()
+    const senderType = getSenderType()
+    const typeOfSender = senderType === 's' ?  {"Feedback Sender": feedbackOption} : {"Feedback Receiver": feedbackOption}
+    console.log(typeOfSender)
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var requestOptions = {
+        method: "put",
+        headers: myHeaders,
+        redirect: "follow",
+        body: JSON.stringify([{
+            "id": msgID,
+            // "fields": {"Feedback Sender": ['Great']}
+            "fields": typeOfSender
+        }])
+    };
+    console.log(requestOptions)
+
+    fetch(API + "Introductions", requestOptions)
+        .then(response => response.text())
+        // .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+    
+
 }
