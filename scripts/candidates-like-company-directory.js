@@ -343,7 +343,7 @@ function fetchFilteredProfiles(filter) {
         redirect: "follow",
     };
 
-    const APIURL = filter ? API + filter + "&perPage=all": API + "&perPage=all"
+    const APIURL = filter ? API + "Users" + filter + "&perPage=all": API + "Users"+ "&perPage=all"
     fetch(APIURL, requestOptions)
         .then(response => response.json())
         .then(result => {
