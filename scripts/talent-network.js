@@ -339,7 +339,7 @@ function fetchFilteredProfiles(filter) {
         .then(response => response.json())
         .then(result => {
             console.log(result)
-            const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}) //.slice(0,50)
+            const TempUserbase = scoreProfiles(filterObj, result.records).sort(function(a, b){return b.score-a.score}).slice(0,150)
             displayProfiles(TempUserbase)
             countProfiles(TempUserbase)
             // enableLoader()
