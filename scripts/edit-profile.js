@@ -1,5 +1,5 @@
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
-const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@v1.3.8.0/'
+const JSDELIVR = 'https://cdn.jsdelivr.net/gh/ryanwalker64/talent-engine@v1.3.9.4/'
 
 const saveBtns = document.querySelectorAll('[data-btn]')
 let timeoutId
