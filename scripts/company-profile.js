@@ -213,8 +213,10 @@ function getCompanyData() {
             
         })
         .then(() => {
-            if(companyProfile.fields.Jobs) {
-                companyProfile.fields['Jobs'].forEach(jobId => {
+            // if(companyProfile.fields.Jobs) {
+            if(companyProfile.fields['Live Job Records']) {
+                // companyProfile.fields['Jobs'].forEach(jobId => {
+                companyProfile.fields['Live Job Records'].forEach(jobId => {
                     fetch(API + "Jobs&view=JobsPosted&id=" + jobId, requestOptions)
                     .then(response => response.json())
                     .then(jobData => {
