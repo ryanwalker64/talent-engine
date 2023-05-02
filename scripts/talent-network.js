@@ -12,7 +12,8 @@ const modalCloseBtn = document.querySelector('[data-upgrade="closebtn"]')
 const banner = document.querySelector('[data-upgrade="banner"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
-    sortField: {field: "text", direction: "asc"}
+    sortField: {field: "text", direction: "asc"},
+    maxOptions: 1000,
 };
 
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName=Users&view=VisibleProfiles"
@@ -546,6 +547,7 @@ fetchFilterData().then(([roles, locations, industries]) => {
         labelField: 'value',
         searchField: ['value'],
         maxItems: 5,
+        maxOptions: 1000,
         options: locations});
     roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: null});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: null});
