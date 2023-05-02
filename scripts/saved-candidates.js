@@ -13,7 +13,8 @@ const typeOfJobInput = document.querySelector('[data-input="types-of-jobs"]')
 const noFavouritesBanner = document.querySelector('[data-banner="disclaimer"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
-    sortField: {field: "text", direction: "asc"}
+    sortField: {field: "text", direction: "asc"},
+    maxOptions: 1000,
 };
 
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
@@ -545,6 +546,7 @@ fetchFilterData().then(([roles, locations, industries]) => {
         labelField: 'value',
         searchField: ['value'],
         maxItems: 5,
+        maxOptions: 1000,
         options: locations});
     roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: 5});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: 5});

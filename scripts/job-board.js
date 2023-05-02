@@ -9,7 +9,8 @@ const industriesInput = document.querySelector('[data-input="industries"]')
 const clearBtn = document.querySelector('[data-filter="clear"]')
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
-    sortField: {field: "text", direction: "asc"}
+    sortField: {field: "text", direction: "asc"},
+    maxOptions: 1000,
 };
 
 const API = "https://v1.nocodeapi.com/startmate/airtable/fVDPLsNPEAUNPlBG?tableName="
@@ -411,6 +412,7 @@ fetchFilterData().then(([locations, roles]) => {
         labelField: 'value',
         searchField: ['value'],
         maxItems: 5,
+        maxOptions: 1000,
         options: locations});
 
     roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: null});

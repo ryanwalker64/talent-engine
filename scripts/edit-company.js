@@ -35,7 +35,8 @@ const generalSelectorSettings = {
     sortField: {
 		field: "text",
 		direction: "asc"
-	}
+	},
+    maxOptions: 1000,
 };
 
 let companyData

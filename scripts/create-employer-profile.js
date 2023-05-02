@@ -48,6 +48,7 @@ const locationSelectorSettings = {
 	],
 	optgroupField: 'country',
 	labelField: 'value',
+  maxOptions: 1000,
 	searchField: ['value'],
     maxItems: 1,
 };
