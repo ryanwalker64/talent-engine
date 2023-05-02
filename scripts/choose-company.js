@@ -58,6 +58,7 @@ fetchData().then((companies) => {
 const generalSelectorSettings = {
 	plugins: ['remove_button'],
     maxItems: 1,
+    maxOptions: 1000,
     sortField: {
 		field: "text",
 		direction: "asc"
