@@ -352,23 +352,25 @@ function fetchFilteredProfiles(filter) {
 
 function displayUserHeadline(profile) {
     let headline
-    if (paidMember) {
+    // if (paidMember) {
         const fullHeadline = `<div class="candidate-name" style="max-width:600px"><a class="clickable-profile" href="/app/profile?user=${profile.id}" target="_blank">`
         headline = profile.fields["First Job?"]
                     ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>` 
                     : profile.fields["Candidate Employer"] 
                         ? `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["Job Title"]} @ ${profile.fields["Candidate Employer"]}</a></div>`
                         : `${fullHeadline}${profile.fields["Full Name"]}, ${profile.fields["What do you do?"]}</a></div>`
-    } else {
-        headline = `<div class="candidate-name" onclick="upgradeModule()"><span class="blur-name">Subscribe Today,</span> ${profile.fields["What do you do?"]}</div>`
-    }
+    // } else {
+    //     headline = `<div class="candidate-name" onclick="upgradeModule()"><span class="blur-name">Subscribe Today,</span> ${profile.fields["What do you do?"]}</div>`
+    // }
 
     return headline
 }
 
 function profileButtonsContainer(profile) {
-    let btns = `<a ${paidMember ? `href="/app/profile?user=${profile.id}" target="_blank` : 'onclick="upgradeModule()"'}" class="candidate-button-v2 more-button w-button" >See more</a>
-                <a ${paidMember ? `href="/message/send?user=${profile.id}" target="_blank` : 'onclick="upgradeModule()"'}" class="candidate-button-v2 contact-btn w-button tooltip">Contact<span class="tooltiptext">Send a message to connect</span></a>`
+    let btns = `<a href="/app/profile?user=${profile.id} target="_blank" class="candidate-button-v2 more-button w-button" >See more</a>
+                <a href="/message/send?user=${profile.id}" target="_blank" class="candidate-button-v2 contact-btn w-button tooltip">Contact<span class="tooltiptext">Send a message to connect</span></a>`
+    // let btns = `<a ${paidMember ? `href="/app/profile?user=${profile.id}" target="_blank` : 'onclick="upgradeModule()"'}" class="candidate-button-v2 more-button w-button" >See more</a>
+    //             <a ${paidMember ? `href="/message/send?user=${profile.id}" target="_blank` : 'onclick="upgradeModule()"'}" class="candidate-button-v2 contact-btn w-button tooltip">Contact<span class="tooltiptext">Send a message to connect</span></a>`
     return btns
 }
 
@@ -581,8 +583,8 @@ function getCompanyData(companyId) {
             const interestedCandidatesBannerText = document.querySelector('[data-upgrade="interested-candidates-text"]')
             if (companyData 
                 && companyData.fields['Interested Candidates'] 
-                && companyData.fields['Interested Candidates'].length > 0
-                && paidMember) {
+                && companyData.fields['Interested Candidates'].length > 0 ) {
+                // && paidMember) {
                     interestedCandidatesBannerText.innerHTML = `${companyData.fields['Interested Candidates'].length} Candidates are interested in <strong>${companyData.fields['Name']}</strong>`
                     interestedCandidatesBanner.style.display = "flex"
                     interestedCandidatesBanner.insertAdjacentHTML('beforeend', `<a href="/app/candidates-interested-directory" class="button-6 bannerbtn redbutton w-button"><span class="text-span-16">🔥</span> Show me</a>`)
@@ -629,14 +631,15 @@ function getLoggedInUserData(userId) {
 
 MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
-        // console.log('User is logged in')
+
         paidMember = member['paying-user']
         userCompanyId = member['company-airtable-id']
         loggedInUserId = member['airtable-id-two']
         loggedInUserType = member['user-type']
         if(userCompanyId) getCompanyData(userCompanyId)
-        if (paidMember) banner.style.display = 'none'
-        // console.log(paidMember)
+        // if (paidMember) banner.style.display = 'none' FOR SUBSCRIPTION
+        banner.style.display = 'none'
+    
         getLoggedInUserData(loggedInUserId)
         fetchFilterData()
     }
