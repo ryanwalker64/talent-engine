@@ -272,7 +272,7 @@ function checkForUpdates(data) {
         prefRoleBioInput.value !== data['Next Role'] ? profileUpdates['Next Role'] = prefRoleBioInput.value : ''
         for (let i = 0; i < profileVisibilityInput.length; i++) {
             if(profileVisibilityInput[i].checked === true) {
-                profileVisibilityInput[i].value !== data['Profile Visibility'] ? profileUpdates['Profile Visibility'] = profileVisibilityInput.value : ''
+                profileVisibilityInput[i].value !== data['Profile Visibility'] ? profileUpdates['Profile Visibility'] = profileVisibilityInput[i].value : ''
             }
         }
     }
@@ -284,6 +284,7 @@ function checkForUpdates(data) {
 function updateProfile(data, userId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    console.log(data)
     var requestOptions = {
         method: "put",
         headers: myHeaders,
@@ -303,7 +304,7 @@ function updateProfile(data, userId) {
                 "last-name": data["Last Name"],
                 "email": data["Email"],
             }, false)
-        }).then(() => {location.reload(true)})
+        })
     })
     .catch(error => console.log('error', error));
 }
