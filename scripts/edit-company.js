@@ -112,7 +112,7 @@ function checkForUpdates(data) {
     companyLogoInput.value !== data['Logo'] ? companyUpdates["Logo"] = companyLogoInput.value : ''
     companySloganInput.value !== data['Slogan'] ? companyUpdates["Slogan"] = companySloganInput.value : ''
     companyWebsiteInput.value !== data['Website URL'] ? companyUpdates["Website URL"] = companyWebsiteInput.value : ''
-    companyLocationSelector.getValue() !== data['Location'] ? companyUpdates["Location"] = [...companyLocationSelector.getValue()] : ''
+    companyLocationSelector.getValue() !== data['Location'] ? companyUpdates["Location"] = companyLocationSelector.getValue() : ''
     companySizeSelector.getValue() !== data['Company Size'] ? companyUpdates['Company Size'] = companySizeSelector.getValue() : ''
     companyIndustriesSelector.getValue() !== data['Industry'] ? companyUpdates['Industry'] = companyIndustriesSelector.getValue() : ''
     companyDescriptionInput.value !== data['Company Description'] ? companyUpdates["Company Description"] = companyDescriptionInput.value : ''
