@@ -309,7 +309,8 @@ function updateProfile(data, userId) {
 }
 
 
-saveBtns.forEach(btn => btn.addEventListener('click', () => {
+saveBtns.forEach(btn => btn.addEventListener('click', (e) => {
+    e.preventDefault()
     closePopUp()
     if (!checkRequiredFields()) return false
     const data = checkForUpdates(companyData.fields) 

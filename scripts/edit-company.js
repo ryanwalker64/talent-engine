@@ -188,6 +188,7 @@ function savePopUp() {
     errMsg.textContent = 'Changes Saved'
     errContainer.style.backgroundColor = '#008764'
     errContainer.style.display = 'flex'
+    // window.location.reload()
     timeoutId = setTimeout(() => errContainer.style.display = 'none', 5000);
 }
 
