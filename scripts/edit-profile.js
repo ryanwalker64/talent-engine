@@ -284,7 +284,7 @@ function checkForUpdates(data) {
 function updateProfile(data, userId) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    console.log(data)
+  
     var requestOptions = {
         method: "put",
         headers: myHeaders,
