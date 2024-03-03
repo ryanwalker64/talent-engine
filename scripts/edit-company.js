@@ -118,7 +118,7 @@ function checkForUpdates(data) {
     companyDescriptionInput.value !== data['Company Description'] ? companyUpdates["Company Description"] = companyDescriptionInput.value : ''
     companyUpdates['Remote Friendly'] = companyRemoteFriendlyInput.checked ? `${companyRemoteFriendlyInput.checked}` : ''
 
-    // console.log(companyUpdates)
+    console.log(companyUpdates)
     return companyUpdates
 }
 
