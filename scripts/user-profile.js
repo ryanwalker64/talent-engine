@@ -129,8 +129,8 @@ function displayProfile() {
                 </div>
                 ${userType === "CANDIDATE" 
                 ? `<div class="user-information">
-                    <div class="label-v2" style="margin-top:10px">Profile edited</div>
-                    <div class="user-bio">${getEditedStatus(userProfile.fields["Date Last Edited"] || userProfile.fields["Account created date"])}</div>
+                    <div class="label-v2" style="margin-top:20px">Profile last updated: <span class="profile-catg">${getEditedStatus(userProfile.fields["Date Last Edited"] || userProfile.fields["Account created date"])}</span></div>
+                    <div class="user-bio"></div>
                     <div class="user-bio">${userProfile.fields["Bio"]}</div>
                     <div class="user-experience-container">
                         <div id="w-node-d1b484be-b039-f163-f2bd-141e8ff68677-89aee008" class="user-experience">
