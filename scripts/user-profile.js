@@ -77,6 +77,13 @@ function displayProfile() {
                             ${handleHeadline}
                             ${stageOfJobHunt}
                         </div>
+                        ${userProfile.fields["Linkedin"] && userProfile.fields["Linkedin"].indexOf("linkedin") !== -1 &&
+                        `<div class="candidate-details-container">
+                            <div class="candidate-short-details">
+                            <a href="${userProfile.fields["Linkedin"]}" target="_BLANK">Linkedin</a>
+                            </div>
+                        </div>`
+                        }
                     </div>
                     <div class="candidate-buttons-container">
                     
