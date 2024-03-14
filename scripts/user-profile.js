@@ -33,6 +33,33 @@ function getExperienceLevel(level) {
     }
 }
 
+function getEditedStatus(dateString) {
+    let date = new Date(dateString);
+    let now = new Date();
+
+    // Calculate the difference in milliseconds between now and the provided date
+    let differenceInMs = now - date;
+
+    // Convert milliseconds to days
+    let differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
+
+    // Check conditions
+    if (differenceInDays <= 7) {
+        return "This week";
+    } else if (differenceInDays <= 30) {
+        return "This month";
+    } else if (differenceInDays <= 30 * 6) {
+        let months = Math.floor(differenceInDays / 30);
+        return `Over ${months} month${months > 1 ? 's' : ''} ago`;
+    } else if (differenceInDays <= 365) {
+        return "Over 6 months ago";
+    } else {
+        return "Over a year ago";
+    }
+}
+
+
+
 
 function displayProfile() {
 
@@ -102,6 +129,8 @@ function displayProfile() {
                 </div>
                 ${userType === "CANDIDATE" 
                 ? `<div class="user-information">
+                    <div class="label-v2" style="margin-top:10px">Profile edited</div>
+                    <div class="user-bio">${getEditedStatus(userProfile.fields["Date Last Edited"] || userProfile.fields["Account created date"])}</div>
                     <div class="user-bio">${userProfile.fields["Bio"]}</div>
                     <div class="user-experience-container">
                         <div id="w-node-d1b484be-b039-f163-f2bd-141e8ff68677-89aee008" class="user-experience">
