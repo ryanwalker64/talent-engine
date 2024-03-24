@@ -54,7 +54,6 @@ function updateJobClicks(jobID, clicks) {
 
 
 function appBtnClicks() {
-    console.log('test')
     const uniqueId = extractIdFromUrl(window.location.href);
 
     var myHeaders = new Headers();
@@ -88,8 +87,12 @@ function updateAppBtnClicks(jobID, clicks, appBtnClickers) {
             "Users who clicked":  appBtnClickers 
             ? appBtnClickers.find(rec => rec === loggedInUser)
                 ? [...appBtnClickers]
-                : [...appBtnClickers, loggedInUser ? loggedInUser : ''] 
-            : [loggedInUser ? loggedInUser : '']
+                : loggedInUser 
+                    ? [...appBtnClickers, loggedInUser] 
+                    : [...appBtnClickers]
+            : loggedInUser 
+                ? [loggedInUser]
+                : []
         }}])
     };
 
