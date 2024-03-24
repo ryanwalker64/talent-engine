@@ -358,7 +358,7 @@ function displayJobs(jobs){
                             </a>
                         </div>
                         <div class="candidate-info job-post-directroy">
-                            <div class="job-title"><a class="clickable-profile" data-jobclick href="${job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']} - ${job.fields['Name (from Company)']}</a></div>
+                            <div class="job-title"><a class="clickable-profile" data-jobclick href="${job.fields['Description'] ? `/job/${job.id}` : job.fields['converted-app-link']}" target="_blank">${job.fields['Job Title']} - ${job.fields['Name (from Company)']}</a></div>
                             <div class="candidate-short-details">${tagline}</div>
                         </div>
                         <div class="seemore-container">
