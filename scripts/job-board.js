@@ -363,7 +363,7 @@ function displayJobs(jobs){
                         </div>
                         <div class="seemore-container">
                             <div class="text-block-72">Posted: ${job.fields['Created']}</div>
-                            <a data-jobclick href="${job.fields['description'] ? `/job/${job.id}` : job.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
+                            <a data-jobclick href="${job.fields['Description'] ? `/job/${job.id}` : job.fields['converted-app-link']}" target="_blank" class="candidate-button-v2 more-button company-more-button w-button">See more</a>
                         </div>
                     </div>
                     ${!job.score
