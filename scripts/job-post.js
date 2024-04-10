@@ -67,7 +67,7 @@ function appBtnClicks() {
     fetch(API + "Jobs&id=" + uniqueId + '&cacheTime=0', requestOptions)
         .then(response => response.json())
         .then(result => {
-            const newClicks = result.fields["Application Button Clicks"] + 1
+            const newClicks = result.fields["Application Button Clicks"] + 1``
             const appBtnClickUsers = result.fields["Users who clicked"]
             console.log(newClicks)
             updateAppBtnClicks(uniqueId, newClicks, appBtnClickUsers)
@@ -116,5 +116,8 @@ window.addEventListener('load', function() {
         loggedInUser = member['airtable-id-two']
     
         
-    } 
+    }  else {
+        const userblock = document.querySelector('#userblock')
+        userblock.remove()
+    }
 })
