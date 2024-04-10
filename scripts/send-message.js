@@ -151,12 +151,14 @@ function initMessage(reciever) {
             <div class="candidate-info margin-right">
                 <div class="candidate-name">${reciever.fields['Full Name']}</div>
                 <div class="candidate-details-container">
-                    <div class="candidate-short-details">${reciever.fields['Job Title']} @ ${reciever.fields['Candidate Employer']}</div>
+                    <div class="candidate-short-details">${reciever.fields['Job Title']} @ ${reciever.fields['Candidate Employer'] ? reciever.fields['Candidate Employer'] : reciever.fields['Name (from Employer)']  }</div>
                 </div>
             </div>
         </div>`
 
     recieverProfileContainer.innerHTML = html
+
+
 }
 
 function previewMsg(msg) {
