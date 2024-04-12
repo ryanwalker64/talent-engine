@@ -111,6 +111,11 @@ fetchData().then(([roles, locations, industries, programs]) => {
             const userID = member["airtable-id-two"]
             userType = member["user-type"]
             const payingMember = member["paying-user"]
+            const deleteButton = document.querySelector('#delete-acc')
+
+            if (deleteButton) {
+                deleteButton.href = `https://airtable.com/app4lcwDL2bVdaFQm/shriPYWcn4H4Psnkq?prefill_ID=${member.id}&hide_ID=true`
+            }
 
             if(payingMember) {
                 const billingLink = document.querySelector('[data-hide="billing"]')
