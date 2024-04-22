@@ -2,6 +2,7 @@ const directoryContainer = document.querySelector('.directory-container-v2')
 const form = document.querySelector('[data-filter="form"]')
 const formInputs = document.querySelectorAll('[data-filter="input"]') 
 const locationsInput = document.querySelector('[data-input="location"]')
+const smProgramInput = document.querySelector('[data-input="smProgram"]')
 const typeOfJobInput = document.querySelector('[data-input="types-of-jobs"]')
 const remoteInput = document.querySelector('[data-input="remote"]')
 const rolesInput = document.querySelector('[data-input="roles"]')
@@ -40,6 +41,7 @@ let filterObj = {
     'SMProgram': [],
 }
 let locationSelector
+let smProgramSelector
 let remoteSelector = new TomSelect(remoteInput, {...generalSelectorSettings});
 let typeOfJobSelector = new TomSelect(typeOfJobInput, {...generalSelectorSettings, maxItems: null});
 let roleSelector
@@ -53,7 +55,8 @@ function handleFilterSelection() {
     if (getExperienceValues()) filter.push(getExperienceValues())
     if (getRoleValues()) filter.push(getRoleValues())
     if (getWorkTypeValues()) filter.push(getWorkTypeValues())
-    if (getSMProgramValues()) filter.push(getSMProgramValues())
+    // if (getSMProgramValues()) filter.push(getSMProgramValues())
+    if (getSMProgramsValueExpanded()) filter.push(getSMProgramsValueExpanded())
     if (checkRemoteValue()) filter.push(checkRemoteValue())
     if (industriesSelector.getValue().length > 0) filter.push(getIndustryValues())
     if (locationSelector.getValue().length > 0) filter.push(getLocationValues())
@@ -170,14 +173,23 @@ function getIndustryValues() {
     return values
 }
 
-function getSMProgramValues() {
+function getSMProgramsValueExpanded() {
     filterObj.SMProgram = []
-    const input = document.querySelector('[data-smprogram]')
-    if(!input.checked) return
-    filterObj.SMProgram = [true]
-    const value = `IF({Startmate Program}, TRUE())`
-    return value
+    if (smProgramSelector.getValue().length === 0) return
+    const selected = smProgramSelector.getValue()
+    filterObj.SMProgram = smProgramSelector.getValue()
+    const values = selected.map(value => {return `FIND("${value}",{Startmate Program})`}).join(',')
+    return values
 }
+
+// function getSMProgramValues() {
+//     filterObj.SMProgram = []
+//     const input = document.querySelector('[data-smprogram]')
+//     if(!input.checked) return
+//     filterObj.SMProgram = [true]
+//     const value = `IF({Startmate Program}, TRUE())`
+//     return value
+// }
 
 function checkRemoteValue() {
     filterObj.remote = []
@@ -235,11 +247,19 @@ function scoreProfiles(filtersToCheck, fetchedUsers) {
                 }
             })
         }
-        if(filtersToCheck.SMProgram.length > 0) {
-                if (profile.fields["Startmate Program"]) { 
+        // if(filtersToCheck.SMProgram.length > 0) {
+        //         if (profile.fields["Startmate Program"]) { 
+        //             score += 1
+        //             matchedFilters.push('Startmate Fellow')
+        //         }
+        // }
+        if(filtersToCheck.SMProgram.length > 0 && profile.fields["Startmate Program"]) {
+            filtersToCheck.SMProgram.forEach(filter => {
+                if (profile.fields["Startmate Program"].includes(filter)) {
                     score += 1
-                    matchedFilters.push('Startmate Fellow')
+                    matchedFilters.push(filter)
                 }
+            })
         }
         if(filtersToCheck.industry.length > 0 && profile.fields["Job Pref: Industries"]) {
             filtersToCheck.industry.forEach(filter => {
@@ -299,6 +319,7 @@ function clearFilters() {
     remoteSelector.setValue('', 'silent')
     roleSelector.setValue('', 'silent')
     typeOfJobSelector.setValue('', 'silent')
+    smProgramSelector.setValue('', 'silent')
     fetchProfiles()
 }
 
@@ -523,21 +544,24 @@ function saveFilterToURL(filters){
 
 
 async function fetchFilterData() {
-    const [rolesResponse, locationsResponse, industriesResponse] = await Promise.all([
+    const [rolesResponse, locationsResponse, industriesResponse, smProgramsResponse] = await Promise.all([
         fetch(JSDELIVR + 'rolesArray.json'),
         fetch(JSDELIVR + 'locationsArray.json'),
-        fetch(JSDELIVR + 'industriesArray.json')])
+        fetch(JSDELIVR + 'industriesArray.json'),
+        fetch(JSDELIVR + 'programsArray.json')])
         
     const roles = await rolesResponse.json()
     const locations = await locationsResponse.json()
     const industries = await industriesResponse.json()
+    const programs = await smProgramsResponse.json()
     // console.log(roles, locations, industries)
-    return [roles, locations, industries]
+    return [roles, locations, industries, programs]
 }
 
 fetchFilterData().then(([roles, locations, industries]) => {
     const rolesObj = roles.map(role => {return {'value': role, 'text': role}})
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
+    const smProgramsObj = programs.map(program => {return {'value': program, 'text': program}})
 
     locationSelector = new TomSelect(locationsInput, {
         plugins: ['remove_button'],
@@ -554,9 +578,11 @@ fetchFilterData().then(([roles, locations, industries]) => {
         options: locations});
     roleSelector = new TomSelect(rolesInput, {...generalSelectorSettings, options: rolesObj, maxItems: null});
     industriesSelector = new TomSelect(industriesInput, {...generalSelectorSettings,  options: industryObj, maxItems: null});
+    smProgramSelector = new TomSelect(smProgramInput, {...generalSelectorSettings,  options: smProgramsObj, maxItems: null});
 
     typeOfJobSelector.on('change', (e) => {handleFilterSelection()})
     locationSelector.on('change', (e) => {handleFilterSelection()})
+    smProgramSelector.on('change', (e) => {handleFilterSelection()})
     industriesSelector.on('change', (e) => {handleFilterSelection()})
     roleSelector.on('change', (e) => {handleFilterSelection()})
     remoteSelector.on('change', (e) => {handleFilterSelection()})
