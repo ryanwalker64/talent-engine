@@ -558,7 +558,7 @@ async function fetchFilterData() {
     return [roles, locations, industries, programs]
 }
 
-fetchFilterData().then(([roles, locations, industries]) => {
+fetchFilterData().then(([roles, locations, industries, programs]) => {
     const rolesObj = roles.map(role => {return {'value': role, 'text': role}})
     const industryObj = industries.map(industry => {return {'value': industry, 'text': industry}})
     const smProgramsObj = programs.map(program => {return {'value': program, 'text': program}})
