@@ -114,10 +114,13 @@ window.addEventListener('load', function() {
   MemberStack.onReady.then(function(member) {
     if (member.loggedIn) {
         loggedInUser = member['airtable-id-two']
+        const userblock2 = document.querySelector('#userblock2')
+        userblock2.remove()
     
         
     }  else {
         const userblock = document.querySelector('#userblock')
         userblock.remove()
+  
     }
 })
